@@ -4,5 +4,3 @@ How to use libcommon in your xcode project?
 Ex: ./makedist.sh ~/Projects/MyNewProject
 2. Create libcommon group in "Other Sources"
 3. Add Classes and Headers folders to this group
-
-
