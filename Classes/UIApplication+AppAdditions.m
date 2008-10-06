@@ -12,5 +12,9 @@
 	return [d service];
 }
 
++ (id) delegate {
+	return [[UIApplication sharedApplication] delegate];
+}
+
 
 @end

@@ -5,9 +5,10 @@ then
   exit -1
 fi
 
-dst="$1/libcommon"
-rm -r $dst
-mkdir -p "$dst"
-cp -r Headers "$dst"
-cp -r Classes "$dst"
-cp -r common.xcodeproj "$dst"
+dst="$1"
+src=`pwd`
+pushd .
+cd "$dst"
+rm -r libcommon
+ln -s "$src" libcommon
+popd
