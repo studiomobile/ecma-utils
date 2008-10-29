@@ -7,5 +7,5 @@ fi
 echo "$pkglocation"
 pushd .
 cd "$pkglocation"
-tar -czhf "$pkcgname.tar.gz" "$pkcgname"
+tar -czhf "$pkcgname.tar.gz" --exclude "build" "$pkcgname"
 popd

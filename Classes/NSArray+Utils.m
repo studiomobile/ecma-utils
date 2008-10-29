@@ -1,5 +1,5 @@
 #import "NSArray+Randomization.h"
-#import "NSObject+ArgChecking.h"
+#import "NSObject+Utils.h"
 
 void swap(id *mem, NSUInteger i, NSUInteger j) 
 {

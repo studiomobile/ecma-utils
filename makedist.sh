@@ -10,5 +10,5 @@ src=`pwd`
 pushd .
 cd "$dst"
 rm -r libcommon
-ln -s "$src" libcommon
+ln -s "$src/Classes" libcommon
 popd
