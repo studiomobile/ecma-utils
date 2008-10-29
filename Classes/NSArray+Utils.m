@@ -1,4 +1,4 @@
-#import "NSArray+Randomization.h"
+#import "NSArray+Utils.h"
 #import "NSObject+Utils.h"
 
 void swap(id *mem, NSUInteger i, NSUInteger j) 

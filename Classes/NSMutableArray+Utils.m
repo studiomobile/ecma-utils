@@ -1,4 +1,4 @@
-#import "NSMutableArray+Randomization.h"
+#import "NSMutableArray+Utils.h"
 
 @implementation NSMutableArray(Randomization)
 
