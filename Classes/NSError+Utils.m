@@ -11,6 +11,7 @@
 	errorDisplay.message = errorMessage;
 	[errorDisplay addButtonWithTitle:@"OK"];
 	[errorDisplay show];
+	[errorDisplay release];
 }
 
 @end
