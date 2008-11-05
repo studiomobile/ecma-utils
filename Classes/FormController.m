@@ -77,24 +77,26 @@
 	
 	UIView *appView = [UIApplication mainView];	
 	CGRect kbdAppFrame = CGRectOffset(kbdBounds, kbdCenter.x - kbdBounds.size.width/2, kbdCenter.y - kbdBounds.size.height/2 );
-	CGRect tblAppFrame = [self.tableView convertRect:self.tableView.bounds toView:appView];
+	CGRect tblAppFrame = [self.table convertRect:self.table.bounds toView:appView];
 	CGRect tblAndKbdIntersection = CGRectIntersection(kbdAppFrame, tblAppFrame);
 	if(!CGRectIsNull(tblAndKbdIntersection)) {
 		CGRect newTblAppFrame, slice;
 		CGRectDivide(tblAppFrame, &slice, &newTblAppFrame, CGRectGetHeight(tblAndKbdIntersection), CGRectMaxYEdge);
-		CGRect newTblFrame = [appView convertRect:newTblAppFrame toView:self.tableView];
-		oldTblViewFrame = self.tableView.frame;
+		CGRect newTblFrame = [appView convertRect:newTblAppFrame toView:self.table.superview];
+		oldTblViewFrame = self.table.frame;
 		tableViewResized = YES;
 		[UIView beginAnimations: nil context: NULL];
 		[UIView setAnimationDuration: 0.3];	
 		[UIView setAnimationDelegate:self];
-		self.tableView.frame = newTblFrame;
+		self.table.frame = newTblFrame;
 		[UIView commitAnimations];
 	}
 }
 
 - (void)kbdDidShow {
 	keyboardShown = TRUE;
+    superviewBackground = [self.table.superview.backgroundColor retain];
+    self.table.superview.backgroundColor = self.table.backgroundColor;
 }
 
 - (void)kbdWillHide:(NSNotification*)notification {
@@ -111,7 +113,9 @@
 	keyboardShown = FALSE;
 	if(tableViewResized) {
 		tableViewResized = NO;
-		self.tableView.frame = oldTblViewFrame;
+		self.table.frame = oldTblViewFrame;
+        self.table.superview.backgroundColor = superviewBackground;
+        [superviewBackground release];
 	}
 }
 
@@ -130,8 +134,8 @@
 			cell = cell.superview;
 		} while(![cell isKindOfClass:[UITableViewCell class]] && cell != nil);
 		
-		NSIndexPath *path = [self.tableView indexPathForCell:(UITableViewCell*)cell];
-		[self.tableView scrollToRowAtIndexPath:path atScrollPosition:UITableViewScrollPositionMiddle animated:animated];		
+		NSIndexPath *path = [self.table indexPathForCell:(UITableViewCell*)cell];
+		[self.table scrollToRowAtIndexPath:path atScrollPosition:UITableViewScrollPositionMiddle animated:animated];		
 	}
 }
 
@@ -152,6 +156,15 @@
 - (BOOL)validateTextInput:(UITextField*)textField {
 	return YES;
 }
+
+- (UITableView*)table {
+    return nil;
+}
+
+- (void)setTable:(UITableView*)tv {
+}
+
+
 
 @end
 

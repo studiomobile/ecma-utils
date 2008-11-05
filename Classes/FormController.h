@@ -1,11 +1,12 @@
 #import <UIKit/UIKit.h>
 
 
-@interface FormController : UITableViewController<UITextFieldDelegate> {
+@interface FormController : UIViewController<UITextFieldDelegate> {
 	UITextField *focusedTextField;
 	BOOL keyboardShown;
 	CGRect oldTblViewFrame;
 	BOOL tableViewResized;
+    UIColor *superviewBackground;
 }
 
 - (void)hideKeyboard;
@@ -20,5 +21,7 @@
 - (void)editingFinished:(NSNotification*)notification;
 
 - (void)scrollToFocusedTextField:(BOOL)animated;
+
+IBOutlet @property (nonatomic, retain) UITableView *table;
 
 @end
