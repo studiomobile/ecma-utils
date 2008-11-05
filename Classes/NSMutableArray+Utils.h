@@ -1,6 +1,6 @@
 #import <UIKit/UIKit.h>
 
 
-@interface NSMutableArray(Randomization)
+@interface NSMutableArray(Utils)
 - (NSMutableArray*)shuffle;
 @end

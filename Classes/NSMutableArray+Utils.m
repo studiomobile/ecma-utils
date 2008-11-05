@@ -1,6 +1,6 @@
 #import "NSMutableArray+Utils.h"
 
-@implementation NSMutableArray(Randomization)
+@implementation NSMutableArray(Utils)
 
 - (NSMutableArray*)shuffle {
 	NSUInteger count = [self count];

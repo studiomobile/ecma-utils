@@ -69,4 +69,13 @@ int from_base64(const char *data, size_t dataLen, void **result, size_t *resultL
 	return [NSURL URLWithString:self];
 }
 
+- (NSString*)urlEncode {
+	return [self urlEncode:nil];
+}
+
+- (NSString*)urlEncode:(NSString*)additionalCharacters {
+	NSString* str = (NSString*)CFURLCreateStringByAddingPercentEscapes(NULL, (CFStringRef)self, NULL, (CFStringRef)additionalCharacters, kCFStringEncodingUTF8);
+	return [str autorelease];
+}
+
 @end

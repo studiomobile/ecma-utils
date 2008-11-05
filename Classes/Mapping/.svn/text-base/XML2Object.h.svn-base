@@ -1,0 +1,60 @@
+#import <Foundation/Foundation.h>
+#import "ClassMetadata.h"
+
+@interface XML2Object : NSObject {
+	NSMutableArray *objects;
+	Class root;
+	NSString *currentElement;
+	id result;
+}
+
+- (void)parserDidStartDocument:(NSXMLParser *)parser;
+- (void)parser:(NSXMLParser *)parser didStartElement:(NSString *)elementName namespaceURI:(NSString *)namespaceURI qualifiedName:(NSString *)qName attributes:(NSDictionary *)attributeDict;
+- (void)parser:(NSXMLParser *)parser didEndElement:(NSString *)elementName namespaceURI:(NSString *)namespaceURI qualifiedName:(NSString *)qName;
+- (void)parser:(NSXMLParser *)parser foundCharacters:(NSString *)string;
+- (id)initWithRoot:(Class)rootClass;
+- (id)result;
+
+@end
+
+
+@interface NSObject(XMLMapping)
+
+- (void)setPropertyValue:(id)val forKey:(NSString*)name;
+
+@end
+
+
+@interface NSMappableArray : NSObject<ClassMetadata> {
+	NSMutableArray *storage;
+}
+
+- (void)setPropertyValue:(id)val forKey:(NSString*)name;
+
+@end
+
+
+@interface ArrayOfString : NSMappableArray 
+@end
+
+@interface ArrayOfNUmbers : NSMappableArray 
+@end
+
+@interface NSString(PrimitiveMapping)
+
++ (id)objFromString:(NSString*)value;
+
+@end
+
+@interface NSNumber(PrimitiveMapping)
+
++ (id)objFromString:(NSString*)value;
+
+@end
+
+@protocol PrimitiveMapping
+
++ (id)objFromString:(NSString*)value;
+
+@end
+

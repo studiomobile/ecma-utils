@@ -1,0 +1,179 @@
+#import "XML2Object.h"
+#import <objc/runtime.h>
+#import "NSObject+ArgChecking.h"
+
+@implementation XML2Object
+
+- (id)initWithRoot:(Class)rootClass {
+	checkNotNil(rootClass, @"rootClass is nil");
+	if (self = [super init]) {
+		objects = [[NSMutableArray alloc] initWithCapacity:10];
+		root = rootClass;
+		currentElement = nil;
+		result = nil;
+	}
+	return self;
+}
+
+- (id)result {
+	return result;
+}
+
+- (void)dealloc {
+	[objects release];
+	[result release];
+	[super dealloc];
+}
+
+- (BOOL)readingPrimitive {
+	return [root isPrimitive];
+}
+
+- (void)parserDidStartDocument:(NSXMLParser *)parser {
+	if(![root isPrimitive]) {
+		result = [[root alloc] init];
+		[objects addObject:result];
+	}
+}
+
+- (void)parser:(NSXMLParser *)parser didStartElement:(NSString *)elementName namespaceURI:(NSString *)namespaceURI qualifiedName:(NSString *)qName attributes:(NSDictionary *)attributeDict {
+	if(![self readingPrimitive]) {
+		id klass = [[objects lastObject] class];
+		id associated = [klass propertyClass:elementName];
+		if(associated != nil && ![associated isPrimitive]) {
+			id obj = [[associated alloc] init];
+			[objects addObject:obj];
+			[obj release];
+		}
+		[currentElement release];
+		currentElement = [elementName retain];		
+	}
+}
+
+- (void)parser:(NSXMLParser *)parser didEndElement:(NSString *)elementName namespaceURI:(NSString *)namespaceURI qualifiedName:(NSString *)qName {
+	if(![self readingPrimitive]) {
+		if([objects count] > 1) {
+			id obj = [objects objectAtIndex:[objects count] - 2];
+			Class associated = [[obj class] propertyClass:elementName];
+			if(associated != nil && ![associated isPrimitive]) {
+				[obj setPropertyValue:[objects lastObject] forKey:elementName];
+				[objects removeLastObject];
+			}
+		} 
+		[currentElement release];
+		currentElement = nil;
+	}
+}
+
+- (void)parser:(NSXMLParser *)parser foundCharacters:(NSString *)string {
+	if(![self readingPrimitive]) {
+		id obj = [objects lastObject];
+		id propType = [[obj class] propertyClass:currentElement];
+		if(propType != nil) {
+			[obj setPropertyValue:[propType objFromString:string] forKey:currentElement];
+		}
+	} else if(result == nil) {
+		result = [[root objFromString:string] retain];
+	} else {
+		NSLog(@"XML2Object: Was setup to read primitive but several values found!");
+	}
+}
+
+@end
+
+
+@implementation NSObject(XMLMapping)
+
+- (void)setPropertyValue:(id)val forKey:(NSString*)name {
+	[self setValue:val forKey:name];
+}
+
+@end
+
+@implementation NSMappableArray
+
+- (id) init {
+	self = [super init];
+	if (self != nil) {
+		storage = [[NSMutableArray alloc] initWithCapacity:10];
+	}
+	return self;
+}
+
+- (void)dealloc {
+	[storage release];
+	[super dealloc];
+}
+
+
+- (void)forwardInvocation:(NSInvocation *)anInvocation {
+	[anInvocation setTarget:storage];
+    [anInvocation invoke];
+    return;
+}
+
+
+- (NSMethodSignature *)methodSignatureForSelector:(SEL)aSelector {
+    return [storage methodSignatureForSelector:aSelector];
+}
+
+
++ (void)initMetadata {
+}
+
+- (void)setPropertyValue:(id)val forKey:(NSString*)name {
+	[storage addObject:val];
+}
+
++ (Class)propertyClass:(NSString*)propName {
+	return objc_lookUpClass([propName cStringUsingEncoding:NSASCIIStringEncoding]);
+}
+
++ (BOOL)isPrimitive {
+	return NO;
+}
+
+@end
+
+
+@implementation ArrayOfString
+
++ (Class)propertyClass:(NSString*)propName {
+	return [NSString class];
+}
+
+@end
+
+@implementation ArrayOfNUmbers
+
++ (Class)propertyClass:(NSString*)propName {
+	return [NSNumber class];
+}
+
+@end
+
+
+@implementation NSString(PrimitiveMapping)
+
++ (id)objFromString:(NSString*)value {
+	return [NSString stringWithString:value];
+}
+
++ (BOOL)isPrimitive {
+	return YES;
+}
+
+@end
+
+@implementation NSNumber(PrimitiveMapping)
+
++ (id)objFromString:(NSString*)value {
+	return [NSNumber numberWithFloat:[value floatValue]];
+}
+
++ (BOOL)isPrimitive {
+	return YES;
+}
+
+@end
+

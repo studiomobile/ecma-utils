@@ -52,29 +52,29 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 245625080;
-			PBXWorkspaceStateSaveDate = 245625080;
+			PBXPerProjectTemplateStateSaveDate = 247589411;
+			PBXWorkspaceStateSaveDate = 247589411;
 		};
 		perUserProjectItems = {
-			791FBB970EA4300B0068A8FE /* PBXTextBookmark */ = 791FBB970EA4300B0068A8FE /* PBXTextBookmark */;
-			791FBB980EA4300B0068A8FE /* PBXTextBookmark */ = 791FBB980EA4300B0068A8FE /* PBXTextBookmark */;
-			791FBB990EA4300B0068A8FE /* PBXTextBookmark */ = 791FBB990EA4300B0068A8FE /* PBXTextBookmark */;
-			791FBB9A0EA4300B0068A8FE /* PBXTextBookmark */ = 791FBB9A0EA4300B0068A8FE /* PBXTextBookmark */;
-			791FBB9B0EA4300B0068A8FE /* PBXTextBookmark */ = 791FBB9B0EA4300B0068A8FE /* PBXTextBookmark */;
-			791FBB9C0EA4300B0068A8FE /* PBXTextBookmark */ = 791FBB9C0EA4300B0068A8FE /* PBXTextBookmark */;
-			791FBB9D0EA4300B0068A8FE /* PBXTextBookmark */ = 791FBB9D0EA4300B0068A8FE /* PBXTextBookmark */;
-			791FBB9E0EA4300B0068A8FE /* PBXTextBookmark */ = 791FBB9E0EA4300B0068A8FE /* PBXTextBookmark */;
-			791FBB9F0EA4300B0068A8FE /* PBXTextBookmark */ = 791FBB9F0EA4300B0068A8FE /* PBXTextBookmark */;
-			791FBBA00EA4300B0068A8FE /* PBXTextBookmark */ = 791FBBA00EA4300B0068A8FE /* PBXTextBookmark */;
-			791FBBA10EA4300B0068A8FE /* PBXTextBookmark */ = 791FBBA10EA4300B0068A8FE /* PBXTextBookmark */;
-			791FBBA20EA4300B0068A8FE /* PBXTextBookmark */ = 791FBBA20EA4300B0068A8FE /* PBXTextBookmark */;
-			791FBBA30EA4300B0068A8FE /* PBXTextBookmark */ = 791FBBA30EA4300B0068A8FE /* PBXTextBookmark */;
-			791FBBA40EA4300B0068A8FE /* PBXTextBookmark */ = 791FBBA40EA4300B0068A8FE /* PBXTextBookmark */;
-			791FBBA50EA4300B0068A8FE /* PBXTextBookmark */ = 791FBBA50EA4300B0068A8FE /* PBXTextBookmark */;
-			791FBBA60EA4300B0068A8FE /* PBXTextBookmark */ = 791FBBA60EA4300B0068A8FE /* PBXTextBookmark */;
-			791FBBA70EA4300B0068A8FE /* PBXTextBookmark */ = 791FBBA70EA4300B0068A8FE /* PBXTextBookmark */;
-			79BD32140E9935FF0039C25A /* PBXTextBookmark */ = 79BD32140E9935FF0039C25A /* PBXTextBookmark */;
-			79C1DBFB0E938A510056255C /* PBXTextBookmark */ = 79C1DBFB0E938A510056255C /* PBXTextBookmark */;
+			791FBB970EA4300B0068A8FE = 791FBB970EA4300B0068A8FE /* PBXTextBookmark */;
+			791FBB980EA4300B0068A8FE = 791FBB980EA4300B0068A8FE /* PBXTextBookmark */;
+			791FBB990EA4300B0068A8FE = 791FBB990EA4300B0068A8FE /* PBXTextBookmark */;
+			791FBB9A0EA4300B0068A8FE = 791FBB9A0EA4300B0068A8FE /* PBXTextBookmark */;
+			791FBB9B0EA4300B0068A8FE = 791FBB9B0EA4300B0068A8FE /* PBXTextBookmark */;
+			791FBB9C0EA4300B0068A8FE = 791FBB9C0EA4300B0068A8FE /* PBXTextBookmark */;
+			791FBB9D0EA4300B0068A8FE = 791FBB9D0EA4300B0068A8FE /* PBXTextBookmark */;
+			791FBB9E0EA4300B0068A8FE = 791FBB9E0EA4300B0068A8FE /* PBXTextBookmark */;
+			791FBB9F0EA4300B0068A8FE = 791FBB9F0EA4300B0068A8FE /* PBXTextBookmark */;
+			791FBBA00EA4300B0068A8FE = 791FBBA00EA4300B0068A8FE /* PBXTextBookmark */;
+			791FBBA10EA4300B0068A8FE = 791FBBA10EA4300B0068A8FE /* PBXTextBookmark */;
+			791FBBA20EA4300B0068A8FE = 791FBBA20EA4300B0068A8FE /* PBXTextBookmark */;
+			791FBBA30EA4300B0068A8FE = 791FBBA30EA4300B0068A8FE /* PBXTextBookmark */;
+			791FBBA40EA4300B0068A8FE = 791FBBA40EA4300B0068A8FE /* PBXTextBookmark */;
+			791FBBA50EA4300B0068A8FE = 791FBBA50EA4300B0068A8FE /* PBXTextBookmark */;
+			791FBBA60EA4300B0068A8FE = 791FBBA60EA4300B0068A8FE /* PBXTextBookmark */;
+			791FBBA70EA4300B0068A8FE = 791FBBA70EA4300B0068A8FE /* PBXTextBookmark */;
+			79BD32140E9935FF0039C25A = 79BD32140E9935FF0039C25A /* PBXTextBookmark */;
+			79C1DBFB0E938A510056255C = 79C1DBFB0E938A510056255C /* PBXTextBookmark */;
 		};
 		sourceControlManager = 79C1DBC20E9388730056255C /* Source Control */;
 		userBuildSettings = {
@@ -268,6 +268,12 @@
 		vrLoc = 58;
 	};
 	79427DD90E9A13E600E8F7F9 /* NSObject+ArgChecking.h */ = {
+		isa = PBXFileReference;
+		fileEncoding = 4;
+		lastKnownFileType = sourcecode.c.h;
+		name = "NSObject+ArgChecking.h";
+		path = "/Users/averbin/Projects/ecma-utils/Classes/NSObject+ArgChecking.h";
+		sourceTree = "<absolute>";
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {717, 353}}";
 			sepNavSelRange = "{89, 0}";
@@ -318,6 +324,12 @@
 		};
 	};
 	79C1DBDA0E9388E00056255C /* UIApplication+AppAdditions.m */ = {
+		isa = PBXFileReference;
+		fileEncoding = 4;
+		lastKnownFileType = sourcecode.c.objc;
+		name = "UIApplication+AppAdditions.m";
+		path = "/Users/averbin/Projects/ecma-utils/Classes/UIApplication+AppAdditions.m";
+		sourceTree = "<absolute>";
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {619, 310}}";
 			sepNavSelRange = "{358, 0}";
@@ -343,24 +355,16 @@
 		vrLoc = 0;
 	};
 	79C1DC0E0E938AFD0056255C /* NSObject+ArgChecking.m */ = {
+		isa = PBXFileReference;
+		fileEncoding = 4;
+		lastKnownFileType = sourcecode.c.objc;
+		name = "NSObject+ArgChecking.m";
+		path = "/Users/averbin/Projects/ecma-utils/Classes/NSObject+ArgChecking.m";
+		sourceTree = "<absolute>";
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {717, 602}}";
 			sepNavSelRange = "{240, 0}";
 			sepNavVisRange = "{0, 580}";
-		};
-	};
-	79C1DE920E93D6620056255C /* NSMutableArray+Randomization.m */ = {
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {619, 347}}";
-			sepNavSelRange = "{42, 0}";
-			sepNavVisRange = "{0, 332}";
-		};
-	};
-	79C1DEA40E93D72E0056255C /* NSArray+Randomization.m */ = {
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {619, 420}}";
-			sepNavSelRange = "{752, 0}";
-			sepNavVisRange = "{0, 663}";
 		};
 	};
 }
