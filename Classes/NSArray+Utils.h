@@ -2,6 +2,6 @@
 
 @interface NSArray(Randomization) 
 
-+ (NSArray*)shuffle:(NSArray*)array;
+- (NSArray*)shuffle;
 
 @end

@@ -2,5 +2,5 @@
 
 
 @interface NSMutableArray(Utils)
-- (NSMutableArray*)shuffle;
+- (void) inplaceShuffle;
 @end

@@ -2,16 +2,12 @@
 
 @implementation NSMutableArray(Utils)
 
-- (NSMutableArray*)shuffle {
+- (void)inplaceShuffle {
 	NSUInteger count = [self count];
-	if(count != 0) {
-		for(int n = count; n > 1; n--)
-		{
-			int rand_ind = random()%n;
-			[self exchangeObjectAtIndex:rand_ind withObjectAtIndex:n - 1];
-		}
+	for(int n = count - 1; n >= 0; n--)
+	{
+		[self exchangeObjectAtIndex:n withObjectAtIndex:(arc4random() % count)];
 	}
-	return self;
 }
 
 @end
