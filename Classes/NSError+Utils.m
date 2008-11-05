@@ -4,7 +4,7 @@
 @implementation NSError(Utils)
 
 - (void)display:(NSString*)actionDescription {
-	UIAlertView *errorDisplay = [[UIAlertView alloc] init];
+	UIAlertView *errorDisplay = [[[UIAlertView alloc] init] autorelease];
 	errorDisplay.title = @"Error";
 	NSString *errorMessage = [NSString stringWithFormat:@"%@: \n%@", actionDescription, [self localizedDescription]];
 	NSLog(errorMessage);
