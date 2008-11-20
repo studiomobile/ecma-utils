@@ -10,4 +10,16 @@
 	}
 }
 
+- (void)removeAllUsingSelector:(SEL)selector target:(id)target {
+	NSUInteger itemsCount = [self count];
+	NSMutableIndexSet *toRemove = [NSMutableIndexSet indexSet];
+	for(int i = 0; i < itemsCount; ++i) {
+		id item = [self objectAtIndex:i];
+		if([target performSelector:selector withObject:item]) {
+			[toRemove addIndex:i];
+		}
+	}
+	[self removeObjectsAtIndexes:toRemove];
+}
+
 @end

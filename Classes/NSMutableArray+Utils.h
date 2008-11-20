@@ -2,6 +2,7 @@
 
 @interface NSMutableArray(Utils)
 
-- (void) inplaceShuffle;
+- (void)inplaceShuffle;
+- (void)removeAllUsingSelector:(SEL)selector target:(id)target;
 
 @end

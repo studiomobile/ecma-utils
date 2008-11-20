@@ -4,4 +4,6 @@
 
 - (NSArray*)shuffle;
 
+- (NSArray*)filterUsingSelector:(SEL)selector target:(id)target;
+
 @end

@@ -24,7 +24,14 @@
 @implementation NSNumber(PrimitiveMapping)
 
 + (id)objFromString:(NSString*)str {
-	return [NSNumber numberWithDouble:[str doubleValue]];
+	NSString *lowerCaseStr = [str lowercaseString];
+	if([lowerCaseStr isEqualToString:@"true"]) {
+		return [NSNumber numberWithBool:YES];
+	} else if([lowerCaseStr isEqualToString:@"false"]) {
+		return [NSNumber numberWithBool:NO];
+	} else {
+		return [NSNumber numberWithDouble:[str doubleValue]];	
+	}
 }
 
 @end

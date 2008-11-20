@@ -4,6 +4,7 @@
 #import "ClassMetadata.h"
 #import "POXMappingUtil.h"
 #import "NSError+Utils.h"
+#import "NSString+Utils.h"
 
 static void skip(struct POXElement *element) {
 	element->object = nil;
@@ -127,7 +128,7 @@ static const NSDictionary *primitives() {
 			skip(element);
 			break;
 		default: {
-			LOG2(@"Unexpected element: %@", elementName);
+			NSLog(@"Unexpected element: %@", elementName);
 			break;
 		}
 	}
@@ -135,15 +136,17 @@ static const NSDictionary *primitives() {
 }
 
 - (void)parser:(NSXMLParser *)parser foundCharacters:(NSString *)string {
-	if(top->elementType == kPOXElementPrimitive) {
-		POXPrimitiveHolder *holder = top->object;
-		holder.value = string;
-	} else if(top->elementType == kPOXElementProperty) {
-		top = push_new(top);
-		top->object = [[POXPrimitiveHolder alloc] initWithvalue:string];
-		top->elementType = kPOXElementPrimitive;
-	} else {
-		LOG2(@"Unexpected text: %@", string);
+	if(![string isEmpty]) {
+		if(top->elementType == kPOXElementPrimitive) {
+			POXPrimitiveHolder *holder = top->object;
+			holder.value = string;
+		} else if(top->elementType == kPOXElementProperty) {
+			top = push_new(top);
+			top->object = [[POXPrimitiveHolder alloc] initWithvalue:string];
+			top->elementType = kPOXElementPrimitive;
+		} else {
+			LOG2(@"Unexpected text: %@", string);
+		}
 	}
 }
 
