@@ -121,6 +121,7 @@
 
 - (void)editingStarted:(NSNotification*)notification {
 	focusedTextField = (UITextField*)[notification object];
+    [self scrollToFocusedTextField:YES];
 }
 
 - (void)editingFinished:(NSNotification*)notification {
