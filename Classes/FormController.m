@@ -4,7 +4,29 @@
 
 @implementation FormController
 
-- (void)initFields {
+- (id)init {
+	if (self = [super init]) {
+	}
+	return self;
+}
+
+- (id)initWithNibName:(NSString *)nibName bundle:(NSBundle *)nibBundle {
+	if(self = [super initWithNibName:nibName bundle:nibBundle]) {
+	}
+	return self;
+}
+
+- (void)awakeFromNib {
+	[super awakeFromNib];
+}
+
+- (void)dealloc {
+    [super dealloc];
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+	[super viewWillAppear:animated];
+
 	tableViewResized = NO;
 	keyboardShown = NO;
 	NSNotificationCenter *notifications = [NSNotificationCenter defaultCenter];
@@ -16,26 +38,9 @@
 	[notifications addObserver:self selector:@selector(editingFinished:) name:UITextFieldTextDidEndEditingNotification object:nil];	
 }
 
-- (id)init {
-	if (self = [super init]) {
-		[self initFields];
-	}
-	return self;
-}
+- (void)viewWillDisappear:(BOOL)animated {
+	[super viewWillDisappear:animated];
 
-- (id)initWithNibName:(NSString *)nibName bundle:(NSBundle *)nibBundle {
-	if(self = [super initWithNibName:nibName bundle:nibBundle]) {
-		[self initFields];
-	}
-	return self;
-}
-
-- (void)awakeFromNib {
-	[super awakeFromNib];
-	[self initFields];
-}
-
-- (void)dealloc {
 	NSNotificationCenter *notifications = [NSNotificationCenter defaultCenter];
 	[notifications removeObserver:self name:UIKeyboardWillShowNotification object:nil];
 	[notifications removeObserver:self name:UIKeyboardDidShowNotification object:nil];
@@ -43,16 +48,6 @@
 	[notifications removeObserver:self name:UIKeyboardDidHideNotification object:nil];
 	[notifications removeObserver:self name:UITextFieldTextDidBeginEditingNotification object:nil];
 	[notifications removeObserver:self name:UITextFieldTextDidEndEditingNotification object:nil];
-    [super dealloc];
-}
-
-- (void)viewWillAppear:(BOOL)animated {
-	[super viewWillAppear:animated];
-	
-}
-
-- (void)viewWillDisappear:(BOOL)animated {
-	[super viewWillDisappear:animated];
 }
 
 - (void)kbdWillShow:(NSNotification*)notification {
