@@ -53,7 +53,7 @@ static id arrayIterator(void *list, int idx) {
 	DBObject *obj = nil;
 	for (int i = 0; i <  sqlite3_column_count(stmt); i++) {
 		NSString *colName = [NSString stringWithUTF8String:sqlite3_column_name(stmt, i)];
-		if([colName isEqualToString:@"pk"]) {
+		if([colName isEqualToString:[klass pkColumn]]) {
 			NSNumber *pk = [NSNumber numberWithLongLong:sqlite3_column_int64(stmt, i)];
 			obj = [identityMap objectForKey:pk];
 			if(obj != nil) {
@@ -111,7 +111,9 @@ static id arrayIterator(void *list, int idx) {
 }
 
 
-- (NSArray*)tableColumns:(NSString*)tableName {
+- (NSArray*)tableColumns:(Class)klass {
+	NSString *tableName = [klass tableName];
+
 	NSMutableArray *columns = [NSMutableArray array];
 	const char *sql = [[NSString stringWithFormat:@"pragma table_info(%@)", tableName] UTF8String];
 	sqlite3_stmt *stmt;
@@ -119,7 +121,7 @@ static id arrayIterator(void *list, int idx) {
 		while (sqlite3_step(stmt) == SQLITE_ROW) {
 			const unsigned char *ccolName = sqlite3_column_text(stmt, 1);
 			NSString *colName = [NSString stringWithUTF8String:(const char*)ccolName];
-			if([colName isEqualToString:@"pk"]) {
+			if([colName isEqualToString:[klass pkColumn]]) {
 				continue;
 			} else {
 				[columns addObject:colName];
@@ -155,7 +157,7 @@ static id arrayIterator(void *list, int idx) {
 
 - (void)update:(DBObject*)o {
 	NSString *tableName = [o tableName];
-	NSArray *columns = [self tableColumns:tableName];
+	NSArray *columns = [self tableColumns:[o class]];
 	id *args = malloc(sizeof(id)*([columns count] + 1));
 	NSMutableString *updateQuery = [NSMutableString string];
 	[updateQuery appendFormat:@"update %@ set ", tableName];
@@ -164,7 +166,7 @@ static id arrayIterator(void *list, int idx) {
 		[updateQuery appendFormat:@"%@ = ?,", propName];
 		args[i] = [o valueForKey:propName];
 	}
-	[updateQuery appendFormat:@"%@ = ? where pk = ?", [columns lastObject]];
+	[updateQuery appendFormat:@"%@ = ? where %@ = ?", [columns lastObject], [o pkColumn]];
 	args[[columns count] - 1] = [o valueForKey:[columns lastObject]];
 	args[[columns count]] = [NSNumber numberWithLongLong:o.pk];
 	
@@ -180,7 +182,7 @@ static id arrayIterator(void *list, int idx) {
 
 - (void)insert:(DBObject*)o {
 	NSString *tableName = [o tableName];
-	NSArray *columns = [self tableColumns:tableName];	
+	NSArray *columns = [self tableColumns:[o class]];	
 	NSMutableString *insertQuery = [NSMutableString string];
 	id *args = malloc(sizeof(id)*[columns count]);
 	[insertQuery appendFormat:@"insert into %@ (", tableName];
@@ -264,7 +266,7 @@ static id arrayIterator(void *list, int idx) {
 }
 
 - (id)select:(Class)klass wherePk:(long long)pk {
-	NSArray *result = [self select:klass conditions:@"WHERE pk = ?", [NSNumber numberWithLongLong:pk]];
+	NSArray *result = [self select:klass conditions:[NSString stringWithFormat:@"WHERE %@ = ?", [klass pkColumn]], [NSNumber numberWithLongLong:pk]];
 	if([result count] == 1) {
 		return [result objectAtIndex:0];
 	} else {

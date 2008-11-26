@@ -67,4 +67,20 @@
 	sqlite3_bind_int64(statement, i, self.pk);
 }
 
+- (void)setValue:(id)value forUndefinedKey:(NSString*)key {
+	if([key isEqual:[self pkColumn]]) {
+		return [self setValue:value forKey:@"pk"];
+	}
+	
+	return [super setValue:value forUndefinedKey:key];
+}
+
+- (id)valueForUndefinedKey:(NSString*)key {
+	if([key isEqual:[self pkColumn]]) {
+		return [self valueForKey:@"pk"];
+	}
+	
+	return [super valueForUndefinedKey:key];
+}
+
 @end

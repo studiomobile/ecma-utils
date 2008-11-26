@@ -13,6 +13,7 @@
 - (id)initWithSession:(DBSession*)s;
 
 - (NSString*)tableName;
+// this column will be mapped to pk property, default is @"pk"
 - (NSString*)pkColumn;
 
 - (void)save;
