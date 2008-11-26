@@ -6,6 +6,22 @@
 
 @synthesize pk;
 
++ (NSString*)tableName {
+	return [NSString stringWithCString:class_getName([self class])];
+}
+
+- (NSString*)tableName {
+	return [[self class] tableName];
+}
+
++ (NSString*)pkColumn {
+	return @"pk";
+}
+
+- (NSString*)pkColumn {
+	return [[self class] pkColumn];
+}
+
 + (void)initMetadata {
 	[self map:@selector(pk) to:[NSString class]];
 }
@@ -40,7 +56,7 @@
 }
 
 - (void)remove {
-	[session delete:[self class] where:@"where pk = ?", [NSNumber numberWithLongLong:self.pk]];
+	[session delete:[self class] where:[NSString stringWithFormat:@"where %@ = ?", [self pkColumn]], [NSNumber numberWithLongLong:self.pk]];
 }
 
 - (void)save {

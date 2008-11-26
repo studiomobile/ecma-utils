@@ -96,18 +96,17 @@ static id arrayIterator(void *list, int idx) {
 	return obj;
 }
 
-- (NSString*)tableName:(Class)klass {
-	if([klass respondsToSelector:@selector(tableName)]) {
-		return [klass performSelector:@selector(tableName)];
-	}
-	
-	return [NSString stringWithCString:class_getName(klass)];
-}
-
-
+//- (NSString*)tableName:(Class)klass {
+//	if([klass respondsToSelector:@selector(tableName)]) {
+//		return [klass performSelector:@selector(tableName)];
+//	}
+//	
+//	return @"";
+//}
+//
 - (void)removeFromIdentityMap:(DBObject*)o {
 	checkNotNull(o, @"Object cannot be null");
-	NSMutableDictionary *identityMap = [identityMaps objectForKey:[self tableName:[o class]]];
+	NSMutableDictionary *identityMap = [identityMaps objectForKey:[o tableName]];
 	[identityMap removeObjectForKey:[NSNumber numberWithLongLong:o.pk]];
 }
 
@@ -155,7 +154,7 @@ static id arrayIterator(void *list, int idx) {
 
 
 - (void)update:(DBObject*)o {
-	NSString *tableName = [self tableName:[o class]];
+	NSString *tableName = [o tableName];
 	NSArray *columns = [self tableColumns:tableName];
 	id *args = malloc(sizeof(id)*([columns count] + 1));
 	NSMutableString *updateQuery = [NSMutableString string];
@@ -180,7 +179,7 @@ static id arrayIterator(void *list, int idx) {
 
 
 - (void)insert:(DBObject*)o {
-	NSString *tableName = [self tableName:[o class]];
+	NSString *tableName = [o tableName];
 	NSArray *columns = [self tableColumns:tableName];	
 	NSMutableString *insertQuery = [NSMutableString string];
 	id *args = malloc(sizeof(id)*[columns count]);
@@ -230,10 +229,10 @@ static id arrayIterator(void *list, int idx) {
 	checkNotNil(criteria, @"Criteria cannot be nil");
 	checkNotNil(klass, @"klass cannot be nil");
 	
-	NSString *sql = [NSString stringWithFormat:@"select * from %@ %@", [self tableName:klass], criteria];
+	NSString *tableName = [klass tableName];
+	NSString *sql = [NSString stringWithFormat:@"select * from %@ %@", tableName, criteria];
 	sqlite3_stmt *statement = [self prepareStmt:sql params:&stmtParams nextArg:&va_listIterator];
 	NSMutableArray *result = [NSMutableArray array];
-	NSString *tableName = [self tableName:klass];
 	while (sqlite3_step(statement) == SQLITE_ROW) {
 		id obj = [self mapObjectOfClass:klass table:tableName to:statement];
 		if(obj != nil) {
@@ -279,7 +278,7 @@ static id arrayIterator(void *list, int idx) {
 	
 	va_list stmtParams;
 	va_start(stmtParams, criteria);
-	NSString *sql = [NSString stringWithFormat:@"delete from %@ %@", [self tableName:klass], criteria];
+	NSString *sql = [NSString stringWithFormat:@"delete from %@ %@", [klass tableName], criteria];
 	sqlite3_stmt *stmt = [self prepareStmt:sql params:&stmtParams nextArg:&va_listIterator];
 	while(sqlite3_step(stmt) == SQLITE_ROW);
 	sqlite3_finalize(stmt);

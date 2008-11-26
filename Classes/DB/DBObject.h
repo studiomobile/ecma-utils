@@ -7,7 +7,13 @@
 	DBSession *session;
 }
 
++ (NSString*)tableName;
++ (NSString*)pkColumn;
+
 - (id)initWithSession:(DBSession*)s;
+
+- (NSString*)tableName;
+- (NSString*)pkColumn;
 
 - (void)save;
 - (void)remove;
