@@ -97,6 +97,10 @@ static id arrayIterator(void *list, int idx) {
 }
 
 - (NSString*)tableName:(Class)klass {
+	if([klass respondsToSelector:@selector(tableName)]) {
+		return [klass performSelector:@selector(tableName)];
+	}
+	
 	return [NSString stringWithCString:class_getName(klass)];
 }
 
