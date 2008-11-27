@@ -151,9 +151,10 @@ static NSMutableDictionary *databases = nil;
 		int paramCount = sqlite3_bind_parameter_count(statement);
 		for(int i = 0 ; i < paramCount; ++i) {
 			id param = nextArgumentCallback(stmtParams, i);
+			LOG2(@"SQL param: %@", param);
 			[param bindToParam:i + 1 inStatement:statement];
 		}
-		return statement;
+			return statement;
 	} else {
 		const char *error = sqlite3_errmsg(impl);
 		checkArgument(FALSE, [NSString stringWithFormat:@"SQLite error: %s", error]);

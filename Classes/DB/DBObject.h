@@ -3,6 +3,8 @@
 
 #import "SelfDescribing.h"
 
+#define DBOBJECT_NO_ID -1
+
 @interface DBObject : SelfDescribing {
 	long long pk;
 }

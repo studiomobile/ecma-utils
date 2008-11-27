@@ -29,14 +29,14 @@
 
 - (id)init {
 	if(self = [super init]) {
-		pk = -1;
+		pk = DBOBJECT_NO_ID;
 	}
 	return self;
 }
 
 
 - (BOOL)saved {
-	return pk != -1;
+	return pk != DBOBJECT_NO_ID;
 }
 
 - (void)afterLoad {
