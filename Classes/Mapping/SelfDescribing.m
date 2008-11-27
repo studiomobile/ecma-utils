@@ -49,6 +49,30 @@ static NSString* ckey(Class self, const char *prop) {
 }
 
 + (void)initMetadata {
+	unsigned int propsCount;
+	objc_property_t *props = class_copyPropertyList([self class], &propsCount);
+	for(int i = 0; i < propsCount; ++i) {
+		objc_property_t prop = props[i];
+		const char* propTypeStr = property_getAttributes(prop);	
+		//if(propTypeStr) {
+//			switch(propTypeStr[1]) {
+//				case '@': return;
+//				case 'i': return;
+//				case 'c': return;
+//				case '*': return;
+//				case 'd': return;
+//				case 'l': return;
+//				case '{': return;
+//				case '(': return;
+//				case '@': return;
+//				case '@': return;
+//				case '@': return;
+//				case '@': return;
+//				case '@': return;
+//				default: return;
+//			}			
+//		}
+	}
 	//do nothing here
 }
 

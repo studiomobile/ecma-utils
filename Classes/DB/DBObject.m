@@ -1,6 +1,7 @@
 #import "DBObject.h"
 #import <objc/runtime.h>
 #import "NSObject+Utils.h"
+#import "DB.h"
 
 @implementation DBObject
 
@@ -29,50 +30,19 @@
 - (id)init {
 	if(self = [super init]) {
 		pk = -1;
-		session = nil;
 	}
 	return self;
 }
 
-- (id)initWithSession:(DBSession*)s {
-	if (self = [self init]) {
-		session = s;
-	}
-	return self;
-}
-
-- (void)afterDetachFromSession {
-}
-
-- (void)detachFromSession {
-	[session removeFromIdentityMap:self];
-	session = nil;
-	
-	[self afterDetachFromSession];
-}
-
-- (void)attachToSession:(DBSession*)sess {
-	checkNotNil(sess, @"sess is nil");
-	checkState(session == nil || session == sess, @"cannot attach to session if object already atatched to another session");
-	session = sess;
-}
 
 - (BOOL)saved {
 	return pk != -1;
 }
 
-- (void)remove {
-	[session delete:[self class] where:[NSString stringWithFormat:@"where %@ = ?", [self pkColumn]], [NSNumber numberWithLongLong:self.pk]];
-}
-
-- (void)save {
-	[session save:self];
-}
-
 - (void)afterLoad {
 }
 
-- (void)bindToParam:(NSUInteger)i inStatement:(sqlite3_stmt*)statement session:(DBSession*)session {
+- (void)bindToParam:(NSUInteger)i inStatement:(sqlite3_stmt*)statement {
 	sqlite3_bind_int64(statement, i, self.pk);
 }
 

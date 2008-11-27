@@ -13,7 +13,7 @@
 				PBXFileTableDataSourceColumnSortingKey = PBXFileDataSource_Filename_ColumnID;
 				PBXFileTableDataSourceColumnWidthsKey = (
 					20,
-					527,
+					742,
 					20,
 					48,
 					43,
@@ -28,6 +28,18 @@
 					PBXFileDataSource_Errors_ColumnID,
 					PBXFileDataSource_Warnings_ColumnID,
 					PBXFileDataSource_Target_ColumnID,
+				);
+			};
+			PBXConfiguration.PBXFileTableDataSource3.PBXFindDataSource = {
+				PBXFileTableDataSourceColumnSortingDirectionKey = "-1";
+				PBXFileTableDataSourceColumnSortingKey = PBXFindDataSource_LocationID;
+				PBXFileTableDataSourceColumnWidthsKey = (
+					558,
+					398,
+				);
+				PBXFileTableDataSourceColumnsKey = (
+					PBXFindDataSource_MessageID,
+					PBXFindDataSource_LocationID,
 				);
 			};
 			PBXConfiguration.PBXTargetDataSource.PBXTargetDataSource = {
@@ -52,13 +64,15 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 247589790;
-			PBXWorkspaceStateSaveDate = 247589790;
+			PBXPerProjectTemplateStateSaveDate = 249478291;
+			PBXWorkspaceStateSaveDate = 249478291;
 		};
 		perUserProjectItems = {
-			791FBB990EA4300B0068A8FE /* PBXTextBookmark */ = 791FBB990EA4300B0068A8FE /* PBXTextBookmark */;
-			791FBB9C0EA4300B0068A8FE /* PBXTextBookmark */ = 791FBB9C0EA4300B0068A8FE /* PBXTextBookmark */;
-			791FBB9D0EA4300B0068A8FE /* PBXTextBookmark */ = 791FBB9D0EA4300B0068A8FE /* PBXTextBookmark */;
+			79126AA80EDEBC9000860DA4 = 79126AA80EDEBC9000860DA4 /* PBXTextBookmark */;
+			791FBB990EA4300B0068A8FE = 791FBB990EA4300B0068A8FE /* PBXTextBookmark */;
+			791FBB9C0EA4300B0068A8FE = 791FBB9C0EA4300B0068A8FE /* PBXTextBookmark */;
+			791FBB9D0EA4300B0068A8FE = 791FBB9D0EA4300B0068A8FE /* PBXTextBookmark */;
+			79F6BBD40EDC0FAA0043F0DA = 79F6BBD40EDC0FAA0043F0DA /* PBXTextBookmark */;
 		};
 		sourceControlManager = 79C1DBC20E9388730056255C /* Source Control */;
 		userBuildSettings = {
@@ -66,6 +80,23 @@
 	};
 	79096D470E97CB5D0081A012 /* common */ = {
 		activeExec = 0;
+	};
+	79126AA80EDEBC9000860DA4 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 791FBA7B0EA3F1130068A8FE /* FormController.h */;
+		name = "FormController.h: 1";
+		rLen = 0;
+		rLoc = 0;
+		rType = 0;
+		vrLen = 675;
+		vrLoc = 0;
+	};
+	791FBA7B0EA3F1130068A8FE /* FormController.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {932, 641}}";
+			sepNavSelRange = "{0, 0}";
+			sepNavVisRange = "{0, 675}";
+		};
 	};
 	791FBA8A0EA406660068A8FE /* NSData+Utils.h */ = {
 		uiCtxt = {
@@ -118,6 +149,48 @@
 			sepNavVisRange = "{0, 156}";
 		};
 	};
+	79BAE5DC0EC1EAB7004760EA /* SelfDescribing.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {932, 439}}";
+			sepNavSelRange = "{0, 0}";
+			sepNavVisRange = "{0, 124}";
+		};
+	};
+	79BAE5DD0EC1EAB7004760EA /* SelfDescribing.m */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {932, 1330}}";
+			sepNavSelRange = "{1571, 22}";
+			sepNavVisRange = "{1137, 881}";
+		};
+	};
+	79BAE5DF0EC1EAB7004760EA /* DB.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {932, 439}}";
+			sepNavSelRange = "{481, 2}";
+			sepNavVisRange = "{0, 773}";
+		};
+	};
+	79BAE5E00EC1EAB7004760EA /* DB.m */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {932, 4326}}";
+			sepNavSelRange = "{5963, 0}";
+			sepNavVisRange = "{5838, 1077}";
+		};
+	};
+	79BAE5E10EC1EAB7004760EA /* DBObject.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {932, 439}}";
+			sepNavSelRange = "{0, 0}";
+			sepNavVisRange = "{0, 451}";
+		};
+	};
+	79BAE5E20EC1EAB7004760EA /* DBObject.m */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {932, 924}}";
+			sepNavSelRange = "{715, 41}";
+			sepNavVisRange = "{0, 514}";
+		};
+	};
 	79BD32080E9935AF0039C25A /* NSString+Utils.m */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {822, 347}}";
@@ -150,5 +223,15 @@
 			sepNavSelRange = "{289, 0}";
 			sepNavVisRange = "{221, 441}";
 		};
+	};
+	79F6BBD40EDC0FAA0043F0DA /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 791FBA7B0EA3F1130068A8FE /* FormController.h */;
+		name = "FormController.h: 1";
+		rLen = 0;
+		rLoc = 0;
+		rType = 0;
+		vrLen = 675;
+		vrLoc = 0;
 	};
 }

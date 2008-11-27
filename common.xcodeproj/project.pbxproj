@@ -37,8 +37,6 @@
 		79BAE5F40EC1EAB7004760EA /* DB.m in Sources */ = {isa = PBXBuildFile; fileRef = 79BAE5E00EC1EAB7004760EA /* DB.m */; };
 		79BAE5F50EC1EAB7004760EA /* DBObject.h in Headers */ = {isa = PBXBuildFile; fileRef = 79BAE5E10EC1EAB7004760EA /* DBObject.h */; };
 		79BAE5F60EC1EAB7004760EA /* DBObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 79BAE5E20EC1EAB7004760EA /* DBObject.m */; };
-		79BAE5F70EC1EAB7004760EA /* DBSession.h in Headers */ = {isa = PBXBuildFile; fileRef = 79BAE5E30EC1EAB7004760EA /* DBSession.h */; };
-		79BAE5F80EC1EAB7004760EA /* DBSession.m in Sources */ = {isa = PBXBuildFile; fileRef = 79BAE5E40EC1EAB7004760EA /* DBSession.m */; };
 		79BAE5F90EC1EAB7004760EA /* NSNumber+DB.h in Headers */ = {isa = PBXBuildFile; fileRef = 79BAE5E50EC1EAB7004760EA /* NSNumber+DB.h */; };
 		79BAE5FA0EC1EAB7004760EA /* NSNumber+DB.m in Sources */ = {isa = PBXBuildFile; fileRef = 79BAE5E60EC1EAB7004760EA /* NSNumber+DB.m */; };
 		79BAE5FB0EC1EAB7004760EA /* NSString+DB.h in Headers */ = {isa = PBXBuildFile; fileRef = 79BAE5E70EC1EAB7004760EA /* NSString+DB.h */; };
@@ -82,8 +80,6 @@
 		79BAE5E00EC1EAB7004760EA /* DB.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DB.m; sourceTree = "<group>"; };
 		79BAE5E10EC1EAB7004760EA /* DBObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DBObject.h; sourceTree = "<group>"; };
 		79BAE5E20EC1EAB7004760EA /* DBObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DBObject.m; sourceTree = "<group>"; };
-		79BAE5E30EC1EAB7004760EA /* DBSession.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DBSession.h; sourceTree = "<group>"; };
-		79BAE5E40EC1EAB7004760EA /* DBSession.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DBSession.m; sourceTree = "<group>"; };
 		79BAE5E50EC1EAB7004760EA /* NSNumber+DB.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSNumber+DB.h"; sourceTree = "<group>"; };
 		79BAE5E60EC1EAB7004760EA /* NSNumber+DB.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSNumber+DB.m"; sourceTree = "<group>"; };
 		79BAE5E70EC1EAB7004760EA /* NSString+DB.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+DB.h"; sourceTree = "<group>"; };
@@ -204,8 +200,6 @@
 				79BAE5E00EC1EAB7004760EA /* DB.m */,
 				79BAE5E10EC1EAB7004760EA /* DBObject.h */,
 				79BAE5E20EC1EAB7004760EA /* DBObject.m */,
-				79BAE5E30EC1EAB7004760EA /* DBSession.h */,
-				79BAE5E40EC1EAB7004760EA /* DBSession.m */,
 				79BAE5E50EC1EAB7004760EA /* NSNumber+DB.h */,
 				79BAE5E60EC1EAB7004760EA /* NSNumber+DB.m */,
 				79BAE5E70EC1EAB7004760EA /* NSString+DB.h */,
@@ -246,7 +240,6 @@
 				79BAE5F10EC1EAB7004760EA /* SelfDescribing.h in Headers */,
 				79BAE5F30EC1EAB7004760EA /* DB.h in Headers */,
 				79BAE5F50EC1EAB7004760EA /* DBObject.h in Headers */,
-				79BAE5F70EC1EAB7004760EA /* DBSession.h in Headers */,
 				79BAE5F90EC1EAB7004760EA /* NSNumber+DB.h in Headers */,
 				79BAE5FB0EC1EAB7004760EA /* NSString+DB.h in Headers */,
 				79BAE5FD0EC1EAB7004760EA /* RESTService.h in Headers */,
@@ -310,7 +303,6 @@
 				79BAE5F20EC1EAB7004760EA /* SelfDescribing.m in Sources */,
 				79BAE5F40EC1EAB7004760EA /* DB.m in Sources */,
 				79BAE5F60EC1EAB7004760EA /* DBObject.m in Sources */,
-				79BAE5F80EC1EAB7004760EA /* DBSession.m in Sources */,
 				79BAE5FA0EC1EAB7004760EA /* NSNumber+DB.m in Sources */,
 				79BAE5FC0EC1EAB7004760EA /* NSString+DB.m in Sources */,
 				79BAE5FE0EC1EAB7004760EA /* RESTService.m in Sources */,
