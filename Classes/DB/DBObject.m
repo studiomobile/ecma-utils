@@ -41,8 +41,14 @@
 	return self;
 }
 
+- (void)afterDetachFromSession {
+}
+
 - (void)detachFromSession {
+	[session removeFromIdentityMap:self];
 	session = nil;
+	
+	[self afterDetachFromSession];
 }
 
 - (void)attachToSession:(DBSession*)sess {
