@@ -63,6 +63,9 @@
 	[session save:self];
 }
 
+- (void)afterLoad {
+}
+
 - (void)bindToParam:(NSUInteger)i inStatement:(sqlite3_stmt*)statement session:(DBSession*)session {
 	sqlite3_bind_int64(statement, i, self.pk);
 }

@@ -19,7 +19,7 @@
 - (void)save;
 - (void)remove;
 - (BOOL)saved;
-
+- (void)afterLoad;
 - (void)bindToParam:(NSUInteger)i inStatement:(sqlite3_stmt*)statement session:(DBSession*)session;
 
 - (void)detachFromSession;

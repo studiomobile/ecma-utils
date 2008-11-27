@@ -27,7 +27,7 @@ static id arrayIterator(void *list, int idx) {
 	return self;
 }
 
-- (void) dealloc {
+- (void)dealloc {
 	for(NSMutableDictionary *identityMap in [identityMaps allValues]) {
 		for(DBObject *obj in [identityMap allValues]) {
 			[obj detachFromSession];
@@ -37,7 +37,7 @@ static id arrayIterator(void *list, int idx) {
 	[super dealloc];
 }
 
-- (NSMutableDictionary *) tableIdentityMap: (NSString *) key  {
+- (NSMutableDictionary *)tableIdentityMap:(NSString *)key  {
 	NSMutableDictionary *identityMap = [identityMaps objectForKey:key];
 	if(identityMap == nil) {
 		identityMap = [[NSMutableDictionary alloc] init];
@@ -91,6 +91,9 @@ static id arrayIterator(void *list, int idx) {
 			}
 		}
 	}
+	
+	[obj afterLoad];
+	
 	[identityMap setObject:obj forKey:[NSNumber numberWithLongLong:obj.pk]];
 	[obj release];
 	return obj;
