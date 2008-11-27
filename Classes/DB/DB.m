@@ -113,6 +113,9 @@ static NSMutableDictionary *databases = nil;
 			}
 		}
 	}
+	
+	[obj afterLoad];
+	
 	return obj;
 }
 
