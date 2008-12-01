@@ -34,12 +34,14 @@
 	return self;
 }
 
-
-- (BOOL)saved {
-	return pk != DBOBJECT_NO_ID;
+- (BOOL)isNewRecord {
+	return pk == DBOBJECT_NO_ID;
 }
 
 - (void)afterLoad {
+}
+
+- (void)afterSave {
 }
 
 - (void)bindToParam:(NSUInteger)i inStatement:(sqlite3_stmt*)statement {

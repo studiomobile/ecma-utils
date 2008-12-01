@@ -9,7 +9,7 @@
 	long long pk;
 }
 @property (readwrite, nonatomic) long long pk;
-@property (readonly) BOOL saved;
+@property (readonly) BOOL isNewRecord; // TODO rename to something like isNewRecord
 
 + (NSString*)tableName;
 + (NSString*)pkColumn;
@@ -19,10 +19,9 @@
 - (NSString*)pkColumn;
 
 - (void)afterLoad;
-- (BOOL)saved;
+- (void)afterSave;
 
 - (void)bindToParam:(NSUInteger)i inStatement:(sqlite3_stmt*)statement;
-
 
 
 @end

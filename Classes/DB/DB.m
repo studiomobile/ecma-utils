@@ -215,11 +215,13 @@ static NSMutableDictionary *databases = nil;
 }
 
 - (void)save:(DBObject*)o {
-	if([o saved]) {
-		[self update:o];
-	} else {
+	if([o isNewRecord]) {
 		[self insert:o];
+	} else {
+		[self update:o];
 	}
+	
+	[o afterSave];
 }
 
 - (sqlite3_stmt*)prepareStmt:(NSString*)sql arguments:(id)arg1, ... {
