@@ -261,7 +261,7 @@ static NSMutableDictionary *databases = nil;
 - (NSArray*)selectOne:(Class)klass conditions:(NSString*)criteria, ... {
 	va_list stmtParams;
 	va_start(stmtParams, criteria);
-	NSArray *result = [self select:klass conditions:criteria params:stmtParams];
+	NSArray *result = [self select:klass conditions:[NSString stringWithFormat:@"%@ limit 1", criteria] params:stmtParams];
 	va_end(stmtParams);
 	if([result count] > 0) {
 		return [result objectAtIndex:0];

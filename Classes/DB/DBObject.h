@@ -8,6 +8,8 @@
 @interface DBObject : SelfDescribing {
 	long long pk;
 }
+@property (readwrite, nonatomic) long long pk;
+@property (readonly) BOOL saved;
 
 + (NSString*)tableName;
 + (NSString*)pkColumn;
@@ -22,6 +24,5 @@
 - (void)bindToParam:(NSUInteger)i inStatement:(sqlite3_stmt*)statement;
 
 
-@property (readwrite, nonatomic) long long pk;
 
 @end
