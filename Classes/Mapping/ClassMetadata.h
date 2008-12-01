@@ -4,6 +4,5 @@
 
 + (Class)propertyClass:(NSString*)prop;
 + (BOOL)isPrimitive;
-+ (void)initMetadata;
 
 @end

@@ -77,7 +77,7 @@ static const NSDictionary *primitives() {
 	return self;
 }
 
-- (id)result {
+- (SelfDescribing *)result {
 	return result;
 }
 
@@ -164,10 +164,10 @@ static const NSDictionary *primitives() {
 			NSString *propertyName = (NSString*)top->prev->object;
 			Class propClass = [[object class] propertyClass:propertyName];
 			if(top->elementType == kPOXElementPrimitive) {
-				[object setValue:[propClass objFromString:[top->object value]] forKey:propertyName];
+				[object setValue:[propClass objFromString:[top->object value]] forMappedKey:propertyName];
 				top = pop(top); //this compensates element created in foundCharacters method
 			} else {
-				[object setValue:top->object forKey:propertyName];
+				[object setValue:top->object forMappedKey:propertyName];
 			}
 			
 			top = pop(top);

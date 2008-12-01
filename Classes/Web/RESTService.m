@@ -8,6 +8,8 @@ const NSString *RequestStatusCode = @"__RequestStatusCode__";
 
 @implementation RESTService
 
+@synthesize baseUrl;
+
 - (id)initWithBaseUrl:(NSString*)url locale:(NSString*)localeCode {
 	checkNotNil(url, @"nil url");
 	checkNotNil(localeCode, @"nil locale");

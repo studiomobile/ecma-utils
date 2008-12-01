@@ -23,10 +23,6 @@
 	return [[self class] pkColumn];
 }
 
-+ (void)initMetadata {
-	[self map:@selector(pk) to:[NSString class]];
-}
-
 - (id)init {
 	if(self = [super init]) {
 		pk = DBOBJECT_NO_ID;

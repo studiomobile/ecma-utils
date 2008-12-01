@@ -1,4 +1,5 @@
 #import <Foundation/Foundation.h>
+#import "SelfDescribing.h"
 
 enum {
 	kPOXElementObject = 1,
@@ -19,11 +20,11 @@ struct POXElement {
 
 
 @interface POXMapping : NSObject {
-	id result;
+	SelfDescribing *result;
 	struct POXElement *top;
 }
 
-- (id)result;
+- (SelfDescribing *)result;
 
 @end
 

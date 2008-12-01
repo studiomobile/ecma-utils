@@ -12,4 +12,6 @@ extern const NSString *RequestStatusCode;
 - (id)post:(NSData*)data to:(NSString*)localPath error:(NSError**)error;
 - (id)get:(NSString*)localPath withParams:(NSDictionary*)params error:(NSError**)error;
 
+@property (readonly, nonatomic) NSString *baseUrl;
+
 @end
