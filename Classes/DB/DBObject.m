@@ -37,6 +37,9 @@
 - (void)afterLoad {
 }
 
+- (void)beforeSave {
+}
+
 - (void)afterSave {
 }
 
