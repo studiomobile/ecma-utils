@@ -8,6 +8,7 @@
 	BOOL tableViewResized;
     UIColor *superviewBackground;
 }
+@property (nonatomic, retain) UITableView *table;
 
 - (void)hideKeyboard;
 - (BOOL)validateTextInput:(UITextField*)textField;
@@ -21,7 +22,5 @@
 - (void)editingFinished:(NSNotification*)notification;
 
 - (void)scrollToFocusedTextField:(BOOL)animated;
-
-IBOutlet @property (nonatomic, retain) UITableView *table;
 
 @end
