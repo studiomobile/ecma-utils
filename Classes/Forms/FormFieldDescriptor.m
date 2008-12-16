@@ -38,9 +38,4 @@
 	_flags.custom = custom ? 1 : 0;
 }
 
-- (void)dealloc {
-	NSLog(@"FormFieldDescriptor dealloc");
-	
-	[super dealloc];
-}
 @end

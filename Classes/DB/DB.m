@@ -187,10 +187,12 @@ static NSMutableDictionary *databases = nil;
 	free(args);
 }
 
-
 - (void)insert:(DBObject*)o {
 	NSString *tableName = [o tableName];
-	NSArray *columns = [self tableColumns:o];	
+	NSMutableArray *columns = [NSMutableArray arrayWithArray:[self tableColumns:o]];	
+
+    if(!o.isNewRecord) [columns addObject:[o pkColumn]];
+    
 	NSMutableString *insertQuery = [NSMutableString string];
 	id *args = malloc(sizeof(id)*[columns count]);
 	[insertQuery appendFormat:@"insert into %@ (", tableName];
@@ -310,5 +312,16 @@ static NSMutableDictionary *databases = nil;
 	return result;
 }
 
+- (void)beginTransaction {
+    [self executeNumber:@"begin transaction"];
+}
+
+- (void)commit {
+    [self executeNumber:@"commit transaction"];
+}
+
+- (void)rollback {
+    [self executeNumber:@"rollback transaction"];
+}
 
 @end
