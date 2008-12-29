@@ -264,16 +264,20 @@ static NSMutableDictionary *databases = nil;
 	return result;
 }
 
-- (NSArray*)selectOne:(Class)klass conditions:(NSString*)criteria, ... {
+- (DBObject*)selectOne:(Class)klass offset:(NSInteger)offset conditions:(NSString*)criteria, ... {
 	va_list stmtParams;
 	va_start(stmtParams, criteria);
-	NSArray *result = [self select:klass conditions:[NSString stringWithFormat:@"%@ limit 1", criteria] params:stmtParams];
+	NSArray *result = [self select:klass conditions:[NSString stringWithFormat:@"%@ limit 1 offset %d", criteria, offset] params:stmtParams];
 	va_end(stmtParams);
 	if([result count] > 0) {
 		return [result objectAtIndex:0];
 	} else {
 		return nil;
 	}
+}
+
+- (DBObject*)selectOne:(Class)klass conditions:(NSString*)criteria, ... {
+	return [self selectOne:klass offset:0 conditions:criteria];
 }
 
 - (id)select:(Class)klass wherePk:(long long)pk {
