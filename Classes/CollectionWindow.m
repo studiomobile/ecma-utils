@@ -1,3 +1,5 @@
+#import "CollectionWindow.h"
+
 @implementation CollectionWindow
 
 - (id)initWithWindowSize:(NSUInteger)s {
