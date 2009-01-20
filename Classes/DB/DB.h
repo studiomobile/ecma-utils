@@ -18,7 +18,6 @@ extern const NSUInteger kFailedToOpenDB;
 
 - (NSArray*)select:(Class)klass conditions:(NSString*)criteria, ...;
 - (id)select:(Class)klass wherePk:(long long)pk;
-- (DBObject*)selectOne:(Class)klass conditions:(NSString*)criteria, ...;
 - (DBObject*)selectOne:(Class)klass offset:(NSInteger)offset conditions:(NSString*)criteria, ...;
 
 - (sqlite3_stmt*)prepareStmt:(NSString*)sql arguments:(id)arg1, ...;

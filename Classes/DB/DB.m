@@ -276,10 +276,6 @@ static NSMutableDictionary *databases = nil;
 	}
 }
 
-- (DBObject*)selectOne:(Class)klass conditions:(NSString*)criteria, ... {
-	return [self selectOne:klass offset:0 conditions:criteria];
-}
-
 - (id)select:(Class)klass wherePk:(long long)pk {
 	NSArray *result = [self select:klass conditions:[NSString stringWithFormat:@"WHERE %@ = ?", [klass pkColumn]], [NSNumber numberWithLongLong:pk]];
 	if([result count] == 1) {
