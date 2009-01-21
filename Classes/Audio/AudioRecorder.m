@@ -81,8 +81,17 @@ static void propertyListenerCallback (void *inUserData,
             [self autorelease];
             self = nil;
         }
+        NSNotificationCenter *c = [NSNotificationCenter defaultCenter];
+        [c addObserver:self selector:@selector(stop) name:kAudioSessionInterrupted object:nil];
     }
     return self;
+}
+
+- (void)dealloc {
+    NSNotificationCenter *c = [NSNotificationCenter defaultCenter];
+    [c removeObserver:self];
+    [self stop];
+    [super dealloc];
 }
 
 - (OSStatus)record {
@@ -92,7 +101,6 @@ static void propertyListenerCallback (void *inUserData,
 - (OSStatus)stop {
     return AudioQueueStop(queue, YES);
 }
-
 
 - (OSStatus) setupRecording {
     OSStatus status = noErr;

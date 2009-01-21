@@ -42,9 +42,34 @@ static void propertyListenerCallback (void *inUserData,
             NSLog(@"Failed to create Audio Player: %d", status);
             [self autorelease];
             self = nil;
+        } else {
+            NSNotificationCenter *c = [NSNotificationCenter defaultCenter];
+            [c addObserver:self selector:@selector(interrupt) name:kAudioSessionInterrupted object:nil];
+            [c addObserver:self selector:@selector(playIfWasInterrupted) name:kAudioSessionActivated object:nil];
         }
     }
     return self;
+}
+
+- (void)dealloc {
+    NSNotificationCenter *c = [NSNotificationCenter defaultCenter];
+    [c removeObserver:self];
+    [self stop];
+    [super dealloc];
+}
+
+- (void)interrupt {
+    if (state == kAudioPlayerStatePlaying) {
+        [self pause];
+        interrupted = YES;
+    }
+}
+
+- (void)playIfWasInterrupted {
+    if (interrupted) {
+        [self play];
+        interrupted = NO;
+    }
 }
 
 - (OSStatus)cleanUp {
