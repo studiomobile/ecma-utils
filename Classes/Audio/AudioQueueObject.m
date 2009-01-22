@@ -83,7 +83,7 @@
 }
 
 
-- (OSStatus) enableLevelMetering {
+- (OSStatus)enableLevelMetering {
     levels = (AudioQueueLevelMeterState *) calloc (sizeof (AudioQueueLevelMeterState), audioFormat.mChannelsPerFrame);
     UInt32 trueValue = true;
     return AudioQueueSetProperty (queue,
@@ -93,14 +93,16 @@
 }
 
 - (AudioQueueLevelMeterState*)audioLevels {
-    UInt32 propertySize = audioFormat.mChannelsPerFrame * sizeof (AudioQueueLevelMeterState);
-    OSStatus status;
-    status = AudioQueueGetProperty (queue,
-                                    (AudioQueuePropertyID) kAudioQueueProperty_CurrentLevelMeter,
-                                    levels,
-                                    &propertySize);
-    if(status == noErr) {
-        return levels;
+    if(levels) {
+        UInt32 propertySize = audioFormat.mChannelsPerFrame * sizeof (AudioQueueLevelMeterState);
+        OSStatus status;
+        status = AudioQueueGetProperty (queue,
+                                        (AudioQueuePropertyID) kAudioQueueProperty_CurrentLevelMeter,
+                                        levels,
+                                        &propertySize);
+        if(status == noErr) {
+            return levels;
+        }
     }
     return NULL;
 }

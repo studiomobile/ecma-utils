@@ -120,13 +120,10 @@ static void propertyListenerCallback (void *inUserData,
                                                 self);
     }
     if(status == noErr) {
-        levels = (AudioQueueLevelMeterState *) calloc (sizeof (AudioQueueLevelMeterState), audioFormat.mChannelsPerFrame);
-        if(!levels) {
-            status = kMemFullError;				
+        OSStatus levelMeteringStatus = [self enableLevelMetering];
+        if (levelMeteringStatus != noErr) {
+            NSLog(@"Level metering is not supported: %d", levelMeteringStatus);
         }
-    }
-    if(status == noErr) {
-        status = [self enableLevelMetering];
     }
     if(status == noErr) {
         status = AudioFileCreateWithURL (soundFile,

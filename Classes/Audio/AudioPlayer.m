@@ -184,7 +184,10 @@ static void propertyListenerCallback (void *inUserData,
                                          1.0);
     }
     if(status == noErr) {
-        status = [self enableLevelMetering];
+        OSStatus levelMeteringStatus = [self enableLevelMetering];
+        if (levelMeteringStatus != noErr) {
+            NSLog(@"Level metering is not supported: %d", levelMeteringStatus);
+        }
     }
     if(status == noErr) {
         status = AudioQueueAddPropertyListener (queue,
