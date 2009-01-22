@@ -22,6 +22,10 @@ enum {
 - (AudioRecorder*)createRecorderForFile:(NSURL*)fileURL withFormat:(AudioStreamBasicDescription*)format;
 - (AudioPlayer*)createPlayerForFile:(NSURL*)fileURL;
 
+#ifdef IPHONE_OS_2_2 
 - (BOOL)hasAudioInput;
+#endif
+
+
 
 @end

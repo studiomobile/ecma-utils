@@ -105,6 +105,7 @@ static void interruptHandler(void *data, UInt32  interruptionState) {
     return [[AudioPlayer alloc] initWithSoundFile:url];
 }
 
+#ifdef IPHONE_OS_2_2
 - (BOOL)hasAudioInput {
     UInt32 audioInputIsAvailable;
     UInt32 propertySize = sizeof (audioInputIsAvailable);
@@ -113,5 +114,6 @@ static void interruptHandler(void *data, UInt32  interruptionState) {
                              &audioInputIsAvailable);
     return audioInputIsAvailable;
 }
+#endif
 
 @end

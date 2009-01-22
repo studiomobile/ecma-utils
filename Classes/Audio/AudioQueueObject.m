@@ -6,13 +6,13 @@
 @dynamic isRunning;
 
 - (BOOL)isRunning {
-    UInt32		isRunning;
-    UInt32		propertySize = sizeof (UInt32);
-    OSStatus	result;
-    result =	AudioQueueGetProperty (queue,
-                                       kAudioQueueProperty_IsRunning,
-                                       &isRunning,
-                                       &propertySize);
+    UInt32 isRunning;
+    UInt32 propertySize = sizeof (UInt32);
+    OSStatus result;
+    result = AudioQueueGetProperty (queue,
+                                    kAudioQueueProperty_IsRunning,
+                                    &isRunning,
+                                    &propertySize);
 	
     if (result != noErr) {
         return FALSE;
