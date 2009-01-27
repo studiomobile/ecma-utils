@@ -113,11 +113,13 @@ static void propertyListenerCallback (void *inUserData,
                                  NULL,
                                  0,
                                  &queue);
+    NSLog(@"AudioQueueNewInput: %d", status);
     if(status == noErr) {
         status = AudioQueueAddPropertyListener (queue,
                                                 kAudioQueueProperty_IsRunning,
                                                 propertyListenerCallback,
                                                 self);
+        NSLog(@"AudioQueueAddPropertyListener: %d", status);
     }
     if(status == noErr) {
         OSStatus levelMeteringStatus = [self enableLevelMetering];
@@ -131,9 +133,12 @@ static void propertyListenerCallback (void *inUserData,
                                          &audioFormat,
                                          kAudioFileFlags_EraseFile,
                                          &audioFileID);
+        NSURL *u = (NSURL*)soundFile;
+        NSLog(@"AudioFileCreateWithURL: %d, %@", status, u);
     }
     if(status == noErr) {
         status = [self writeMagicCookie];
+        NSLog(@"writeMagicCookie: %d", status);
     }
     if(status == noErr) {
         int bufferByteSize = 65536;
@@ -143,15 +148,15 @@ static void propertyListenerCallback (void *inUserData,
             status = AudioQueueAllocateBuffer(queue, bufferByteSize, &buffer);
             if(status == noErr) {
                 status = AudioQueueEnqueueBuffer(queue, buffer, 0, NULL);
+                NSLog(@"AudioQueueEnqueueBuffer: %d", status);
             } else {
                 break;
             }
         }							
     }
-    if(status != noErr) {
-        [self cleanUp];
-    }
-    return status;
+    //this is a HACK. Review SpeakHere example and fail only then speakhere would fail.
+    //for now this removes the crash on 2G devices
+    return noErr;
 }
 
 @end
