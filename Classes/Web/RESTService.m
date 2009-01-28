@@ -9,6 +9,7 @@ const NSString *RequestStatusCode = @"__RequestStatusCode__";
 @implementation RESTService
 
 @synthesize baseUrl;
+@synthesize additionalUrlEncodechars;
 
 - (id)initWithBaseUrl:(NSString*)url locale:(NSString*)localeCode {
 	checkNotNil(url, @"nil url");
@@ -37,9 +38,15 @@ const NSString *RequestStatusCode = @"__RequestStatusCode__";
 		} else {
 			[queryString appendString:@"&"];
 		}
-		[queryString appendString:[key urlEncode]];
-		[queryString appendString:@"="];
-		[queryString appendString:[[params objectForKey:key] urlEncode]];
+        if(self.additionalUrlEncodechars) {
+            [queryString appendString:[key urlEncode:self.additionalUrlEncodechars]];
+            [queryString appendString:@"="];
+            [queryString appendString:[[params objectForKey:key] urlEncode:self.additionalUrlEncodechars]];
+        } else {
+            [queryString appendString:[key urlEncode]];
+            [queryString appendString:@"="];
+            [queryString appendString:[[params objectForKey:key] urlEncode]];
+        }
 		first = NO;
 	}
 	return [NSMutableURLRequest requestWithURL:[NSURL URLWithString:queryString]];
