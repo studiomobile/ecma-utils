@@ -22,7 +22,7 @@ enum {
 - (AudioRecorder*)createRecorderForFile:(NSURL*)fileURL withFormat:(AudioStreamBasicDescription*)format;
 - (AudioPlayer*)createPlayerForFile:(NSURL*)fileURL;
 
-#ifdef IPHONE_OS_2_2 
+#ifdef __IPHONE_OS_VERSION_MIN_REQUIRED >= 20200 
 - (BOOL)hasAudioInput;
 #endif
 
