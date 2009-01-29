@@ -2,9 +2,9 @@
 #import "AsyncObject.h"
 
 @interface UIBlockingAsyncObject : AsyncObject {
-	NSOperationQueue *uiUnblockQueue;
-	NSArray *views;
-	UIActivityIndicatorView *indicator;
+    NSOperationQueue *uiUnblockQueue;
+    NSArray *views;
+    UIActivityIndicatorView *indicator;
 }
 
 - (id)ifSuccess:(SEL)successSelector ifError:(SEL)errorSelector target:(id)target blockView:(UIView*)v;
