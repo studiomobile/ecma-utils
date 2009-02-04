@@ -159,4 +159,13 @@ static void propertyListenerCallback (void *inUserData,
     return noErr;
 }
 
+- (void)cleanUp {
+    AudioQueueRemovePropertyListener(queue,
+                                     kAudioQueueProperty_IsRunning,
+                                     propertyListenerCallback,
+                                     self);
+    [super cleanUp];
+
+}
+
 @end
