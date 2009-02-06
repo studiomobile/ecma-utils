@@ -9,7 +9,7 @@
 	long long pk;
 }
 @property (readwrite, nonatomic) long long pk;
-@property (readonly) BOOL isNewRecord; // TODO rename to something like isNewRecord
+@property (readonly) BOOL isNewRecord;
 
 + (NSString*)tableName;
 + (NSString*)pkColumn;

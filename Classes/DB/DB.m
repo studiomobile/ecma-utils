@@ -219,6 +219,8 @@ static NSMutableDictionary *databases = nil;
 }
 
 - (void)save:(DBObject*)o {
+    [o beforeSave];
+
     if([o isNewRecord]) {
         [self insert:o];
     } else {

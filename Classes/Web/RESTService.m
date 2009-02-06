@@ -11,19 +11,23 @@ const NSString *RequestStatusCode = @"__RequestStatusCode__";
 @synthesize baseUrl;
 @synthesize additionalUrlEncodechars;
 
-- (id)initWithBaseUrl:(NSString*)url locale:(NSString*)localeCode {
+- (id)initWithBaseUrl:(NSString*)url mapper:(NSObject<RESTServiceDataMapper>*)m {
 	checkNotNil(url, @"nil url");
-	checkNotNil(localeCode, @"nil locale");
+
 	if (self = [super init]) {
 		baseUrl = [url retain];
-		locale = [localeCode retain];
+        mapper = [m retain];
 	}
 	return self;
 }
 
+- (id)initWithBaseUrl:(NSString*)url {
+    return [self initWithBaseUrl:url mapper:nil];
+}
+
 - (void)dealloc {
+    [mapper release];
 	[baseUrl release];
-	[locale release];
 	[super dealloc];
 }
 
@@ -53,17 +57,8 @@ const NSString *RequestStatusCode = @"__RequestStatusCode__";
 }
 
 - (id)mapData:(NSData*)data error:(NSError**)error{
-	NSXMLParser *parser = [[NSXMLParser alloc] initWithData:data];
-	POXMapping *mapper = [[POXMapping alloc] init];
-	[parser setDelegate:mapper];
-	if(![parser parse]) {
-		NSLog(@"Parse error");
-		*error = [[[parser parserError] retain] autorelease];
-	}
-	id result = [[[mapper result] retain] autorelease];
-	[parser release];
-	[mapper release];
-	return result;
+    if(!mapper) return data;
+    return [mapper map:data];
 }
 
 - (id)request:(NSURLRequest*)request error:(NSError**)error {
