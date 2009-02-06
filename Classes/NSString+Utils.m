@@ -66,8 +66,13 @@ int from_base64(const char *data, size_t dataLen, void **result, size_t *resultL
 }
 
 - (NSURL*)toUrl {
-	return [NSURL URLWithString:self];
+    return [NSURL URLWithString:self];
 }
+
+- (NSURL*)toFileUrl {
+    return [NSURL fileURLWithPath:self];
+}
+
 
 - (NSString*)urlEncode {
 	return [self urlEncode:nil];
