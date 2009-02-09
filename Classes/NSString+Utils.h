@@ -4,6 +4,9 @@ int from_base64(const char *data, size_t dataLen, void **result, size_t *resultL
 
 @interface NSString(Utils)
 
++ (NSString*)join:(NSArray*)items delimiter:(NSString*)d selector:(SEL)s;
++ (NSString*)join:(NSArray*)items delimiter:(NSString*)d;
+
 - (NSData*)fromBase64;
 
 - (BOOL)isEmpty;
