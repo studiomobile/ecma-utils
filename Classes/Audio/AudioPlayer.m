@@ -79,6 +79,10 @@ static void propertyListenerCallback (void *inUserData,
         packetDescriptions = NULL;
     }
     startingPacketNumber = 0;
+    AudioQueueRemovePropertyListener (queue,
+                                      kAudioQueueProperty_IsRunning,
+                                      propertyListenerCallback,
+                                      self);
     return [super cleanUp];
 }
 
@@ -132,7 +136,7 @@ static void propertyListenerCallback (void *inUserData,
 
 
 #undef CHECK_STATUS
-#define CHECK_STATUS if (status != noErr) { NSLog(@"__FILE__:__LINE__ failed with status: %d", status); [self cleanUp]; return; }
+#define CHECK_STATUS if (status != noErr) { NSLog(@"__FILE__:__LINE__ failed with status: %d", status); [self cleanUp]; return status; }
 - (OSStatus)setupPlayback {
     donePlayingFile = NO;
     OSStatus status;
