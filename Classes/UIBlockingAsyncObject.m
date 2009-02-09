@@ -80,19 +80,16 @@
 
 
 - (id)ifSuccess:(SEL)successSelector ifError:(SEL)errorSelector target:(id)target blockView:(UIView*)v {
-	checkNotNil(v, @"View cannot be null");
-	return [self ifSuccess:successSelector ifError:errorSelector target:target blockViews:[NSArray arrayWithObject:v]];
+	return [self ifSuccess:successSelector ifError:errorSelector target:target blockViews:[NSArray arrayWithObjects:v, nil]];
 }
 
 - (id)ifSuccess:(SEL)successSelector ifError:(SEL)errorSelector target:(id)target blockViews:(NSArray*)v {
-	checkNotNil(v, @"Views cannot be null");
 	views = [v retain];
 	return [super ifSuccess:successSelector ifError:errorSelector target:target];
 }
 
 - (id)ifSuccess:(SEL)successSelector ifError:(SEL)errorSelector target:(id)target blockView:(UIView*)v andDisplayIndicator:(UIActivityIndicatorView*)i {
-	checkNotNil(v, @"View cannot be null");
-	return [self ifSuccess:successSelector ifError:errorSelector target:target blockViews:[NSArray arrayWithObject:v] andDisplayIndicator:i];
+	return [self ifSuccess:successSelector ifError:errorSelector target:target blockViews:[NSArray arrayWithObjects:v, nil] andDisplayIndicator:i];
 }
 
 - (id)ifSuccess:(SEL)successSelector ifError:(SEL)errorSelector target:(id)target displayIndicator:(UIActivityIndicatorView*)i {
@@ -100,8 +97,6 @@
 }
 
 - (id)ifSuccess:(SEL)successSelector ifError:(SEL)errorSelector target:(id)target blockViews:(NSArray*)v andDisplayIndicator:(UIActivityIndicatorView*)i {
-	checkNotNil(v, @"Views cannot be null");
-	checkNotNil(i, @"Indicator cannot be null");
 	views = [v retain];
 	indicator = [i retain];
 	return [super ifSuccess:successSelector ifError:errorSelector target:target];
