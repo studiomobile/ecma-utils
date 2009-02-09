@@ -68,7 +68,7 @@ const NSString *RequestStatusCode = @"__RequestStatusCode__";
 	if(data) {
 		NSUInteger statusCode = [response statusCode];
 		NSLog(@"Status code: %d", statusCode);
-		id result = [data length] > 0 ? [self mapData:data error:error] : nil;
+		id result = data ? [self mapData:data error:error] : nil;
 		if(statusCode == 200) {
 			return result;
 		} else {
