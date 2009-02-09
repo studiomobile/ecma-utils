@@ -36,7 +36,7 @@ int from_base64(const char *data, size_t dataLen, void **result, size_t *resultL
 
 @implementation NSString(Utils)
 
-+ (NSString*)join:(NSArray*)items delimiter:(NSString*)d selector:(SEL)s {
++ (NSString*)join:(NSArray*)items with:(NSString*)d selector:(SEL)s {
     if(!items) return nil;
     if(!items.count) return @"";
     
@@ -52,8 +52,8 @@ int from_base64(const char *data, size_t dataLen, void **result, size_t *resultL
     return [NSString stringWithString:result];
 }
 
-+ (NSString*)join:(NSArray*)items delimiter:(NSString*)d {
-    return [self join:items delimiter:d selector:@selector(description)];
++ (NSString*)join:(NSArray*)items with:(NSString*)d {
+    return [self join:items with:d selector:@selector(description)];
 }
 
 - (NSData*)fromBase64 {
