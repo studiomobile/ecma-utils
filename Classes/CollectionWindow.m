@@ -29,6 +29,10 @@
     return [NSArray arrayWithArray:storage];
 }
 
+- (void)clean {
+    [storage removeAllObjects];
+}
+
 - (id)first {
     return [storage objectAtIndex:0];
 }

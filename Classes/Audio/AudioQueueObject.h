@@ -7,13 +7,13 @@
 
 @interface AudioQueueObject : NSObject {
 @protected
-	AudioFileID audioFileID;
-	AudioQueueRef queue;
-	AudioQueueLevelMeterState *levels;
-	CFURLRef soundFile;
+    AudioFileID audioFileID;
+    AudioQueueRef queue;
+    AudioQueueLevelMeterState *levels;
+    CFURLRef soundFile;
 	
-	SInt64 startingPacketNumber;
-	AudioStreamBasicDescription audioFormat;
+    SInt64 startingPacketNumber;
+    AudioStreamBasicDescription audioFormat;
 }
 
 @property (readonly, nonatomic) BOOL isRunning;

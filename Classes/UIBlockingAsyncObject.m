@@ -4,10 +4,10 @@
 
 
 @interface UnblockUIOp : NSOperation {
-	NSOperationQueue *mainQueue;
-	NSArray *views;
-	UIActivityIndicatorView *indicator;
-	BOOL finished;
+    NSOperationQueue *mainQueue;
+    NSArray *views;
+    UIActivityIndicatorView *indicator;
+    BOOL finished;
 }
 
 - (id)initWithViews:(NSArray*)v andActivityIndicator:(UIActivityIndicatorView*)ind andMainQueue:(NSOperationQueue*)queue;
@@ -17,48 +17,56 @@
 @implementation UnblockUIOp
 
 - (id)initWithViews:(NSArray*)v andActivityIndicator:(UIActivityIndicatorView*)ind andMainQueue:(NSOperationQueue*)queue {
-	checkNotNil(queue, @"Queue cannotbe null");
-	if (self = [super init]) {
-		views = [v retain];
-		for(UIView *v in views) {
-			v.userInteractionEnabled = NO;
-		}
-		indicator = [ind retain];
-		finished = FALSE;
-		NSTimer *timer = [NSTimer timerWithTimeInterval:0.5 target:self selector:@selector(indicatorTimer:) userInfo:nil repeats:NO];
-		[[NSRunLoop currentRunLoop] addTimer:timer forMode:NSDefaultRunLoopMode];
-		mainQueue = [queue retain];
-	}
-	return self;
+    checkNotNil(queue, @"Queue cannot be null");
+    if (self = [super init]) {
+        views = [v retain];
+        if (views) {
+            for(UIView *v in views) {
+                v.userInteractionEnabled = NO;
+            }
+        } else {
+            [[UIApplication sharedApplication] beginIgnoringInteractionEvents];
+        }
+        indicator = [ind retain];
+        finished = FALSE;
+        NSTimer *timer = [NSTimer timerWithTimeInterval:0.5 target:self selector:@selector(indicatorTimer:) userInfo:nil repeats:NO];
+        [[NSRunLoop currentRunLoop] addTimer:timer forMode:NSDefaultRunLoopMode];
+        mainQueue = [queue retain];
+    }
+    return self;
 }
 
 - (void)indicatorTimer:(NSTimer *)timer {
-	//since enableUserInteractions invoked in main thread this method and enableUserInteractions cannot 
-	//execute concurrently. So we can access this flag without synchronization
+    //since enableUserInteractions invoked in main thread this method and enableUserInteractions cannot 
+    //execute concurrently. So we can access this flag without synchronization
 	
-	if(!finished) {
-		[indicator startAnimating];
-	}
+    if(!finished) {
+        [indicator startAnimating];
+    }
 }
 
 - (void)main {
-	[mainQueue waitUntilAllOperationsAreFinished];
-	[self performSelectorOnMainThread:@selector(enableUserInteractions) withObject:nil waitUntilDone:YES];
+    [mainQueue waitUntilAllOperationsAreFinished];
+    [self performSelectorOnMainThread:@selector(enableUserInteractions) withObject:nil waitUntilDone:YES];
 }
 
 - (void)enableUserInteractions {
-	for(UIView *v in views) {
-		v.userInteractionEnabled = YES;
+    if (views) {
+        for(UIView *v in views) {
+            v.userInteractionEnabled = YES;
 	}
-	finished = TRUE;
-	[indicator stopAnimating];
+    } else {
+        [[UIApplication sharedApplication] endIgnoringInteractionEvents];
+    }
+    finished = TRUE;
+    [indicator stopAnimating];
 }
 
 - (void)dealloc {
-	[mainQueue release];
-	[views release];
-	[indicator release];
-	[super dealloc];
+    [mainQueue release];
+    [views release];
+    [indicator release];
+    [super dealloc];
 }
 
 @end
@@ -67,15 +75,15 @@
 @implementation UIBlockingAsyncObject
 
 - (id)initWithImpl:(id)impl{
-	if(self = [super initWithImpl:impl]) {
-		uiUnblockQueue = [[NSOperationQueue alloc] init];
-	}
-	return self;
+    if(self = [super initWithImpl:impl]) {
+        uiUnblockQueue = [[NSOperationQueue alloc] init];
+    }
+    return self;
 }
 
 - (void)dealloc {
-	[uiUnblockQueue release];
-	[super dealloc];
+    [uiUnblockQueue release];
+    [super dealloc];
 }
 
 
@@ -93,7 +101,7 @@
 }
 
 - (id)ifSuccess:(SEL)successSelector ifError:(SEL)errorSelector target:(id)target displayIndicator:(UIActivityIndicatorView*)i {
-	return [self ifSuccess:successSelector ifError:errorSelector target:target blockViews:[NSArray array] andDisplayIndicator:i];
+    return [self ifSuccess:successSelector ifError:errorSelector target:target blockViews:[NSArray array] andDisplayIndicator:i];
 }
 
 - (id)ifSuccess:(SEL)successSelector ifError:(SEL)errorSelector target:(id)target blockViews:(NSArray*)v andDisplayIndicator:(UIActivityIndicatorView*)i {
@@ -103,13 +111,13 @@
 }
 
 - (void)forwardInvocation:(NSInvocation*)anInvocation {
-	[super forwardInvocation:anInvocation];
-	UnblockUIOp *unblockUI = [[[UnblockUIOp alloc] initWithViews:views andActivityIndicator:indicator andMainQueue:queue] autorelease];
-	[views release];
-	[indicator release];
-	views = nil;
-	indicator = nil;
-	[uiUnblockQueue addOperation:unblockUI];
+    [super forwardInvocation:anInvocation];
+    UnblockUIOp *unblockUI = [[[UnblockUIOp alloc] initWithViews:views andActivityIndicator:indicator andMainQueue:queue] autorelease];
+    [views release];
+    [indicator release];
+    views = nil;
+    indicator = nil;
+    [uiUnblockQueue addOperation:unblockUI];
 }
 
 @end

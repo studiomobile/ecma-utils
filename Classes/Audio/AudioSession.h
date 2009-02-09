@@ -7,13 +7,25 @@ enum {
 	kNotImplemented = -4 //same as in MacErrors.h
 };
 
-@interface AudioSession : NSObject
+#define kAudioSessionInterrupted @"__AudioSessionInterrupted__"
+#define kAudioSessionActivated @"__AudioSessionActivated__"
+
+@interface AudioSession : NSObject {
+    BOOL interruptedOnPlayback;
+}
 
 + (BOOL)open;
 + (BOOL)close;
 + (AudioSession*)session;
 
+- (void)activate;
 - (AudioRecorder*)createRecorderForFile:(NSURL*)fileURL withFormat:(AudioStreamBasicDescription*)format;
 - (AudioPlayer*)createPlayerForFile:(NSURL*)fileURL;
+
+#ifdef __IPHONE_OS_VERSION_MIN_REQUIRED >= 20200 
+- (BOOL)hasAudioInput;
+#endif
+
+
 
 @end

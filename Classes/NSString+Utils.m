@@ -36,6 +36,26 @@ int from_base64(const char *data, size_t dataLen, void **result, size_t *resultL
 
 @implementation NSString(Utils)
 
++ (NSString*)join:(NSArray*)items with:(NSString*)d selector:(SEL)s {
+    if(!items) return nil;
+    if(!items.count) return @"";
+    
+    NSMutableString *result = [NSMutableString string];
+    for(NSObject *item in items) {
+        [result appendFormat:@"%@%@", [item performSelector:s], d];
+    }
+    
+    if(result.length)
+        [result replaceCharactersInRange:NSMakeRange(result.length - d.length, d.length) 
+                              withString:@""];
+    
+    return [NSString stringWithString:result];
+}
+
++ (NSString*)join:(NSArray*)items with:(NSString*)d {
+    return [self join:items with:d selector:@selector(description)];
+}
+
 - (NSData*)fromBase64 {
 	const char *cStr = [self cStringUsingEncoding:NSASCIIStringEncoding];
 	size_t cStrLen = strlen(cStr);
@@ -66,8 +86,13 @@ int from_base64(const char *data, size_t dataLen, void **result, size_t *resultL
 }
 
 - (NSURL*)toUrl {
-	return [NSURL URLWithString:self];
+    return [NSURL URLWithString:self];
 }
+
+- (NSURL*)toFileUrl {
+    return [NSURL fileURLWithPath:self];
+}
+
 
 - (NSString*)urlEncode {
 	return [self urlEncode:nil];
@@ -76,6 +101,15 @@ int from_base64(const char *data, size_t dataLen, void **result, size_t *resultL
 - (NSString*)urlEncode:(NSString*)additionalCharacters {
 	NSString* str = (NSString*)CFURLCreateStringByAddingPercentEscapes(NULL, (CFStringRef)self, NULL, (CFStringRef)additionalCharacters, kCFStringEncodingUTF8);
 	return [str autorelease];
+}
+
+- (NSString*)urlDecode {
+    return [self urlDecode:@""];
+}
+
+- (NSString*)urlDecode:(NSString*)additionalCharacters {
+    NSString *str = (NSString*)CFURLCreateStringByReplacingPercentEscapes(NULL, (CFStringRef)self, (CFStringRef)additionalCharacters);
+    return [str autorelease];
 }
 
 @end

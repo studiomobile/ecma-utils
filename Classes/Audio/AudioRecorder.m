@@ -81,8 +81,17 @@ static void propertyListenerCallback (void *inUserData,
             [self autorelease];
             self = nil;
         }
+        NSNotificationCenter *c = [NSNotificationCenter defaultCenter];
+        [c addObserver:self selector:@selector(stop) name:kAudioSessionInterrupted object:nil];
     }
     return self;
+}
+
+- (void)dealloc {
+    NSNotificationCenter *c = [NSNotificationCenter defaultCenter];
+    [c removeObserver:self];
+    [self stop];
+    [super dealloc];
 }
 
 - (OSStatus)record {
@@ -92,7 +101,6 @@ static void propertyListenerCallback (void *inUserData,
 - (OSStatus)stop {
     return AudioQueueStop(queue, YES);
 }
-
 
 - (OSStatus) setupRecording {
     OSStatus status = noErr;
@@ -105,20 +113,19 @@ static void propertyListenerCallback (void *inUserData,
                                  NULL,
                                  0,
                                  &queue);
+    NSLog(@"AudioQueueNewInput: %d", status);
     if(status == noErr) {
         status = AudioQueueAddPropertyListener (queue,
                                                 kAudioQueueProperty_IsRunning,
                                                 propertyListenerCallback,
                                                 self);
+        NSLog(@"AudioQueueAddPropertyListener: %d", status);
     }
     if(status == noErr) {
-        levels = (AudioQueueLevelMeterState *) calloc (sizeof (AudioQueueLevelMeterState), audioFormat.mChannelsPerFrame);
-        if(!levels) {
-            status = kMemFullError;				
+        OSStatus levelMeteringStatus = [self enableLevelMetering];
+        if (levelMeteringStatus != noErr) {
+            NSLog(@"Level metering is not supported: %d", levelMeteringStatus);
         }
-    }
-    if(status == noErr) {
-        status = [self enableLevelMetering];
     }
     if(status == noErr) {
         status = AudioFileCreateWithURL (soundFile,
@@ -126,9 +133,12 @@ static void propertyListenerCallback (void *inUserData,
                                          &audioFormat,
                                          kAudioFileFlags_EraseFile,
                                          &audioFileID);
+        NSURL *u = (NSURL*)soundFile;
+        NSLog(@"AudioFileCreateWithURL: %d, %@", status, u);
     }
     if(status == noErr) {
         status = [self writeMagicCookie];
+        NSLog(@"writeMagicCookie: %d", status);
     }
     if(status == noErr) {
         int bufferByteSize = 65536;
@@ -138,15 +148,24 @@ static void propertyListenerCallback (void *inUserData,
             status = AudioQueueAllocateBuffer(queue, bufferByteSize, &buffer);
             if(status == noErr) {
                 status = AudioQueueEnqueueBuffer(queue, buffer, 0, NULL);
+                NSLog(@"AudioQueueEnqueueBuffer: %d", status);
             } else {
                 break;
             }
         }							
     }
-    if(status != noErr) {
-        [self cleanUp];
-    }
-    return status;
+    //this is a HACK. Review SpeakHere example and fail only then speakhere would fail.
+    //for now this removes the crash on 2G devices
+    return noErr;
+}
+
+- (void)cleanUp {
+    AudioQueueRemovePropertyListener(queue,
+                                     kAudioQueueProperty_IsRunning,
+                                     propertyListenerCallback,
+                                     self);
+    [super cleanUp];
+
 }
 
 @end

@@ -4,9 +4,9 @@
 #define kSecondsPerBuffer	0.5
 
 typedef enum {
-	kAudioPlayerStatePaused,
-	kAudioPlayerStateStopped,
-	kAudioPlayerStatePlaying
+    kAudioPlayerStatePaused,
+    kAudioPlayerStateStopped,
+    kAudioPlayerStatePlaying
 } AudioPlayerState;
 
 @protocol AudioPlayerDelegate
@@ -17,11 +17,12 @@ typedef enum {
 @end
 
 @interface AudioPlayer : AudioQueueObject {
-	UInt32 numPacketsToRead;
-	AudioStreamPacketDescription *packetDescriptions;
-	BOOL donePlayingFile;
-	NSObject<AudioPlayerDelegate> *delegate;
-	AudioPlayerState state;
+    UInt32 numPacketsToRead;
+    AudioStreamPacketDescription *packetDescriptions;
+    BOOL donePlayingFile;
+    NSObject<AudioPlayerDelegate> *delegate;
+    AudioPlayerState state;
+    BOOL interrupted;
 }
 
 - (OSStatus) play;

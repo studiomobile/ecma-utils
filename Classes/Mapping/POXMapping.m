@@ -138,8 +138,14 @@ static const NSDictionary *primitives() {
 - (void)parser:(NSXMLParser *)parser foundCharacters:(NSString *)string {
 	if(![string isEmpty]) {
 		if(top->elementType == kPOXElementPrimitive) {
+            //if text inside tag contain &lt; or something similar then parser invokes this method sevefral times.
+            //first time with text before entity then with entity and after with text after entity
 			POXPrimitiveHolder *holder = top->object;
-			holder.value = string;
+            if(holder.value) {
+                holder.value = [holder.value stringByAppendingString:string];
+            } else {
+                holder.value = string;
+            }
 		} else if(top->elementType == kPOXElementProperty) {
 			top = push_new(top);
 			top->object = [[POXPrimitiveHolder alloc] initWithvalue:string];

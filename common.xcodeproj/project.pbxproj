@@ -7,10 +7,17 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0956EB0B0F408BFC0096310E /* CollectionWindow.h in Headers */ = {isa = PBXBuildFile; fileRef = 0956EB020F408BFC0096310E /* CollectionWindow.h */; };
+		0956EB0C0F408BFC0096310E /* CollectionWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 0956EB030F408BFC0096310E /* CollectionWindow.m */; };
+		0956EB0D0F408BFC0096310E /* CommonUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = 0956EB040F408BFC0096310E /* CommonUtils.h */; };
+		0956EB0E0F408BFC0096310E /* NSBundle+Utils.h in Headers */ = {isa = PBXBuildFile; fileRef = 0956EB050F408BFC0096310E /* NSBundle+Utils.h */; };
+		0956EB0F0F408BFC0096310E /* NSBundle+Utils.m in Sources */ = {isa = PBXBuildFile; fileRef = 0956EB060F408BFC0096310E /* NSBundle+Utils.m */; };
+		0956EB100F408BFC0096310E /* NSUserDefaults+Utils.h in Headers */ = {isa = PBXBuildFile; fileRef = 0956EB070F408BFC0096310E /* NSUserDefaults+Utils.h */; };
+		0956EB110F408BFC0096310E /* NSUserDefaults+Utils.m in Sources */ = {isa = PBXBuildFile; fileRef = 0956EB080F408BFC0096310E /* NSUserDefaults+Utils.m */; };
+		0956EB120F408BFC0096310E /* RegexKitLite.h in Headers */ = {isa = PBXBuildFile; fileRef = 0956EB090F408BFC0096310E /* RegexKitLite.h */; };
+		0956EB130F408BFC0096310E /* RegexKitLite.m in Sources */ = {isa = PBXBuildFile; fileRef = 0956EB0A0F408BFC0096310E /* RegexKitLite.m */; };
 		79096D5C0E97CBAD0081A012 /* AsyncObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 79C1DBD90E9388E00056255C /* AsyncObject.m */; };
 		79096D5E0E97CBAD0081A012 /* UIBlockingAsyncObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 79C1DBDB0E9388E00056255C /* UIBlockingAsyncObject.m */; };
-		791FBA7F0EA3F1130068A8FE /* FormController.h in Headers */ = {isa = PBXBuildFile; fileRef = 791FBA7B0EA3F1130068A8FE /* FormController.h */; };
-		791FBA800EA3F1130068A8FE /* FormController.m in Sources */ = {isa = PBXBuildFile; fileRef = 791FBA7C0EA3F1130068A8FE /* FormController.m */; };
 		791FBA8C0EA406660068A8FE /* NSData+Utils.h in Headers */ = {isa = PBXBuildFile; fileRef = 791FBA8A0EA406660068A8FE /* NSData+Utils.h */; };
 		791FBA8D0EA406660068A8FE /* NSData+Utils.m in Sources */ = {isa = PBXBuildFile; fileRef = 791FBA8B0EA406660068A8FE /* NSData+Utils.m */; };
 		79427DDD0E9A13E600E8F7F9 /* AsyncObject.h in Headers */ = {isa = PBXBuildFile; fileRef = 79427DD50E9A13E600E8F7F9 /* AsyncObject.h */; };
@@ -49,13 +56,20 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		0956EB020F408BFC0096310E /* CollectionWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CollectionWindow.h; sourceTree = "<group>"; };
+		0956EB030F408BFC0096310E /* CollectionWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CollectionWindow.m; sourceTree = "<group>"; };
+		0956EB040F408BFC0096310E /* CommonUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CommonUtils.h; sourceTree = "<group>"; };
+		0956EB050F408BFC0096310E /* NSBundle+Utils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSBundle+Utils.h"; sourceTree = "<group>"; };
+		0956EB060F408BFC0096310E /* NSBundle+Utils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSBundle+Utils.m"; sourceTree = "<group>"; };
+		0956EB070F408BFC0096310E /* NSUserDefaults+Utils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSUserDefaults+Utils.h"; sourceTree = "<group>"; };
+		0956EB080F408BFC0096310E /* NSUserDefaults+Utils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSUserDefaults+Utils.m"; sourceTree = "<group>"; };
+		0956EB090F408BFC0096310E /* RegexKitLite.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RegexKitLite.h; sourceTree = "<group>"; };
+		0956EB0A0F408BFC0096310E /* RegexKitLite.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RegexKitLite.m; sourceTree = "<group>"; };
 		1D30AB110D05D00D00671497 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		1DF5F4DF0D08C38300B7A737 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		288765FC0DF74451002DB57D /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		28AD733E0D9D9553002E5188 /* MainWindow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MainWindow.xib; sourceTree = "<group>"; };
 		79096D480E97CB5D0081A012 /* libcommon.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libcommon.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		791FBA7B0EA3F1130068A8FE /* FormController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FormController.h; sourceTree = "<group>"; };
-		791FBA7C0EA3F1130068A8FE /* FormController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FormController.m; sourceTree = "<group>"; };
 		791FBA8A0EA406660068A8FE /* NSData+Utils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+Utils.h"; sourceTree = "<group>"; };
 		791FBA8B0EA406660068A8FE /* NSData+Utils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+Utils.m"; sourceTree = "<group>"; };
 		79427DD50E9A13E600E8F7F9 /* AsyncObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AsyncObject.h; sourceTree = "<group>"; };
@@ -113,6 +127,15 @@
 				79BAE5D60EC1EAB7004760EA /* Mapping */,
 				79BAE5DE0EC1EAB7004760EA /* DB */,
 				79BAE5E90EC1EAB7004760EA /* Web */,
+				0956EB020F408BFC0096310E /* CollectionWindow.h */,
+				0956EB030F408BFC0096310E /* CollectionWindow.m */,
+				0956EB040F408BFC0096310E /* CommonUtils.h */,
+				0956EB050F408BFC0096310E /* NSBundle+Utils.h */,
+				0956EB060F408BFC0096310E /* NSBundle+Utils.m */,
+				0956EB070F408BFC0096310E /* NSUserDefaults+Utils.h */,
+				0956EB080F408BFC0096310E /* NSUserDefaults+Utils.m */,
+				0956EB090F408BFC0096310E /* RegexKitLite.h */,
+				0956EB0A0F408BFC0096310E /* RegexKitLite.m */,
 				79BAE5C20EC1EA9E004760EA /* NSArray+Utils.h */,
 				79BAE5C30EC1EA9E004760EA /* NSArray+Utils.m */,
 				79BAE5C40EC1EA9E004760EA /* NSError+Utils.h */,
@@ -123,13 +146,11 @@
 				79BAE5C90EC1EA9E004760EA /* NSObject+Utils.m */,
 				79BAE5CA0EC1EA9E004760EA /* UIApplication+Utils.h */,
 				79BAE5CB0EC1EA9E004760EA /* UIApplication+Utils.m */,
-				791FBA7B0EA3F1130068A8FE /* FormController.h */,
-				791FBA7C0EA3F1130068A8FE /* FormController.m */,
 				79427DD50E9A13E600E8F7F9 /* AsyncObject.h */,
-				79427DDA0E9A13E600E8F7F9 /* NSString+Utils.h */,
-				79427DDC0E9A13E600E8F7F9 /* UIBlockingAsyncObject.h */,
-				79BD32080E9935AF0039C25A /* NSString+Utils.m */,
 				79C1DBD90E9388E00056255C /* AsyncObject.m */,
+				79427DDA0E9A13E600E8F7F9 /* NSString+Utils.h */,
+				79BD32080E9935AF0039C25A /* NSString+Utils.m */,
+				79427DDC0E9A13E600E8F7F9 /* UIBlockingAsyncObject.h */,
 				79C1DBDB0E9388E00056255C /* UIBlockingAsyncObject.m */,
 				791FBA8A0EA406660068A8FE /* NSData+Utils.h */,
 				791FBA8B0EA406660068A8FE /* NSData+Utils.m */,
@@ -233,7 +254,6 @@
 				79427DDD0E9A13E600E8F7F9 /* AsyncObject.h in Headers */,
 				79427DE20E9A13E600E8F7F9 /* NSString+Utils.h in Headers */,
 				79427DE40E9A13E600E8F7F9 /* UIBlockingAsyncObject.h in Headers */,
-				791FBA7F0EA3F1130068A8FE /* FormController.h in Headers */,
 				791FBA8C0EA406660068A8FE /* NSData+Utils.h in Headers */,
 				79BAE5CC0EC1EA9E004760EA /* NSArray+Utils.h in Headers */,
 				79BAE5CE0EC1EA9E004760EA /* NSError+Utils.h in Headers */,
@@ -250,6 +270,11 @@
 				79BAE5FB0EC1EAB7004760EA /* NSString+DB.h in Headers */,
 				79BAE5FD0EC1EAB7004760EA /* RESTService.h in Headers */,
 				79BC74550EE044B50058ADAA /* UIWebView+Utils.h in Headers */,
+				0956EB0B0F408BFC0096310E /* CollectionWindow.h in Headers */,
+				0956EB0D0F408BFC0096310E /* CommonUtils.h in Headers */,
+				0956EB0E0F408BFC0096310E /* NSBundle+Utils.h in Headers */,
+				0956EB100F408BFC0096310E /* NSUserDefaults+Utils.h in Headers */,
+				0956EB120F408BFC0096310E /* RegexKitLite.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -298,7 +323,6 @@
 				79096D5C0E97CBAD0081A012 /* AsyncObject.m in Sources */,
 				79096D5E0E97CBAD0081A012 /* UIBlockingAsyncObject.m in Sources */,
 				79BD32090E9935AF0039C25A /* NSString+Utils.m in Sources */,
-				791FBA800EA3F1130068A8FE /* FormController.m in Sources */,
 				791FBA8D0EA406660068A8FE /* NSData+Utils.m in Sources */,
 				79BAE5CD0EC1EA9E004760EA /* NSArray+Utils.m in Sources */,
 				79BAE5CF0EC1EA9E004760EA /* NSError+Utils.m in Sources */,
@@ -314,6 +338,10 @@
 				79BAE5FC0EC1EAB7004760EA /* NSString+DB.m in Sources */,
 				79BAE5FE0EC1EAB7004760EA /* RESTService.m in Sources */,
 				79BC74540EE044B50058ADAA /* UIWebView+Utils.m in Sources */,
+				0956EB0C0F408BFC0096310E /* CollectionWindow.m in Sources */,
+				0956EB0F0F408BFC0096310E /* NSBundle+Utils.m in Sources */,
+				0956EB110F408BFC0096310E /* NSUserDefaults+Utils.m in Sources */,
+				0956EB130F408BFC0096310E /* RegexKitLite.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

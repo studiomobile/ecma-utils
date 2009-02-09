@@ -42,9 +42,34 @@ static void propertyListenerCallback (void *inUserData,
             NSLog(@"Failed to create Audio Player: %d", status);
             [self autorelease];
             self = nil;
+        } else {
+            NSNotificationCenter *c = [NSNotificationCenter defaultCenter];
+            [c addObserver:self selector:@selector(interrupt) name:kAudioSessionInterrupted object:nil];
+            [c addObserver:self selector:@selector(playIfWasInterrupted) name:kAudioSessionActivated object:nil];
         }
     }
     return self;
+}
+
+- (void)dealloc {
+    NSNotificationCenter *c = [NSNotificationCenter defaultCenter];
+    [c removeObserver:self];
+    [self stop];
+    [super dealloc];
+}
+
+- (void)interrupt {
+    if (state == kAudioPlayerStatePlaying) {
+        [self pause];
+        interrupted = YES;
+    }
+}
+
+- (void)playIfWasInterrupted {
+    if (interrupted) {
+        [self play];
+        interrupted = NO;
+    }
 }
 
 - (OSStatus)cleanUp {
@@ -54,6 +79,10 @@ static void propertyListenerCallback (void *inUserData,
         packetDescriptions = NULL;
     }
     startingPacketNumber = 0;
+    AudioQueueRemovePropertyListener (queue,
+                                      kAudioQueueProperty_IsRunning,
+                                      propertyListenerCallback,
+                                      self);
     return [super cleanUp];
 }
 
@@ -105,6 +134,9 @@ static void propertyListenerCallback (void *inUserData,
     }
 }
 
+
+#undef CHECK_STATUS
+#define CHECK_STATUS if (status != noErr) { NSLog(@"__FILE__:__LINE__ failed with status: %d", status); [self cleanUp]; return status; }
 - (OSStatus)setupPlayback {
     donePlayingFile = NO;
     OSStatus status;
@@ -112,82 +144,77 @@ static void propertyListenerCallback (void *inUserData,
                                kAudioFileReadPermission,
                                kAudioFileCAFType,
                                &audioFileID);
-    if(status == noErr) {
-        UInt32 sizeOfASBD = sizeof (audioFormat);
-        status = AudioFileGetProperty (audioFileID, 
-                                       kAudioFilePropertyDataFormat,
-                                       &sizeOfASBD,
-                                       &audioFormat);
-    }
-	
+    CHECK_STATUS;
+
+    UInt32 sizeOfASBD = sizeof (audioFormat);
+    status = AudioFileGetProperty (audioFileID, 
+                                   kAudioFilePropertyDataFormat,
+                                   &sizeOfASBD,
+                                   &audioFormat);
+    CHECK_STATUS;
+
     SInt64 bufferByteSize = 0x10000;
-	
-    if(status == noErr) {
-        UInt32 maxPacketSize;
-        UInt32 propertySize = sizeof (maxPacketSize);
+    UInt32 maxPacketSize;
+    UInt32 propertySize = sizeof (maxPacketSize);
 		
-        status = AudioFileGetProperty (audioFileID, 
-                                       kAudioFilePropertyPacketSizeUpperBound,
-                                       &propertySize,
-                                       &maxPacketSize);
-        if(status == noErr) {
-            numPacketsToRead = bufferByteSize/maxPacketSize;
-            if(numPacketsToRead <= 0) {
-                status = kAudioFormatUnsupportedDataFormatError;
-            }
+    status = AudioFileGetProperty (audioFileID, 
+                                   kAudioFilePropertyPacketSizeUpperBound,
+                                   &propertySize,
+                                   &maxPacketSize);
+    CHECK_STATUS;
+
+    numPacketsToRead = bufferByteSize/maxPacketSize;
+    if(numPacketsToRead <= 0) {
+        status = kAudioFormatUnsupportedDataFormatError;
+    }
+    CHECK_STATUS;
+    
+    packetDescriptions = (AudioStreamPacketDescription*)calloc(numPacketsToRead, sizeof(AudioStreamPacketDescription));
+    if(!packetDescriptions) {
+        status = kMemFullError;
+    } 
+    CHECK_STATUS;
+
+    status = AudioQueueNewOutput (&audioFormat,
+                                  playbackCallback,
+                                  self, 
+                                  CFRunLoopGetCurrent (),
+                                  kCFRunLoopCommonModes,
+                                  0,
+                                  &queue);
+    CHECK_STATUS;
+
+    status = AudioQueueSetParameter (queue,
+                                     kAudioQueueParam_Volume,
+                                     1.0);
+
+    CHECK_STATUS;
+
+    OSStatus levelMeteringStatus = [self enableLevelMetering];
+    if (levelMeteringStatus != noErr) {
+        NSLog(@"Level metering is not supported: %d", levelMeteringStatus);
+    }
+    status = AudioQueueAddPropertyListener (queue,
+                                            kAudioQueueProperty_IsRunning,
+                                            propertyListenerCallback,
+                                            self);
+    CHECK_STATUS;
+
+    int bufferIndex;
+    for (bufferIndex = 0; bufferIndex < kNumberAudioDataBuffers; ++bufferIndex) {
+        AudioQueueBufferRef buffer;
+        status = AudioQueueAllocateBuffer (queue,
+                                           bufferByteSize,
+                                           &buffer);
+        if(status != noErr) {
+            break;
+        } else {
+            [self playbackData:buffer];
         }
     }
-	
-    if(status == noErr) {
-        packetDescriptions = (AudioStreamPacketDescription*)calloc(numPacketsToRead, sizeof(AudioStreamPacketDescription));
-        if(!packetDescriptions) {
-            status = kMemFullError;
-        } 
-    }
-    if(status == noErr) {
-        status = AudioQueueNewOutput (&audioFormat,
-                                      playbackCallback,
-                                      self, 
-                                      CFRunLoopGetCurrent (),
-                                      kCFRunLoopCommonModes,
-                                      0,
-                                      &queue);
-    }
-    if(status == noErr) {
-        status = AudioQueueSetParameter (queue,
-                                         kAudioQueueParam_Volume,
-                                         1.0);
-    }
-    if(status == noErr) {
-        status = [self enableLevelMetering];
-    }
-    if(status == noErr) {
-        status = AudioQueueAddPropertyListener (queue,
-                                                kAudioQueueProperty_IsRunning,
-                                                propertyListenerCallback,
-                                                self);
-    }
-    if(status == noErr) {
-        int bufferIndex;
-        for (bufferIndex = 0; bufferIndex < kNumberAudioDataBuffers; ++bufferIndex) {
-            AudioQueueBufferRef buffer;
-            status = AudioQueueAllocateBuffer (queue,
-                                               bufferByteSize,
-                                               &buffer);
-            if(status != noErr) {
-                break;
-            } else {
-                [self playbackData:buffer];
-            }
-        }
-    }
-    if(status == noErr) {
-        [self writeMagicCookie];	
-    }
-    if(status != noErr) {
-        [self cleanUp];
-        NSLog(@"Failed to init player: %d", status);
-    }
+    CHECK_STATUS;
+    
+    [self writeMagicCookie];
     return status;
 }
 

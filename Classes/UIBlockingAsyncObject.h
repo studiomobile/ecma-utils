@@ -9,6 +9,7 @@
 - (id)ifSuccess:(SEL)successSelector ifError:(SEL)errorSelector target:(id)target displayIndicator:(UIActivityIndicatorView*)i;
 @end
 
+
 @interface UIBlockingAsyncObject : AsyncObject<UIBlockingAsyncObjectProto> {
 	NSOperationQueue *uiUnblockQueue;
 	NSArray *views;
