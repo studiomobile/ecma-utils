@@ -42,28 +42,25 @@ static void interruptHandler(void *data, UInt32  interruptionState) {
                 status = AudioSessionSetActive(TRUE);
                 if(status != noErr && status != kNotImplemented/*simulator return unimpErr*/) {
                     NSLog(@"Failed to activate AudioSession: %d", status);
-                    [sessionStorage release];
-                    sessionStorage = nil;
                 }
+                return YES;
             }
         }
     }
-    return sessionStorage != nil;
+    return NO;
 }
 
 + (BOOL)close {
     @synchronized(sessionStorage) {
         if(sessionStorage != nil) {
             OSStatus status = AudioSessionSetActive(FALSE);
-            if(status == noErr || status == kNotImplemented/*simulator return unimpErr*/) {
-                [sessionStorage release];
-                sessionStorage = nil;
-            } else {
+            if(status != noErr && status != kNotImplemented/*simulator return unimpErr*/) {
                 NSLog(@"Failed to deactivate AudioSession: %d", status);
+                return NO;
             }
         }
     }
-    return sessionStorage == nil;
+    return YES;
 }
 
 + (AudioSession*)session {
