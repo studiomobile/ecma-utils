@@ -105,10 +105,8 @@ const NSString *RequestStatusCode = @"__RequestStatusCode__";
 	checkNotNil(localPath, @"localPath cannot be nil");
 	checkNotNil(data, @"data cannot be nil");
 	NSMutableURLRequest *request = [self queryString:localPath :nil];
-	
-    [request addValue:@"text/xml" forHTTPHeaderField:@"Content-Type"];
+        [request addValue:@"text/xml" forHTTPHeaderField:@"Content-Type"];
 	[request addValue:[NSString stringWithFormat:@"%d", [data length]] forHTTPHeaderField:@"Content-Length"];
-
 	[request setHTTPMethod:@"POST"];
 	[request setHTTPBody:data];
 

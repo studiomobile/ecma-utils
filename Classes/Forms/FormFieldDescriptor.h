@@ -1,3 +1,4 @@
+#import <UIKit/UIKit.h>
 
 @interface FormFieldDescriptor : NSObject {
 	NSString *title;
