@@ -16,15 +16,16 @@
     AudioStreamBasicDescription audioFormat;
 }
 
-@property (readonly, nonatomic) BOOL isRunning;
-@property (readwrite, nonatomic) Float32 volume;
-
 - (id)initWithSoundFile:(CFURLRef)soundFile;
 - (AudioQueueLevelMeterState*)audioLevels;
 - (NSUInteger)channels;
 
 - (OSStatus)cleanUp;
 - (OSStatus)writeMagicCookie;
-- (OSStatus) enableLevelMetering;
+- (OSStatus)enableLevelMetering;
+
+@property (readonly, nonatomic) CFURLRef soundFile;
+@property (readonly, nonatomic) BOOL isRunning;
+@property (readwrite, nonatomic) Float32 volume;
 
 @end

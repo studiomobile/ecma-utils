@@ -9,7 +9,7 @@
 @end
 
 @interface AudioRecorder : AudioQueueObject {
-	NSObject<AudioRecorderDelegate>* delegate;
+    NSObject<AudioRecorderDelegate>* delegate;
 }
 
 - (id)initWithURL:(CFURLRef)file format:(AudioStreamBasicDescription*)audioFormat;

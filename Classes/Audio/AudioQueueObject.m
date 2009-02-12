@@ -4,6 +4,7 @@
 @implementation AudioQueueObject
 
 @dynamic isRunning;
+@synthesize soundFile;
 
 - (BOOL)isRunning {
     UInt32 isRunning;

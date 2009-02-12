@@ -63,10 +63,7 @@ static void propertyListenerCallback (void *inUserData,
         startingPacketNumber += inNumPackets;		
     }
     if (self.isRunning) {
-        AudioQueueEnqueueBuffer (queue,
-                                 inBuffer,
-                                 0,
-                                 NULL);
+        AudioQueueEnqueueBuffer (queue, inBuffer, 0, NULL);
     }
 }
 
@@ -102,6 +99,9 @@ static void propertyListenerCallback (void *inUserData,
     return AudioQueueStop(queue, YES);
 }
 
+
+#undef CHECK_STATUS
+#define CHECK_STATUS if (status != noErr) { NSLog(@"__FILE__ __LINE__, error: %d", status); return status; }
 - (OSStatus) setupRecording {
     OSStatus status = noErr;
     startingPacketNumber = 0;
@@ -113,49 +113,38 @@ static void propertyListenerCallback (void *inUserData,
                                  NULL,
                                  0,
                                  &queue);
-    NSLog(@"AudioQueueNewInput: %d", status);
-    if(status == noErr) {
-        status = AudioQueueAddPropertyListener (queue,
-                                                kAudioQueueProperty_IsRunning,
-                                                propertyListenerCallback,
-                                                self);
-        NSLog(@"AudioQueueAddPropertyListener: %d", status);
+    CHECK_STATUS;
+    
+    status = AudioQueueAddPropertyListener (queue,
+                                            kAudioQueueProperty_IsRunning,
+                                            propertyListenerCallback,
+                                            self);
+    CHECK_STATUS;
+    
+    OSStatus levelMeteringStatus = [self enableLevelMetering];
+    if (levelMeteringStatus != noErr) {
+        NSLog(@"Level metering is not supported: %d", levelMeteringStatus);
     }
-    if(status == noErr) {
-        OSStatus levelMeteringStatus = [self enableLevelMetering];
-        if (levelMeteringStatus != noErr) {
-            NSLog(@"Level metering is not supported: %d", levelMeteringStatus);
-        }
+
+    status = AudioFileCreateWithURL (soundFile,
+                                     kAudioFileCAFType,
+                                     &audioFormat,
+                                     kAudioFileFlags_EraseFile,
+                                     &audioFileID);
+    CHECK_STATUS;
+    
+    OSStatus magicCookieStatus = [self writeMagicCookie];
+    if (magicCookieStatus != noErr) {
+        NSLog(@"__FILE__ __LINE__ writeMagicCookie: %d", magicCookieStatus);
     }
-    if(status == noErr) {
-        status = AudioFileCreateWithURL (soundFile,
-                                         kAudioFileCAFType,
-                                         &audioFormat,
-                                         kAudioFileFlags_EraseFile,
-                                         &audioFileID);
-        NSURL *u = (NSURL*)soundFile;
-        NSLog(@"AudioFileCreateWithURL: %d, %@", status, u);
-    }
-    if(status == noErr) {
-        status = [self writeMagicCookie];
-        NSLog(@"writeMagicCookie: %d", status);
-    }
-    if(status == noErr) {
-        int bufferByteSize = 65536;
-        int bufferIndex;
-        for (bufferIndex = 0; bufferIndex < kNumberAudioDataBuffers; ++bufferIndex) {
-            AudioQueueBufferRef buffer;
-            status = AudioQueueAllocateBuffer(queue, bufferByteSize, &buffer);
-            if(status == noErr) {
-                status = AudioQueueEnqueueBuffer(queue, buffer, 0, NULL);
-                NSLog(@"AudioQueueEnqueueBuffer: %d", status);
-            } else {
-                break;
-            }
-        }							
-    }
-    //this is a HACK. Review SpeakHere example and fail only then speakhere would fail.
-    //for now this removes the crash on 2G devices
+
+    int bufferByteSize = 65536;
+    int bufferIndex;
+    for (bufferIndex = 0; bufferIndex < kNumberAudioDataBuffers; ++bufferIndex) {
+        AudioQueueBufferRef buffer;
+        AudioQueueAllocateBuffer(queue, bufferByteSize, &buffer);
+        AudioQueueEnqueueBuffer(queue, buffer, 0, NULL);
+    }							
     return noErr;
 }
 
