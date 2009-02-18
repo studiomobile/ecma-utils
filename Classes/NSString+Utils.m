@@ -36,26 +36,6 @@ int from_base64(const char *data, size_t dataLen, void **result, size_t *resultL
 
 @implementation NSString(Utils)
 
-+ (NSString*)join:(NSArray*)items with:(NSString*)d selector:(SEL)s {
-    if(!items) return nil;
-    if(!items.count) return @"";
-    
-    NSMutableString *result = [NSMutableString string];
-    for(NSObject *item in items) {
-        [result appendFormat:@"%@%@", [item performSelector:s], d];
-    }
-    
-    if(result.length)
-        [result replaceCharactersInRange:NSMakeRange(result.length - d.length, d.length) 
-                              withString:@""];
-    
-    return [NSString stringWithString:result];
-}
-
-+ (NSString*)join:(NSArray*)items with:(NSString*)d {
-    return [self join:items with:d selector:@selector(description)];
-}
-
 - (NSData*)fromBase64 {
 	const char *cStr = [self cStringUsingEncoding:NSASCIIStringEncoding];
 	size_t cStrLen = strlen(cStr);
