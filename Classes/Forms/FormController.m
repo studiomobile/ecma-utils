@@ -90,8 +90,8 @@
 
 - (void)kbdDidShow {
 	keyboardShown = TRUE;
-    superviewBackground = [self.table.superview.backgroundColor retain];
-    self.table.superview.backgroundColor = self.table.backgroundColor;
+    //superviewBackground = [self.table.superview.backgroundColor retain];
+    //self.table.superview.backgroundColor = self.table.backgroundColor;
 }
 
 - (void)kbdWillHide:(NSNotification*)notification {
@@ -109,8 +109,8 @@
 	if(tableViewResized) {
 		tableViewResized = NO;
 		self.table.frame = oldTblViewFrame;
-        self.table.superview.backgroundColor = superviewBackground;
-        [superviewBackground release];
+        //self.table.superview.backgroundColor = superviewBackground;
+        //[superviewBackground release];
 	}
 }
 
@@ -154,6 +154,7 @@
 }
 
 - (UITableView*)table {
+	[NSException raise:@"InvalidStateException" format:@"!!!!Override table method!!!!"];
     return nil;
 }
 

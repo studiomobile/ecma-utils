@@ -101,15 +101,24 @@ const NSString *RequestStatusCode = @"__RequestStatusCode__";
 	return [self request:request error:error];
 }
 
-- (id)post:(NSData*)data to:(NSString*)localPath error:(NSError**)error {
-	checkNotNil(localPath, @"localPath cannot be nil");
-	checkNotNil(data, @"data cannot be nil");
-	NSMutableURLRequest *request = [self queryString:localPath :nil];
-	[request addValue:[NSString stringWithFormat:@"%d", [data length]] forHTTPHeaderField:@"Content-Length"];
-	[request setHTTPMethod:@"POST"];
-	[request setHTTPBody:data];
+- (id)post:(NSData*)data to:(NSString*)localPath headers:(NSDictionary*)headers error:(NSError**)error {
+    checkNotNil(localPath, @"localPath cannot be nil");
+    checkNotNil(data, @"data cannot be nil");
+    NSMutableURLRequest *request = [self queryString:localPath :nil];
+    for (NSString *header in headers) {
+        NSString *val = [headers objectForKey:header];
+        [request addValue:val forHTTPHeaderField:header];
+    }
+    [request addValue:[NSString stringWithFormat:@"%d", [data length]] forHTTPHeaderField:@"Content-Length"];
+    [request setHTTPMethod:@"POST"];
+    [request setHTTPBody:data];
 
-	return [self request:request error:error];
+    return [self request:request error:error];    
+}
+
+- (id)post:(NSData*)data to:(NSString*)localPath error:(NSError**)error {
+    NSDictionary *headers = [NSDictionary dictionaryWithObjectsAndKeys:@"Content-Type", @"text/xml", nil];
+    return [self post:data to:localPath headers:headers error:error];
 }
 
 @end

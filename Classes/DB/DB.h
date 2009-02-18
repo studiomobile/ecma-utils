@@ -27,7 +27,7 @@ extern const NSUInteger kFailedToOpenDB;
 - (void)update:(DBObject*)o;
 - (void)insert:(DBObject*)o;
 - (void)save:(DBObject*)o; // insert or update based on pk value
-- (void)delete:(Class)klass where:(NSString*)criteria, ...;
+- (void)delete:(Class)klass conditions:(NSString*)criteria, ...;
 
 - (void)beginTransaction;
 - (void)commit;

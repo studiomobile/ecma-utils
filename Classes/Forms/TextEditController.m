@@ -38,11 +38,15 @@
 
 
 - (void)done {
+	self.navigationController.navigationBarHidden = navigationBarWasHidden;
 	[self.navigationController popViewControllerAnimated:YES];
 }
 
 
 - (void)viewDidAppear:(BOOL)animated {
+	navigationBarWasHidden = self.navigationController.navigationBarHidden;
+	self.navigationController.navigationBarHidden = NO;
+	
 	[textView becomeFirstResponder];
 	[UIView beginAnimations:nil context:nil];
 	[UIView setAnimationDuration:0.4];

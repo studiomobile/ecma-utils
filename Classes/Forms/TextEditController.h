@@ -5,6 +5,8 @@
 	NSString *title;
 	id dataSource;
 	NSString *keyPath;
+	
+	BOOL navigationBarWasHidden;
 }
 @property (assign) id dataSource;
 @property (retain) NSString *keyPath;

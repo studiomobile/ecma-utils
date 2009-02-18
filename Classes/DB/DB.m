@@ -289,7 +289,7 @@ static NSMutableDictionary *databases = nil;
     }
 }
 
-- (void)delete:(Class)klass where:(NSString*)criteria, ... {
+- (void)delete:(Class)klass conditions:(NSString*)criteria, ... {
     checkNotNil(criteria, @"Criteria cannot be nil");
     checkNotNil(klass, @"klass cannot be nil");
 	
