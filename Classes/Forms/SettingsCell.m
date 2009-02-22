@@ -55,7 +55,8 @@
 }
 
 - (void)dealloc {
-	[title release];
+	value.delegate = nil;
+	[title release];	
 	[value release];
     [super dealloc];
 }
