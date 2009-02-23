@@ -6,7 +6,12 @@
 - (void)display:(NSString*)actionDescription {
     UIAlertView *errorDisplay = [[UIAlertView alloc] init];
     errorDisplay.title = @"Error";
-    NSString *errorMessage = [NSString stringWithFormat:@"%@: \n%@", actionDescription, [self localizedDescription]];
+    NSString *errorMessage;
+    if (actionDescription) {
+        errorMessage = [NSString stringWithFormat:@"%@: \n%@", actionDescription, [self localizedDescription]];
+    } else {
+        errorMessage = [self localizedDescription];
+    }
     NSLog(errorMessage);
     errorDisplay.message = errorMessage;
     [errorDisplay addButtonWithTitle:@"OK"];
