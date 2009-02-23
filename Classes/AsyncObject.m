@@ -28,7 +28,7 @@
 }
 
 - (void)main {
-	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+//	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	[invocation invoke];
 	id result = nil;
 	[invocation getReturnValue:&result];
@@ -37,7 +37,7 @@
 	} else {
 		[handlerTarget performSelector:successHandler onThread:clientThread withObject:result waitUntilDone:YES];
 	}
-	[pool release];
+//	[pool release];
 }
 
 - (void)dealloc {

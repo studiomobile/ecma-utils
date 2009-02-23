@@ -7,7 +7,7 @@
 #import "SettingsCell.h"
 #import "TextCell.h"
 
-@interface FormTableController : FormController {
+@interface FormTableController : FormController<UITableViewDataSource> {
 }
 
 - (void)enableButton:(BOOL)enable;
