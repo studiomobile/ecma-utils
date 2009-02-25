@@ -27,7 +27,6 @@
 - (void)viewWillAppear:(BOOL)animated {
 	[super viewWillAppear:animated];
 
-	tableViewResized = NO;
 	keyboardShown = NO;
 	NSNotificationCenter *notifications = [NSNotificationCenter defaultCenter];
 	[notifications addObserver:self selector:@selector(kbdWillShow:) name:UIKeyboardWillShowNotification object:nil];
@@ -97,7 +96,7 @@
 - (void)kbdWillHide:(NSNotification*)notification {
 	//Do not use this method to resize tableView.
 	//This is because this method is called not only then keyboard are going to hide
-	//but also when user taps on a text filed while another one is focused.
+	//but also when user taps on a text field while another one is focused.
 	//In this situation system call kbdWillHide and just after it calls kbdWillShow. Note that kbdDidShow and kbdDidHide is not called.
 	//And if you try to resize table view here it will be resized once again in kbdWillShow method.
 	//Consiquently this double resizing causes table view to scroll up down which is very confusing for user.
