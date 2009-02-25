@@ -7,7 +7,8 @@
 
 - (id)initWithFrame:(CGRect)frame reuseIdentifier:(NSString *)reuseIdentifier {
     if (self = [super initWithFrame:frame reuseIdentifier:reuseIdentifier]) {
-		title = [[UILabel alloc] initWithFrame:CGRectZero];
+		title = [[ForwardingLabel alloc] initWithFrame:CGRectZero];
+//		title.userInteractionEnabled = YES;
 		title.font = [UIFont boldSystemFontOfSize:16];
 		[self addSubview:title];
 
@@ -15,6 +16,9 @@
 		value.autocorrectionType = UITextAutocorrectionTypeNo;
 		value.autocapitalizationType = UITextAutocapitalizationTypeNone;
 		value.delegate = self;
+		
+		title.forwardee = value;
+		
 		[self addSubview:value];
     }
     return self;
