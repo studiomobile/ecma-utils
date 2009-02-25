@@ -36,6 +36,8 @@
 		0956F1790F4455F60096310E /* TextCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 0956F1670F4455F60096310E /* TextCell.m */; };
 		0956F17A0F4455F60096310E /* TextEditController.h in Headers */ = {isa = PBXBuildFile; fileRef = 0956F1680F4455F60096310E /* TextEditController.h */; };
 		0956F17B0F4455F60096310E /* TextEditController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0956F1690F4455F60096310E /* TextEditController.m */; };
+		0992D1D70F55989D00EA42BF /* UIView+Utils.h in Headers */ = {isa = PBXBuildFile; fileRef = 0992D1D50F55989D00EA42BF /* UIView+Utils.h */; };
+		0992D1D80F55989D00EA42BF /* UIView+Utils.m in Sources */ = {isa = PBXBuildFile; fileRef = 0992D1D60F55989D00EA42BF /* UIView+Utils.m */; };
 		79096D5C0E97CBAD0081A012 /* AsyncObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 79C1DBD90E9388E00056255C /* AsyncObject.m */; };
 		79096D5E0E97CBAD0081A012 /* UIBlockingAsyncObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 79C1DBDB0E9388E00056255C /* UIBlockingAsyncObject.m */; };
 		791FBA8C0EA406660068A8FE /* NSData+Utils.h in Headers */ = {isa = PBXBuildFile; fileRef = 791FBA8A0EA406660068A8FE /* NSData+Utils.h */; };
@@ -105,6 +107,8 @@
 		0956F1670F4455F60096310E /* TextCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TextCell.m; sourceTree = "<group>"; };
 		0956F1680F4455F60096310E /* TextEditController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextEditController.h; sourceTree = "<group>"; };
 		0956F1690F4455F60096310E /* TextEditController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TextEditController.m; sourceTree = "<group>"; };
+		0992D1D50F55989D00EA42BF /* UIView+Utils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+Utils.h"; sourceTree = "<group>"; };
+		0992D1D60F55989D00EA42BF /* UIView+Utils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+Utils.m"; sourceTree = "<group>"; };
 		1D30AB110D05D00D00671497 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		1DF5F4DF0D08C38300B7A737 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		288765FC0DF74451002DB57D /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -164,6 +168,8 @@
 		080E96DDFE201D6D7F000001 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				0992D1D50F55989D00EA42BF /* UIView+Utils.h */,
+				0992D1D60F55989D00EA42BF /* UIView+Utils.m */,
 				0956F1570F4455F60096310E /* Forms */,
 				0956F13E0F4454E50096310E /* View */,
 				79BAE5D60EC1EAB7004760EA /* Mapping */,
@@ -361,6 +367,7 @@
 				0956F1760F4455F60096310E /* StaticFormCell.h in Headers */,
 				0956F1780F4455F60096310E /* TextCell.h in Headers */,
 				0956F17A0F4455F60096310E /* TextEditController.h in Headers */,
+				0992D1D70F55989D00EA42BF /* UIView+Utils.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -438,6 +445,7 @@
 				0956F1770F4455F60096310E /* StaticFormCell.m in Sources */,
 				0956F1790F4455F60096310E /* TextCell.m in Sources */,
 				0956F17B0F4455F60096310E /* TextEditController.m in Sources */,
+				0992D1D80F55989D00EA42BF /* UIView+Utils.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

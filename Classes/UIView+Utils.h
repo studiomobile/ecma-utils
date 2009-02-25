@@ -1,7 +1,7 @@
-#import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
 
 
-@interface UIView (utils)
+@interface UIView(utils)
 
 -(NSString*) hierarchyString;
 
