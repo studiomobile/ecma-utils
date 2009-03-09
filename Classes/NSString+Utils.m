@@ -92,4 +92,17 @@ int from_base64(const char *data, size_t dataLen, void **result, size_t *resultL
     return [str autorelease];
 }
 
+
++ (NSString *)formattedInt:(int)value
+{
+    NSMutableString *formatted = [NSMutableString stringWithFormat:@"%d", value];
+    int pos = 3;
+    while (formatted.length > pos) {
+        [formatted insertString:@"," atIndex:formatted.length - pos];
+        pos += 4;
+    }
+    return formatted;
+}
+
+
 @end

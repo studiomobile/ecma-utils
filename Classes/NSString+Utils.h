@@ -18,4 +18,6 @@ int from_base64(const char *data, size_t dataLen, void **result, size_t *resultL
 - (NSString*)urlDecode;
 - (NSString*)urlDecode:(NSString*)additionalCharacters;
 
++ (NSString *)formattedInt:(int)value;
+
 @end
