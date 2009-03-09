@@ -1,18 +1,14 @@
-#import "TextCell.h"
+#import "ImmutableCell.h"
 
-@implementation TextCell
+@implementation ImmutableCell
 
 - (id)initWithFrame:(CGRect)frame reuseIdentifier:(NSString *)reuseIdentifier {
     if (self = [super initWithFrame:frame reuseIdentifier:reuseIdentifier]) {
-		self.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+        self.title.textColor = [UIColor grayColor];
+        self.value.textColor = [UIColor grayColor];
     }
 	
     return self;
 }
-
-- (void)dealloc {
-    [super dealloc];
-}
-
 
 @end

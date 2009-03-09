@@ -3,7 +3,7 @@
 
 #import "FormController.h"
 
-#import "StaticFormCell.h"
+#import "ImmutableCell.h"
 #import "SettingsCell.h"
 #import "TextCell.h"
 
@@ -21,6 +21,7 @@
 - (FormFieldDescriptor*)collectionFieldWithTitle:(NSString*)title forProperty:(NSString*)keyPath ofObject:(id)object;
 - (FormFieldDescriptor*)customFieldWithTitle:(NSString*)title forProperty:(NSString*)keyPath ofObject:(id)object;
 
+- (ImmutableCell*)immutableCellWithDescriptor:(FormFieldDescriptor*)desc;
 - (StaticFormCell*)staticCellWithDescriptor:(FormFieldDescriptor*)desc;
 - (SettingsCell*)settingsCellWithDescriptor:(FormFieldDescriptor*)desc;
 - (TextCell*)textCellWithDescriptor:(FormFieldDescriptor*)desc;

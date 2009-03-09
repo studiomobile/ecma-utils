@@ -10,12 +10,10 @@
 	[super viewDidLoad];
 }
 
-
 - (void)dealloc {
 	[[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardDidHideNotification object:nil];
 	[super dealloc];
 }
-
 
 - (FormFieldDescriptor*)stringFieldWithTitle:(NSString*)title forProperty:(NSString*)keyPath ofObject:(id)object {
 	FormFieldDescriptor *desc = [FormFieldDescriptor new];
@@ -26,20 +24,17 @@
 	return [desc autorelease];
 }
 
-
 - (FormFieldDescriptor*)secureFieldWithTitle:(NSString*)title forProperty:(NSString*)keyPath ofObject:(id)object {
 	FormFieldDescriptor *desc = [self stringFieldWithTitle:title forProperty:keyPath ofObject:object];
 	desc.secure = YES;
 	return desc;
 }
 
-
 - (FormFieldDescriptor*)textFieldWithTitle:(NSString*)title forProperty:(NSString*)keyPath ofObject:(id)object {
 	FormFieldDescriptor *desc = [self stringFieldWithTitle:title forProperty:keyPath ofObject:object];
 	desc.editableInplace = NO;
 	return desc;
 }
-
 
 - (FormFieldDescriptor*)collectionFieldWithTitle:(NSString*)title forProperty:(NSString*)keyPath ofObject:(id)object {
 	FormFieldDescriptor *desc = [self textFieldWithTitle:title forProperty:keyPath ofObject:object];
@@ -93,11 +88,9 @@
 - (IBAction)buttonPressed {
 }
 
-
 - (NSArray*)collectionForField:(NSIndexPath*)indexPath {
 	return nil;
 }
-
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
 	NSInteger sections = [self numberOfDataSections];
@@ -121,6 +114,16 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
 	return section < [self numberOfDataSections] ? [self numberOfFieldsInDataSection:section] : 1;
+}
+
+- (ImmutableCell*)immutableCellWithDescriptor:(FormFieldDescriptor*)desc{
+	static NSString *cellId = @"ImmutableFieldCell";
+	ImmutableCell *cell = (ImmutableCell*)[self.table dequeueReusableCellWithIdentifier:cellId];
+	if (cell == nil) { cell = [[[ImmutableCell alloc] initWithFrame:CGRectZero reuseIdentifier:cellId] autorelease]; }
+	
+	cell.fieldDescriptor = desc;
+    
+	return cell;
 }
 
 - (StaticFormCell*)staticCellWithDescriptor:(FormFieldDescriptor*)desc {
