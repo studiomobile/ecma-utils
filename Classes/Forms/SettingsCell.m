@@ -10,6 +10,8 @@
 		title = [[ForwardingLabel alloc] initWithFrame:CGRectZero];
 //		title.userInteractionEnabled = YES;
 		title.font = [UIFont boldSystemFontOfSize:16];
+        title.backgroundColor = [UIColor clearColor];
+
 		[self addSubview:title];
 
 		value = [[UITextField alloc] initWithFrame:CGRectZero];
@@ -25,6 +27,8 @@
 }
 
 - (void)onFieldDescriptorUpdate {
+    [super onFieldDescriptorUpdate];
+    
 	self.title.text = self.fieldDescriptor.title;
 	self.value.text = self.sourceValue;
 	self.value.secureTextEntry = self.fieldDescriptor.secure;

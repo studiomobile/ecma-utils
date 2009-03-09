@@ -21,6 +21,7 @@
 - (void)editingStarted:(NSNotification*)notification;
 - (void)editingFinished:(NSNotification*)notification;
 
+- (void)scrollToField:(NSIndexPath*)indexPath animated:(BOOL)animated;
 - (void)scrollToFocusedTextField:(BOOL)animated;
 
 @end

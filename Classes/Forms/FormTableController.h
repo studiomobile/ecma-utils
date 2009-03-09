@@ -13,6 +13,7 @@
 - (void)enableButton:(BOOL)enable;
 - (NSString*)buttonTitle;
 - (IBAction)buttonPressed;
+- (void)reloadForm;
 
 - (FormFieldDescriptor*)stringFieldWithTitle:(NSString*)title forProperty:(NSString*)keyPath ofObject:(id)object;
 - (FormFieldDescriptor*)secureFieldWithTitle:(NSString*)title forProperty:(NSString*)keyPath ofObject:(id)object;

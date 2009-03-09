@@ -21,6 +21,8 @@
 }
 
 - (void)dealloc {
+    self.table = nil;
+    
     [super dealloc];
 }
 
@@ -122,6 +124,10 @@
 	focusedTextField = nil;
 }
 
+- (void)scrollToField:(NSIndexPath*)indexPath animated:(BOOL)animated {
+    [self.table scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionMiddle animated:YES];		
+}
+
 - (void)scrollToFocusedTextField:(BOOL)animated  {
 	if(focusedTextField) {
 		UIView *cell = focusedTextField;
@@ -130,7 +136,7 @@
 		} while(![cell isKindOfClass:[UITableViewCell class]] && cell != nil);
 		
 		NSIndexPath *path = [self.table indexPathForCell:(UITableViewCell*)cell];
-		[self.table scrollToRowAtIndexPath:path atScrollPosition:UITableViewScrollPositionMiddle animated:animated];		
+		[self scrollToField:path animated:animated];		
 	}
 }
 

@@ -11,10 +11,12 @@
 		title = [[ForwardingLabel alloc] initWithFrame:CGRectZero];
 		title.font = [UIFont boldSystemFontOfSize:16];
         title.textColor = [UIColor grayColor];
+        title.backgroundColor = [UIColor clearColor];
 		[self addSubview:title];
 		
 		value = [[UILabel alloc] initWithFrame:CGRectZero];
         value.textColor = [UIColor grayColor];
+        value.backgroundColor = [UIColor clearColor];
 		
 		title.forwardee = value;
 		
@@ -25,6 +27,8 @@
 }
 
 - (void)onFieldDescriptorUpdate {
+    [super onFieldDescriptorUpdate];
+    
 	self.title.text = self.fieldDescriptor.title;
 	self.value.text = [self.sourceValue description];
 }

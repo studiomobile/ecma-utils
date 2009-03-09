@@ -17,7 +17,6 @@
 }
 
 
-
 - (FormFieldDescriptor*)stringFieldWithTitle:(NSString*)title forProperty:(NSString*)keyPath ofObject:(id)object {
 	FormFieldDescriptor *desc = [FormFieldDescriptor new];
 	desc.title = title;
@@ -112,6 +111,10 @@
 	[self.table reloadData];
 }
 
+- (void)reloadForm {
+    [self _updateData];
+}
+
 - (NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section {
 	return section < [self numberOfDataSections] ? [self missingFieldsDescriptionForSection:section] : nil;
 }
@@ -187,6 +190,10 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    NSLog(@"did select %@", indexPath);
+    
+    [self scrollToField:indexPath animated:YES];
+    
 	if (indexPath.section == [self numberOfDataSections]) {
 		[self buttonPressed];
 		return;

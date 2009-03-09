@@ -1,6 +1,5 @@
 #import "TextEditController.h"
 
-
 @implementation TextEditController
 
 @synthesize title;
@@ -14,8 +13,6 @@
 	}
 	return self;
 }
-
-
 
 - (void)loadView {
 	textView = [UITextView new];
