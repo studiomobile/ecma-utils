@@ -9,5 +9,6 @@
 @property (readwrite, retain) id sourceValue;
 
 - (void)onFieldDescriptorUpdate;
+- (void)prepareToReuse;
 
 @end

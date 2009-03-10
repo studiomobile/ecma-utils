@@ -1,23 +1,26 @@
 #import <UIKit/UIKit.h>
 
+typedef enum FormFieldDescriptorType {
+    FORM_FIELD_DESCRIPTOR_TEXT_FIELD,
+    FORM_FIELD_DESCRIPTOR_TEXT_AREA,
+    FORM_FIELD_DESCRIPTOR_COLLECTION,
+    FORM_FIELD_DESCRIPTOR_CUSTOM
+} FormFieldDescriptorType;
+
 @interface FormFieldDescriptor : NSObject {
+    FormFieldDescriptorType type;
+
+    NSMutableDictionary *options;
+    
 	NSString *title;
 	id dataSource;
 	NSString *keyPath;
-    struct {
-		unsigned int custom:1;
-        unsigned int secure:1;
-        unsigned int editableInplace:1;
-        unsigned int selectable:1;
-    } _flags;
 }
 
+@property (assign) FormFieldDescriptorType type;
 @property (retain) NSString *title;
 @property (assign) id dataSource;
 @property (retain) NSString *keyPath;
-@property (assign) BOOL secure;
-@property (assign) BOOL editableInplace;
-@property (assign) BOOL selectable;
-@property (assign) BOOL custom;
 
+@property (readonly) NSMutableDictionary *options;
 @end

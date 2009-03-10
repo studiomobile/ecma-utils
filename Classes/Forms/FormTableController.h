@@ -22,7 +22,7 @@
 
 - (StaticFormCell*)staticCellWithDescriptor:(FormFieldDescriptor*)desc;
 - (StaticFormCell*)immutableCellWithDescriptor:(FormFieldDescriptor*)desc;
-- (StaticFormCell*)textCellWithDescriptor:(FormFieldDescriptor*)desc;
-- (TextFieldCell*)settingsCellWithDescriptor:(FormFieldDescriptor*)desc;
+- (StaticFormCell*)disclosingCellWithDescriptor:(FormFieldDescriptor*)desc;
+- (TextFieldCell*)textFieldCellWithDescriptor:(FormFieldDescriptor*)desc;
 
 @end

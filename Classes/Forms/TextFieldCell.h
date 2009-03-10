@@ -4,6 +4,6 @@
 @interface TextFieldCell : TitledCell<UITextFieldDelegate> {
 	UITextField *value;
 }
-@property (readonly) UITextField *value;
+@property (readwrite, retain) UITextField *value;
 
 @end

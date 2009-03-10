@@ -1,13 +1,22 @@
 #import "FormCell.h"
 
-
 @implementation FormCell
 
 - (FormFieldDescriptor*)fieldDescriptor {
 	return fieldDescriptor;
 }
 
+- (void)prepareToReuse {
+}
+
 - (void)onFieldDescriptorUpdate {
+    [self prepareToReuse];
+    
+    NSMutableDictionary *options = fieldDescriptor.options;
+    for(NSString *key in [options allKeys]) {
+//        NSLog(@"value for key '%@' is '%@'", key, [self valueForKey:key]);
+        [self setValue:[options valueForKey:key] forKeyPath:key];
+    }
 }
 
 - (void)setFieldDescriptor:(FormFieldDescriptor*)desc {

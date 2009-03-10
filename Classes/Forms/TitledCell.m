@@ -8,12 +8,17 @@
     return [[UILabel alloc] initWithFrame:CGRectZero];
 }
 
+- (void)prepareToReuse {
+    [super prepareToReuse];
+    
+    title.font = [UIFont boldSystemFontOfSize:16];
+    title.backgroundColor = [UIColor clearColor];
+    //		title.userInteractionEnabled = YES;
+}
+
 - (id)initWithFrame:(CGRect)frame reuseIdentifier:(NSString *)reuseIdentifier {
     if (self = [super initWithFrame:frame reuseIdentifier:reuseIdentifier]) {
 		title = [self createTitleLabel];
-        //		title.userInteractionEnabled = YES;
-		title.font = [UIFont boldSystemFontOfSize:16];
-        title.backgroundColor = [UIColor clearColor];
         
 		[self addSubview:title];
     }

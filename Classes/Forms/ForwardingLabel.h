@@ -2,7 +2,6 @@
 
 
 @interface ForwardingLabel : UILabel {
-
 	UIView* forwardee;
 }
 

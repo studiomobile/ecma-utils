@@ -9,15 +9,20 @@
     return [[ForwardingLabel alloc] initWithFrame:CGRectZero];
 }
 
+- (void)prepareToReuse {
+    [super prepareToReuse];
+    
+    value.autocorrectionType = UITextAutocorrectionTypeNo;
+    value.autocapitalizationType = UITextAutocapitalizationTypeNone;
+    value.delegate = self;
+    value.secureTextEntry = NO;
+
+    ((ForwardingLabel*)title).forwardee = value;
+}
+
 - (id)initWithFrame:(CGRect)frame reuseIdentifier:(NSString *)reuseIdentifier {
     if (self = [super initWithFrame:frame reuseIdentifier:reuseIdentifier]) {
 		value = [[UITextField alloc] initWithFrame:CGRectZero];
-		value.autocorrectionType = UITextAutocorrectionTypeNo;
-		value.autocapitalizationType = UITextAutocapitalizationTypeNone;
-		value.delegate = self;
-		
-		((ForwardingLabel*)title).forwardee = value;
-		
 		[self addSubview:value];
     }
     return self;
@@ -27,7 +32,6 @@
     [super onFieldDescriptorUpdate];
     
 	self.value.text = self.sourceValue;
-	self.value.secureTextEntry = self.fieldDescriptor.secure;
 }
 
 - (void)textFieldDidEndEditing:(UITextField *)textField {

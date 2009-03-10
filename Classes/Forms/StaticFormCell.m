@@ -6,11 +6,15 @@
 @synthesize title;
 @synthesize value;
 
+- (void)prepareToReuse {
+    [super prepareToReuse];
+    
+    value.backgroundColor = [UIColor clearColor];
+}
+
 - (id)initWithFrame:(CGRect)frame reuseIdentifier:(NSString *)reuseIdentifier {
     if (self = [super initWithFrame:frame reuseIdentifier:reuseIdentifier]) {
 		value = [[UILabel alloc] initWithFrame:CGRectZero];
-        value.backgroundColor = [UIColor clearColor];
-		
 		[self addSubview:value];
     }
 

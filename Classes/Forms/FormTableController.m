@@ -15,43 +15,36 @@
 	[super dealloc];
 }
 
-- (FormFieldDescriptor*)stringFieldWithTitle:(NSString*)title forProperty:(NSString*)keyPath ofObject:(id)object {
+- (FormFieldDescriptor*)fieldWithTitle:(NSString*)title forProperty:(NSString*)keyPath ofObject:(id)object type:(FormFieldDescriptorType)type {
 	FormFieldDescriptor *desc = [FormFieldDescriptor new];
 	desc.title = title;
 	desc.dataSource = object;
 	desc.keyPath = keyPath;
-	desc.editableInplace = YES;
+    desc.type = type;
 	return [desc autorelease];
+}
+
+- (FormFieldDescriptor*)stringFieldWithTitle:(NSString*)title forProperty:(NSString*)keyPath ofObject:(id)object {
+	FormFieldDescriptor *desc = [self fieldWithTitle:title forProperty:keyPath ofObject:object type:FORM_FIELD_DESCRIPTOR_TEXT_FIELD];
+	return desc;
 }
 
 - (FormFieldDescriptor*)secureFieldWithTitle:(NSString*)title forProperty:(NSString*)keyPath ofObject:(id)object {
 	FormFieldDescriptor *desc = [self stringFieldWithTitle:title forProperty:keyPath ofObject:object];
-	desc.secure = YES;
+    [desc.options setValue:[NSNumber numberWithBool:YES] forKey:@"value.secureTextEntry"];
 	return desc;
 }
 
 - (FormFieldDescriptor*)textFieldWithTitle:(NSString*)title forProperty:(NSString*)keyPath ofObject:(id)object {
-	FormFieldDescriptor *desc = [self stringFieldWithTitle:title forProperty:keyPath ofObject:object];
-	desc.editableInplace = NO;
-	return desc;
+	return [self fieldWithTitle:title forProperty:keyPath ofObject:object type:FORM_FIELD_DESCRIPTOR_TEXT_AREA];
 }
 
 - (FormFieldDescriptor*)collectionFieldWithTitle:(NSString*)title forProperty:(NSString*)keyPath ofObject:(id)object {
-	FormFieldDescriptor *desc = [self textFieldWithTitle:title forProperty:keyPath ofObject:object];
-	desc.selectable = YES;
-	return desc;
+	return [self fieldWithTitle:title forProperty:keyPath ofObject:object type:FORM_FIELD_DESCRIPTOR_COLLECTION];
 }
 
 - (FormFieldDescriptor*)customFieldWithTitle:(NSString*)title forProperty:(NSString*)keyPath ofObject:(id)object {
-	FormFieldDescriptor *desc = [FormFieldDescriptor new];
-
-	desc.custom = YES;
-	desc.title = title;
-	desc.dataSource = object;
-	desc.keyPath = keyPath;
-	desc.editableInplace = NO;
-	
-	return [desc autorelease];
+	return [self fieldWithTitle:title forProperty:keyPath ofObject:object type:FORM_FIELD_DESCRIPTOR_CUSTOM];
 }
 
 - (void)enableButton:(BOOL)enable {
@@ -140,7 +133,7 @@
 	return cell;
 }
 
-- (StaticFormCell*)textCellWithDescriptor:(FormFieldDescriptor*)desc {
+- (StaticFormCell*)disclosingCellWithDescriptor:(FormFieldDescriptor*)desc {
 	static NSString *cellId = @"TextCell";
 	StaticFormCell *cell = (StaticFormCell*)[self.table dequeueReusableCellWithIdentifier:cellId];
 	if (cell == nil) { 
@@ -156,7 +149,7 @@
 	return [self staticCellWithDescriptor:desc];
 }
 
-- (TextFieldCell*)settingsCellWithDescriptor:(FormFieldDescriptor*)desc {
+- (TextFieldCell*)textFieldCellWithDescriptor:(FormFieldDescriptor*)desc {
 	static NSString *cellId = @"SettingsCell";
 	TextFieldCell *cell = (TextFieldCell*)[self.table dequeueReusableCellWithIdentifier:cellId];
 	if (cell == nil) { cell = [[[TextFieldCell alloc] initWithFrame:CGRectZero reuseIdentifier:cellId] autorelease]; }
@@ -180,13 +173,20 @@
 	}
 	
 	FormFieldDescriptor *desc = [self descriptorForField:indexPath];
-	if(desc.custom) {
-		return [self customCellWithDescriptor:desc forIndexPath:indexPath];
-	} else if (desc.editableInplace) {
-		return [self settingsCellWithDescriptor:desc];
-	} else {
-		return [self textCellWithDescriptor:desc];
-	}
+    
+    switch (desc.type) {
+        case FORM_FIELD_DESCRIPTOR_TEXT_FIELD:
+            return [self textFieldCellWithDescriptor:desc];
+            break;
+        case FORM_FIELD_DESCRIPTOR_TEXT_AREA:
+        case FORM_FIELD_DESCRIPTOR_COLLECTION:
+            return [self disclosingCellWithDescriptor:desc];
+            break;
+        default:
+            break;
+    }
+    
+    return [self customCellWithDescriptor:desc forIndexPath:indexPath];
 }
 
 - (void)didSelectCustomCellAtIndexPath:(NSIndexPath*)indexPath {
@@ -209,29 +209,22 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    [self scrollToField:indexPath animated:YES];
-    
 	if (indexPath.section == [self numberOfDataSections]) {
 		[self buttonPressed];
 		return;
 	}
 	
+    [self scrollToField:indexPath animated:YES];
+
 	FormFieldDescriptor *desc = [self descriptorForField:indexPath];
 
-	if(desc.custom) {
+	if(desc.type == FORM_FIELD_DESCRIPTOR_CUSTOM) {
 		[self didSelectCustomCellAtIndexPath:indexPath];
-		return;
-	}
-	
-	if (desc.editableInplace) {
-		return;
-	}
-	
-	if (desc.selectable) {
+	} else if (desc.type == FORM_FIELD_DESCRIPTOR_COLLECTION) {
 		NSString *title = [self selectControllerTitleForDescriptor:desc indexPath:indexPath];
 		UIViewController *selection = [self selectionControllerForIndexPath:indexPath title:title descriptor:(FormFieldDescriptor*)desc];
 		[self.navigationController pushViewController:selection animated:YES];
-	} else {
+	} else if(desc.type == FORM_FIELD_DESCRIPTOR_TEXT_AREA) {
 		NSString *title = [self textEditControllerTitleForDescriptor:desc indexPath:indexPath];
 		TextEditController *textEdit = [[[TextEditController alloc] initWithTitle:title] autorelease];
 		textEdit.dataSource = desc.dataSource;
@@ -244,7 +237,6 @@
 	[self _updateData];
 	[super viewWillAppear:animated];
 }
-
 
 @end
 
