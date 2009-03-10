@@ -1,11 +1,9 @@
-#import "FormCell.h"
+#import "TitledCell.h"
 #import "ForwardingLabel.h"
 
-@interface TextFieldCell : FormCell<UITextFieldDelegate> {
-	ForwardingLabel *title;
+@interface TextFieldCell : TitledCell<UITextFieldDelegate> {
 	UITextField *value;
 }
-@property (readonly) UILabel *title;
 @property (readonly) UITextField *value;
 
 @end

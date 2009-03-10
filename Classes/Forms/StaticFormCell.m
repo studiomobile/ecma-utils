@@ -8,11 +8,6 @@
 
 - (id)initWithFrame:(CGRect)frame reuseIdentifier:(NSString *)reuseIdentifier {
     if (self = [super initWithFrame:frame reuseIdentifier:reuseIdentifier]) {
-		title = [[UILabel alloc] initWithFrame:CGRectZero];
-		title.font = [UIFont boldSystemFontOfSize:16];
-        title.backgroundColor = [UIColor clearColor];
-		[self addSubview:title];
-		
 		value = [[UILabel alloc] initWithFrame:CGRectZero];
         value.backgroundColor = [UIColor clearColor];
 		
@@ -25,24 +20,11 @@
 - (void)onFieldDescriptorUpdate {
     [super onFieldDescriptorUpdate];
     
-	self.title.text = self.fieldDescriptor.title;
 	self.value.text = [self.sourceValue description];
 }
 
-- (void)setSelected:(BOOL)selected animated:(BOOL)animated {
-}
-
-- (void)layoutSubviews {
-	[super layoutSubviews];
-	CGRect bounds = self.contentView.bounds;
-	bounds = CGRectInset(bounds, 20, 2);
-	
-	CGRect leftRect;
-	CGRect rightRect;
-	CGRectDivide(bounds, &leftRect, &rightRect, 100, CGRectMinXEdge);
-	
-	title.frame = leftRect;
-	value.frame = rightRect;
+- (void)layoutControls:(CGRect)controlsRect {
+	value.frame = controlsRect;
 }
 
 - (void)dealloc {

@@ -116,10 +116,14 @@
 	return section < [self numberOfDataSections] ? [self numberOfFieldsInDataSection:section] : 1;
 }
 
-- (ImmutableCell*)immutableCellWithDescriptor:(FormFieldDescriptor*)desc{
+- (StaticFormCell*)immutableCellWithDescriptor:(FormFieldDescriptor*)desc{
 	static NSString *cellId = @"ImmutableFieldCell";
-	ImmutableCell *cell = (ImmutableCell*)[self.table dequeueReusableCellWithIdentifier:cellId];
-	if (cell == nil) { cell = [[[ImmutableCell alloc] initWithFrame:CGRectZero reuseIdentifier:cellId] autorelease]; }
+	StaticFormCell *cell = (StaticFormCell*)[self.table dequeueReusableCellWithIdentifier:cellId];
+	if (cell == nil) { 
+        cell = [[[StaticFormCell alloc] initWithFrame:CGRectZero reuseIdentifier:cellId] autorelease]; 
+        cell.title.textColor = [UIColor grayColor];
+        cell.value.textColor = [UIColor grayColor];
+    }
 	
 	cell.fieldDescriptor = desc;
     
@@ -136,6 +140,18 @@
 	return cell;
 }
 
+- (StaticFormCell*)textCellWithDescriptor:(FormFieldDescriptor*)desc {
+	static NSString *cellId = @"TextCell";
+	StaticFormCell *cell = (StaticFormCell*)[self.table dequeueReusableCellWithIdentifier:cellId];
+	if (cell == nil) { 
+        cell = [[[StaticFormCell alloc] initWithFrame:CGRectZero reuseIdentifier:cellId] autorelease]; 
+        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+    }
+    
+	cell.fieldDescriptor = desc;
+	return cell;
+}
+
 - (UITableViewCell*)customCellWithDescriptor:(FormFieldDescriptor*)desc forIndexPath:indexPath {
 	return [self staticCellWithDescriptor:desc];
 }
@@ -145,15 +161,6 @@
 	TextFieldCell *cell = (TextFieldCell*)[self.table dequeueReusableCellWithIdentifier:cellId];
 	if (cell == nil) { cell = [[[TextFieldCell alloc] initWithFrame:CGRectZero reuseIdentifier:cellId] autorelease]; }
 	
-	cell.fieldDescriptor = desc;
-	return cell;
-}
-
-- (TextCell*)textCellWithDescriptor:(FormFieldDescriptor*)desc {
-	static NSString *cellId = @"TextCell";
-	TextCell *cell = (TextCell*)[self.table dequeueReusableCellWithIdentifier:cellId];
-	if (cell == nil) { cell = [[[TextCell alloc] initWithFrame:CGRectZero reuseIdentifier:cellId] autorelease]; }
-
 	cell.fieldDescriptor = desc;
 	return cell;
 }

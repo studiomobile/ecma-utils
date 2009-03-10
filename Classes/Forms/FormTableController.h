@@ -3,9 +3,8 @@
 
 #import "FormController.h"
 
-#import "ImmutableCell.h"
 #import "TextFieldCell.h"
-#import "TextCell.h"
+#import "StaticFormCell.h"
 
 @interface FormTableController : FormController<UITableViewDataSource> {
 }
@@ -21,9 +20,9 @@
 - (FormFieldDescriptor*)collectionFieldWithTitle:(NSString*)title forProperty:(NSString*)keyPath ofObject:(id)object;
 - (FormFieldDescriptor*)customFieldWithTitle:(NSString*)title forProperty:(NSString*)keyPath ofObject:(id)object;
 
-- (ImmutableCell*)immutableCellWithDescriptor:(FormFieldDescriptor*)desc;
 - (StaticFormCell*)staticCellWithDescriptor:(FormFieldDescriptor*)desc;
+- (StaticFormCell*)immutableCellWithDescriptor:(FormFieldDescriptor*)desc;
+- (StaticFormCell*)textCellWithDescriptor:(FormFieldDescriptor*)desc;
 - (TextFieldCell*)settingsCellWithDescriptor:(FormFieldDescriptor*)desc;
-- (TextCell*)textCellWithDescriptor:(FormFieldDescriptor*)desc;
 
 @end

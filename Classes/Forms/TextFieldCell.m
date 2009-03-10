@@ -5,21 +5,18 @@
 @synthesize title;
 @synthesize value;
 
+- (UILabel*)createTitleLabel {
+    return [[ForwardingLabel alloc] initWithFrame:CGRectZero];
+}
+
 - (id)initWithFrame:(CGRect)frame reuseIdentifier:(NSString *)reuseIdentifier {
     if (self = [super initWithFrame:frame reuseIdentifier:reuseIdentifier]) {
-		title = [[ForwardingLabel alloc] initWithFrame:CGRectZero];
-//		title.userInteractionEnabled = YES;
-		title.font = [UIFont boldSystemFontOfSize:16];
-        title.backgroundColor = [UIColor clearColor];
-
-		[self addSubview:title];
-
 		value = [[UITextField alloc] initWithFrame:CGRectZero];
 		value.autocorrectionType = UITextAutocorrectionTypeNo;
 		value.autocapitalizationType = UITextAutocapitalizationTypeNone;
 		value.delegate = self;
 		
-		title.forwardee = value;
+		((ForwardingLabel*)title).forwardee = value;
 		
 		[self addSubview:value];
     }
@@ -29,7 +26,6 @@
 - (void)onFieldDescriptorUpdate {
     [super onFieldDescriptorUpdate];
     
-	self.title.text = self.fieldDescriptor.title;
 	self.value.text = self.sourceValue;
 	self.value.secureTextEntry = self.fieldDescriptor.secure;
 }
@@ -44,27 +40,14 @@
 	return YES;
 }
 
-- (void)setSelected:(BOOL)selected animated:(BOOL)animated {
-}
-
-- (void)layoutSubviews {
-	[super layoutSubviews];
-	CGRect bounds = self.contentView.bounds;
-	bounds = CGRectInset(bounds, 20, 2);
-	
-	CGRect leftRect;
-	CGRect rightRect;
-	CGRectDivide(bounds, &leftRect, &rightRect, 100, CGRectMinXEdge);
-	
-	title.frame = leftRect;
-	rightRect.origin.y += 9;
-	rightRect.size.height -= 9;
-	value.frame = rightRect;
+- (void)layoutControls:(CGRect)controlsRect {
+	controlsRect.origin.y += 9;
+	controlsRect.size.height -= 9;
+	value.frame = controlsRect;
 }
 
 - (void)dealloc {
 	value.delegate = nil;
-	[title release];	
 	[value release];
     [super dealloc];
 }
