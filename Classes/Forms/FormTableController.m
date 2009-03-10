@@ -140,10 +140,10 @@
 	return [self staticCellWithDescriptor:desc];
 }
 
-- (SettingsCell*)settingsCellWithDescriptor:(FormFieldDescriptor*)desc {
+- (TextFieldCell*)settingsCellWithDescriptor:(FormFieldDescriptor*)desc {
 	static NSString *cellId = @"SettingsCell";
-	SettingsCell *cell = (SettingsCell*)[self.table dequeueReusableCellWithIdentifier:cellId];
-	if (cell == nil) { cell = [[[SettingsCell alloc] initWithFrame:CGRectZero reuseIdentifier:cellId] autorelease]; }
+	TextFieldCell *cell = (TextFieldCell*)[self.table dequeueReusableCellWithIdentifier:cellId];
+	if (cell == nil) { cell = [[[TextFieldCell alloc] initWithFrame:CGRectZero reuseIdentifier:cellId] autorelease]; }
 	
 	cell.fieldDescriptor = desc;
 	return cell;

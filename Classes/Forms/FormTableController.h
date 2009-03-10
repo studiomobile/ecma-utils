@@ -4,7 +4,7 @@
 #import "FormController.h"
 
 #import "ImmutableCell.h"
-#import "SettingsCell.h"
+#import "TextFieldCell.h"
 #import "TextCell.h"
 
 @interface FormTableController : FormController<UITableViewDataSource> {
@@ -23,7 +23,7 @@
 
 - (ImmutableCell*)immutableCellWithDescriptor:(FormFieldDescriptor*)desc;
 - (StaticFormCell*)staticCellWithDescriptor:(FormFieldDescriptor*)desc;
-- (SettingsCell*)settingsCellWithDescriptor:(FormFieldDescriptor*)desc;
+- (TextFieldCell*)settingsCellWithDescriptor:(FormFieldDescriptor*)desc;
 - (TextCell*)textCellWithDescriptor:(FormFieldDescriptor*)desc;
 
 @end

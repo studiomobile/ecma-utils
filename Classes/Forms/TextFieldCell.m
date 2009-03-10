@@ -1,6 +1,6 @@
-#import "SettingsCell.h"
+#import "TextFieldCell.h"
 
-@implementation SettingsCell
+@implementation TextFieldCell
 
 @synthesize title;
 @synthesize value;

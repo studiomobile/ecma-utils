@@ -6,7 +6,6 @@
 @synthesize dataSource;
 @synthesize keyPath;
 
-
 - (id)initWithTitle:(NSString*)aTitle {
 	if (self = [super init]) {
 		title = [aTitle retain];
@@ -26,19 +25,16 @@
 	self.view = view;
 }
 
-
 - (void)viewDidLoad {
 	self.navigationItem.hidesBackButton = YES;
 	self.navigationItem.title = title;
 	self.navigationItem.rightBarButtonItem = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(done)] autorelease];
 }
 
-
 - (void)done {
 	self.navigationController.navigationBarHidden = navigationBarWasHidden;
 	[self.navigationController popViewControllerAnimated:YES];
 }
-
 
 - (void)viewDidAppear:(BOOL)animated {
 	navigationBarWasHidden = self.navigationController.navigationBarHidden;
@@ -53,16 +49,13 @@
 	[UIView commitAnimations];
 }
 
-
 - (void)viewWillDisappear:(BOOL)animated {
 	textView.delegate = nil;
 }
 
-
 - (void)textViewDidChange:(UITextView *)_textView {
 	[dataSource setValue:textView.text forKeyPath:keyPath];
 }
-
 
 - (void)dealloc {
 	[textView release];

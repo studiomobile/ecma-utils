@@ -1,9 +1,10 @@
 @implementation NSDate(ChronologicAdditions)
-- (bool)isAfter:(NSDate*)other {
+
+- (BOOL)isAfter:(NSDate*)other {
 	return [self compare:other] == NSOrderedDescending;
 }
 
-- (bool)isBefore:(NSDate*)other {
+- (BOOL)isBefore:(NSDate*)other {
 	return [self compare:other] == NSOrderedAscending;
 }
 
@@ -16,7 +17,7 @@
 }
 
 - (CGFloat)hoursSinceDate:(NSDate*)date {
-	return [self minutesSinceDate:date]/60.0;
+	return [self timeIntervalSinceDate:date]/3600;
 }
 
 - (NSDate*)dayStart {
@@ -24,4 +25,5 @@
 	NSDateComponents *components = [calendar components:(NSYearCalendarUnit | NSMonthCalendarUnit | NSDayCalendarUnit) fromDate:self];
 	return [calendar dateFromComponents:components];
 }
+
 @end
