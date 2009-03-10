@@ -1,6 +1,6 @@
 #import <UIKit/UIKit.h>
 
-@interface SelectionController : UITableViewController {
+@interface SelectionController : UIViewController<UITableViewDataSource, UITableViewDelegate> {
 	NSString *title;
 	id dataSource;
 	NSString *keyPath;

@@ -49,7 +49,7 @@
 	desc.title = title;
 	desc.dataSource = object;
 	desc.keyPath = keyPath;
-	desc.editableInplace = YES;
+	desc.editableInplace = NO;
 	
 	return [desc autorelease];
 }
@@ -192,6 +192,14 @@
 	return [NSString stringWithFormat:@"Edit %@", [desc.title lowercaseString]];
 }
 
+- (UIViewController*)selectionControllerForIndexPath:(NSIndexPath*)indexPath title:(NSString*)title descriptor:(FormFieldDescriptor*)desc {
+    SelectionController *selection = [[[SelectionController alloc] initWithTitle:title] autorelease];
+    selection.dataSource = desc.dataSource;
+    selection.keyPath = desc.keyPath;
+    selection.collection = [self collectionForField:indexPath];
+    return selection;
+}
+
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [self scrollToField:indexPath animated:YES];
     
@@ -201,7 +209,7 @@
 	}
 	
 	FormFieldDescriptor *desc = [self descriptorForField:indexPath];
-	
+
 	if(desc.custom) {
 		[self didSelectCustomCellAtIndexPath:indexPath];
 		return;
@@ -213,10 +221,7 @@
 	
 	if (desc.selectable) {
 		NSString *title = [self selectControllerTitleForDescriptor:desc indexPath:indexPath];
-		SelectionController *selection = [[[SelectionController alloc] initWithTitle:title] autorelease];
-		selection.dataSource = desc.dataSource;
-		selection.keyPath = desc.keyPath;
-		selection.collection = [self collectionForField:indexPath];
+		UIViewController *selection = [self selectionControllerForIndexPath:indexPath title:title descriptor:(FormFieldDescriptor*)desc];
 		[self.navigationController pushViewController:selection animated:YES];
 	} else {
 		NSString *title = [self textEditControllerTitleForDescriptor:desc indexPath:indexPath];
