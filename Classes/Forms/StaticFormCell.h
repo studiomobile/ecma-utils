@@ -1,11 +1,10 @@
 #import "FormCell.h"
-#import "ForwardingLabel.h"
 
 @interface StaticFormCell : FormCell {
-	ForwardingLabel *title;
-	UITextField *value;
+	UILabel *title;
+	UILabel *value;
 }
 @property (readonly) UILabel *title;
-@property (readonly) UITextField *value;
+@property (readonly) UILabel *value;
 
 @end

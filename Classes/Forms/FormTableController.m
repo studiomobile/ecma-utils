@@ -193,8 +193,6 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    NSLog(@"did select %@", indexPath);
-    
     [self scrollToField:indexPath animated:YES];
     
 	if (indexPath.section == [self numberOfDataSections]) {

@@ -8,15 +8,13 @@
 
 - (id)initWithFrame:(CGRect)frame reuseIdentifier:(NSString *)reuseIdentifier {
     if (self = [super initWithFrame:frame reuseIdentifier:reuseIdentifier]) {
-		title = [[ForwardingLabel alloc] initWithFrame:CGRectZero];
+		title = [[UILabel alloc] initWithFrame:CGRectZero];
 		title.font = [UIFont boldSystemFontOfSize:16];
         title.backgroundColor = [UIColor clearColor];
 		[self addSubview:title];
 		
 		value = [[UILabel alloc] initWithFrame:CGRectZero];
         value.backgroundColor = [UIColor clearColor];
-		
-		title.forwardee = value;
 		
 		[self addSubview:value];
     }
