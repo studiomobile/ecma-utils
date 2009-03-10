@@ -162,6 +162,7 @@
 	if (cell == nil) { cell = [[[TextFieldCell alloc] initWithFrame:CGRectZero reuseIdentifier:cellId] autorelease]; }
 	
 	cell.fieldDescriptor = desc;
+    cell.value.delegate = self;
 	return cell;
 }
 

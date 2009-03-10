@@ -28,7 +28,7 @@
 }
 
 - (void)dealloc {
-	self.fieldDescriptor = nil;
+	[fieldDescriptor release];
 	
     [super dealloc];
 }

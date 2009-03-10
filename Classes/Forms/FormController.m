@@ -81,6 +81,7 @@
 		CGRect newTblFrame = [appView convertRect:newTblAppFrame toView:self.table.superview];
 		oldTblViewFrame = self.table.frame;
 		tableViewResized = YES;
+
 		[UIView beginAnimations: nil context: NULL];
 		[UIView setAnimationDuration: 0.3];	
 		[UIView setAnimationDelegate:self];
@@ -105,14 +106,19 @@
 	//(averbin)
 }
 
-- (void)kbdDidHide {
-	keyboardShown = FALSE;
+- (void)restoreTableSize {
+    NSLog(@"restore!");
 	if(tableViewResized) {
 		tableViewResized = NO;
 		self.table.frame = oldTblViewFrame;
         //self.table.superview.backgroundColor = superviewBackground;
         //[superviewBackground release];
 	}
+}
+
+- (void)kbdDidHide {
+	keyboardShown = FALSE;
+    [self restoreTableSize];
 }
 
 - (void)editingStarted:(NSNotification*)notification {
@@ -142,6 +148,8 @@
 
 - (void)hideKeyboard {
 	if(keyboardShown && focusedTextField) {
+        NSLog(@"hide");
+        [self restoreTableSize];
 		[focusedTextField resignFirstResponder];
 	}
 }
