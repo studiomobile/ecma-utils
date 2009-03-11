@@ -3,24 +3,20 @@
 @implementation TitledCell
 
 @synthesize title;
+@synthesize titleWidth;
 
 - (UILabel*)createTitleLabel {
     return [[UILabel alloc] initWithFrame:CGRectZero];
 }
 
-- (void)prepareToReuse {
-    [super prepareToReuse];
-    
-    title.font = [UIFont boldSystemFontOfSize:16];
-    title.backgroundColor = [UIColor clearColor];
-    //		title.userInteractionEnabled = YES;
-}
-
 - (id)initWithFrame:(CGRect)frame reuseIdentifier:(NSString *)reuseIdentifier {
     if (self = [super initWithFrame:frame reuseIdentifier:reuseIdentifier]) {
 		title = [self createTitleLabel];
+        title.font = [UIFont boldSystemFontOfSize:16];
+        title.backgroundColor = [UIColor clearColor];
+		[self.contentView addSubview:title];
         
-		[self addSubview:title];
+        titleWidth = 100;
     }
     
     return self;
@@ -41,14 +37,16 @@
 - (void)layoutSubviews {
 	[super layoutSubviews];
 	CGRect bounds = self.contentView.bounds;
-	bounds = CGRectInset(bounds, 20, 2);
+	bounds = CGRectInset(bounds, 10, 2);
 	
-	CGRect leftRect;
-	CGRect rightRect;
-	CGRectDivide(bounds, &leftRect, &rightRect, 100, CGRectMinXEdge);
+	CGRect titleRect;
+	CGRect controlsRect = bounds;
+//	CGRectDivide(bounds, &titleRect, &controlsRect, self.xMargin, CGRectMinXEdge);
+	CGRectDivide(controlsRect, &titleRect, &controlsRect, titleWidth, CGRectMinXEdge);
 	
-	title.frame = leftRect;
-    [self layoutControls:rightRect];
+	title.frame = titleRect;
+//    self.contentView.backgroundColor = [UIColor greenColor];
+    [self layoutControls:controlsRect];
 }
 
 - (void)dealloc {

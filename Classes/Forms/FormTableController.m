@@ -2,6 +2,59 @@
 
 #import "TextEditController.h"
 #import "SelectionController.h"
+#import "AgreementController.h"
+#import "SwitchCell.h"
+#import "AgreementCell.h"
+
+#import <objc/runtime.h>
+
+@protocol SampleProtocol
+
+@optional
+
+@property (nonatomic) BOOL someBool;
+
+@end
+
+@interface SampleClass : NSObject<SampleProtocol> {
+    BOOL innerBool;
+}
+
+@property (nonatomic) BOOL innerBool;
+@end
+
+BOOL returnSomeBool(id self, SEL _cmd) {
+    NSLog(@"getter called");
+    return ((SampleClass*)self).innerBool;
+}
+
+void setNewSomeBool(id self, SEL _cmd, BOOL value) {
+    NSLog(@"setter called with %d", value);
+    ((SampleClass*)self).innerBool = value;
+}
+
+@implementation SampleClass
+
+@synthesize innerBool;
+@dynamic someBool;
+
++ (BOOL)resolveInstanceMethod:(SEL)aSEL {
+    if (aSEL == @selector(someBool)) {
+        NSLog(@"dynamicly resolve getter");
+        class_addMethod([self class], aSEL, (IMP)returnSomeBool, "B@:");
+        return YES;
+    } else if (aSEL == @selector(setSomeBool:)) {
+        NSLog(@"dynamicly resolve setter");
+        class_addMethod([self class], aSEL, (IMP)setNewSomeBool, "v@:B");
+        return YES;
+    }
+    
+    return [super resolveInstanceMethod:aSEL];
+}
+
+
+@end
+
 
 @implementation FormTableController
 
@@ -31,6 +84,17 @@
 
 - (FormFieldDescriptor*)secureFieldWithTitle:(NSString*)title forProperty:(NSString*)keyPath ofObject:(id)object {
 	FormFieldDescriptor *desc = [self stringFieldWithTitle:title forProperty:keyPath ofObject:object];
+    
+//    SampleClass *o = [[SampleClass alloc] init];
+//    NSLog(@"%d", o.someBool);
+//    [o setValue:[NSNumber numberWithBool:YES] forKeyPath:@"someBool"];
+//    NSLog(@"%d", [[o valueForKey:@"someBool"] boolValue]);
+//    
+    
+//    UITextField *tf = [[UITextField alloc] init];
+//    tf.enablesReturnKeyAutomatically = YES;
+//    NSLog(@"%d", [tf valueForKeyPath:@"keyboardType"]);
+//    [tf setValue:[NSNumber numberWithBool:YES] forKey:@"enablesReturnKeyAutomatically"];
     [desc.options setValue:[NSNumber numberWithBool:YES] forKey:@"value.secureTextEntry"];
 	return desc;
 }
@@ -41,6 +105,14 @@
 
 - (FormFieldDescriptor*)collectionFieldWithTitle:(NSString*)title forProperty:(NSString*)keyPath ofObject:(id)object {
 	return [self fieldWithTitle:title forProperty:keyPath ofObject:object type:FORM_FIELD_DESCRIPTOR_COLLECTION];
+}
+
+- (FormFieldDescriptor*)switchFieldWithTitle:(NSString*)title forProperty:(NSString*)keyPath ofObject:(id)object {
+	return [self fieldWithTitle:title forProperty:keyPath ofObject:object type:FORM_FIELD_DESCRIPTOR_SWITCH];
+}
+
+- (FormFieldDescriptor*)agreementFieldWithTitle:(NSString*)title forProperty:(NSString*)keyPath ofObject:(id)object {
+	return [self fieldWithTitle:title forProperty:keyPath ofObject:object type:FORM_FIELD_DESCRIPTOR_AGREEMENT];
 }
 
 - (FormFieldDescriptor*)customFieldWithTitle:(NSString*)title forProperty:(NSString*)keyPath ofObject:(id)object {
@@ -85,6 +157,10 @@
 	return nil;
 }
 
+- (NSString*)htmlForDescriptor:(FormFieldDescriptor*)desc atIndexPath:(NSIndexPath*)indexPath {
+	return nil;
+}
+
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
 	NSInteger sections = [self numberOfDataSections];
 	
@@ -109,11 +185,17 @@
 	return section < [self numberOfDataSections] ? [self numberOfFieldsInDataSection:section] : 1;
 }
 
+- (FormCell*)formCellWithClass:(Class)klass reuseIdentifier:(NSString*)reuseIdentifier descriptor:(FormFieldDescriptor*)desc {
+    FormCell *result = [[[klass alloc] initWithFrame:CGRectZero reuseIdentifier:reuseIdentifier] autorelease];
+    result.fieldDescriptor = desc;
+    return result;
+}
+
 - (StaticFormCell*)immutableCellWithDescriptor:(FormFieldDescriptor*)desc{
 	static NSString *cellId = @"ImmutableFieldCell";
 	StaticFormCell *cell = (StaticFormCell*)[self.table dequeueReusableCellWithIdentifier:cellId];
 	if (cell == nil) { 
-        cell = [[[StaticFormCell alloc] initWithFrame:CGRectZero reuseIdentifier:cellId] autorelease]; 
+        cell = (StaticFormCell*)[self formCellWithClass:[StaticFormCell class] reuseIdentifier:cellId descriptor:desc]; 
         cell.title.textColor = [UIColor grayColor];
         cell.value.textColor = [UIColor grayColor];
     }
@@ -126,7 +208,7 @@
 - (StaticFormCell*)staticCellWithDescriptor:(FormFieldDescriptor*)desc {
 	static NSString *cellId = @"StaticFieldCell";
 	StaticFormCell *cell = (StaticFormCell*)[self.table dequeueReusableCellWithIdentifier:cellId];
-	if (cell == nil) { cell = [[[StaticFormCell alloc] initWithFrame:CGRectZero reuseIdentifier:cellId] autorelease]; }
+	if (cell == nil) { cell = (StaticFormCell*)[self formCellWithClass:[StaticFormCell class] reuseIdentifier:cellId descriptor:desc]; }
 	
 	cell.fieldDescriptor = desc;
 
@@ -137,7 +219,7 @@
 	static NSString *cellId = @"TextCell";
 	StaticFormCell *cell = (StaticFormCell*)[self.table dequeueReusableCellWithIdentifier:cellId];
 	if (cell == nil) { 
-        cell = [[[StaticFormCell alloc] initWithFrame:CGRectZero reuseIdentifier:cellId] autorelease]; 
+        cell = (StaticFormCell*)[self formCellWithClass:[StaticFormCell class] reuseIdentifier:cellId descriptor:desc];; 
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     }
     
@@ -152,10 +234,28 @@
 - (TextFieldCell*)textFieldCellWithDescriptor:(FormFieldDescriptor*)desc {
 	static NSString *cellId = @"SettingsCell";
 	TextFieldCell *cell = (TextFieldCell*)[self.table dequeueReusableCellWithIdentifier:cellId];
-	if (cell == nil) { cell = [[[TextFieldCell alloc] initWithFrame:CGRectZero reuseIdentifier:cellId] autorelease]; }
+	if (cell == nil) { cell = (TextFieldCell*)[self formCellWithClass:[TextFieldCell class] reuseIdentifier:cellId descriptor:desc]; }
 	
 	cell.fieldDescriptor = desc;
     cell.value.delegate = self;
+	return cell;
+}
+
+- (SwitchCell*)switchFieldCellWithDescriptor:(FormFieldDescriptor*)desc {
+	static NSString *cellId = @"SwitchCell";
+	SwitchCell *cell = (SwitchCell*)[self.table dequeueReusableCellWithIdentifier:cellId];
+	if (cell == nil) { cell = (SwitchCell*)[self formCellWithClass:[SwitchCell class] reuseIdentifier:cellId descriptor:desc]; }
+	
+	cell.fieldDescriptor = desc;
+	return cell;
+}
+
+- (AgreementCell*)agreementFieldCellWithDescriptor:(FormFieldDescriptor*)desc {
+	static NSString *cellId = @"AgreementCell";
+	AgreementCell *cell = (AgreementCell*)[self.table dequeueReusableCellWithIdentifier:cellId];
+	if (cell == nil) { cell = (AgreementCell*)[self formCellWithClass:[AgreementCell class] reuseIdentifier:cellId descriptor:desc]; }
+	
+	cell.fieldDescriptor = desc;
 	return cell;
 }
 
@@ -177,6 +277,12 @@
     switch (desc.type) {
         case FORM_FIELD_DESCRIPTOR_TEXT_FIELD:
             return [self textFieldCellWithDescriptor:desc];
+            break;
+        case FORM_FIELD_DESCRIPTOR_SWITCH:
+            return [self switchFieldCellWithDescriptor:desc];
+            break;
+        case FORM_FIELD_DESCRIPTOR_AGREEMENT:
+            return [self agreementFieldCellWithDescriptor:desc];
             break;
         case FORM_FIELD_DESCRIPTOR_TEXT_AREA:
         case FORM_FIELD_DESCRIPTOR_COLLECTION:
@@ -200,12 +306,24 @@
 	return [NSString stringWithFormat:@"Edit %@", [desc.title lowercaseString]];
 }
 
+- (NSString*)agreementControllerTitleForDescriptor:(FormFieldDescriptor*)desc indexPath:(NSIndexPath*)indexPath {
+	return [NSString stringWithFormat:@"%@", desc.title];
+}
+
 - (UIViewController*)selectionControllerForIndexPath:(NSIndexPath*)indexPath title:(NSString*)title descriptor:(FormFieldDescriptor*)desc {
     SelectionController *selection = [[[SelectionController alloc] initWithTitle:title] autorelease];
     selection.dataSource = desc.dataSource;
     selection.keyPath = desc.keyPath;
     selection.collection = [self collectionForField:indexPath];
     return selection;
+}
+
+- (UIViewController*)agreementControllerForIndexPath:(NSIndexPath*)indexPath title:(NSString*)title descriptor:(FormFieldDescriptor*)desc {
+    AgreementController *agreementController = [[[AgreementController alloc] initWithTitle:title] autorelease];
+    agreementController.dataSource = desc.dataSource;
+    agreementController.keyPath = desc.keyPath;
+    agreementController.html = [self htmlForDescriptor:desc atIndexPath:indexPath];
+    return agreementController;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -230,6 +348,10 @@
 		textEdit.dataSource = desc.dataSource;
 		textEdit.keyPath = desc.keyPath;
 		[self.navigationController pushViewController:textEdit animated:YES];
+	} else if(desc.type == FORM_FIELD_DESCRIPTOR_AGREEMENT) {
+		NSString *title = [self agreementControllerTitleForDescriptor:desc indexPath:indexPath];
+		UIViewController *agreementController = [self agreementControllerForIndexPath:indexPath title:title descriptor:(FormFieldDescriptor*)desc];
+		[self.navigationController pushViewController:agreementController animated:YES];
 	}
 }
 

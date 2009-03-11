@@ -6,17 +6,28 @@
 	return fieldDescriptor;
 }
 
-- (void)prepareToReuse {
+- (id)initWithFrame:(CGRect)frame reuseIdentifier:(NSString *)reuseIdentifier {
+    if(self = [super initWithFrame:frame reuseIdentifier:reuseIdentifier]) {
+        restoreData = [[NSMutableDictionary alloc] init];
+    }
+    
+    return self;
 }
 
 - (void)onFieldDescriptorUpdate {
-    [self prepareToReuse];
-    
-    NSMutableDictionary *options = fieldDescriptor.options;
-    for(NSString *key in [options allKeys]) {
-//        NSLog(@"value for key '%@' is '%@'", key, [self valueForKey:key]);
-        [self setValue:[options valueForKey:key] forKeyPath:key];
-    }
+//    for(NSString *key in restoreData) {
+//        NSObject *value = [restoreData valueForKey:key];
+//        NSLog(@"restoring '%@' to '%@'", key, value);
+//        [self setValue:value forKeyPath:key];
+//    }
+//    
+//    [restoreData removeAllObjects];
+//    
+//    NSMutableDictionary *options = fieldDescriptor.options;
+//    for(NSString *key in [options allKeys]) {
+//        [restoreData setValue:[self valueForKeyPath:key] forKey:key];
+//        [self setValue:[options valueForKey:key] forKeyPath:key];
+//    }
 }
 
 - (void)setFieldDescriptor:(FormFieldDescriptor*)desc {
@@ -37,6 +48,7 @@
 }
 
 - (void)dealloc {
+    [restoreData release];
 	[fieldDescriptor release];
 	
     [super dealloc];
