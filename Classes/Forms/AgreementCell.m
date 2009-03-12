@@ -30,8 +30,8 @@
 - (void)onFieldDescriptorUpdate {
     [super onFieldDescriptorUpdate];
     
-	self.value.text = [self.sourceValue boolValue] ? @"Accepted" :  @"Not accepted";
-	self.value.textColor = [self.sourceValue boolValue] 
+	self.value.text = [self.fieldDescriptor.value boolValue] ? @"Accepted" :  @"Not accepted";
+	self.value.textColor = [self.fieldDescriptor.value boolValue] 
     ? [UIColor colorWithRed:80/255. green:160/255. blue:15/255. alpha:1] 
     : [UIColor colorWithRed:240/255. green:50/255. blue:50/255. alpha:1];
 }

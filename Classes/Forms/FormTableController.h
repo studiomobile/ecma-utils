@@ -7,7 +7,15 @@
 #import "StaticFormCell.h"
 
 @interface FormTableController : FormController<UITableViewDataSource> {
+    NSIndexPath *currentIndexPath;
+    
+    UIView *datePickerView;
+    UIDatePicker *datePicker;
+    BOOL datePickerVisible;
 }
+@property (retain) NSIndexPath *currentIndexPath;
+@property (readonly) UIView *datePickerView;
+@property (readonly) UIDatePicker *datePicker;
 
 - (void)enableButton:(BOOL)enable;
 - (NSString*)buttonTitle;
@@ -20,6 +28,7 @@
 - (FormFieldDescriptor*)collectionFieldWithTitle:(NSString*)title forProperty:(NSString*)keyPath ofObject:(id)object;
 - (FormFieldDescriptor*)switchFieldWithTitle:(NSString*)title forProperty:(NSString*)keyPath ofObject:(id)object;
 - (FormFieldDescriptor*)agreementFieldWithTitle:(NSString*)title forProperty:(NSString*)keyPath ofObject:(id)object;
+- (FormFieldDescriptor*)dateTimeFieldWithTitle:(NSString*)title forProperty:(NSString*)keyPath ofObject:(id)object;
 - (FormFieldDescriptor*)customFieldWithTitle:(NSString*)title forProperty:(NSString*)keyPath ofObject:(id)object;
 
 - (StaticFormCell*)staticCellWithDescriptor:(FormFieldDescriptor*)desc;

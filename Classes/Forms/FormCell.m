@@ -39,14 +39,6 @@
 	[self onFieldDescriptorUpdate];
 }
 
-- (id)sourceValue {
-	return [self.fieldDescriptor.dataSource valueForKey:self.fieldDescriptor.keyPath];
-}
-
-- (void)setSourceValue:(id)newValue {
-	return [self.fieldDescriptor.dataSource setValue:newValue forKey:self.fieldDescriptor.keyPath];
-}
-
 - (void)dealloc {
     [restoreData release];
 	[fieldDescriptor release];

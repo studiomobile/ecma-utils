@@ -19,7 +19,7 @@
 - (void)onFieldDescriptorUpdate {
     [super onFieldDescriptorUpdate];
     
-	self.value.text = [self.sourceValue description];
+	self.value.text = [self.fieldDescriptor.value description];
 }
 
 - (void)layoutControls:(CGRect)controlsRect {

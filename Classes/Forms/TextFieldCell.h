@@ -6,4 +6,5 @@
 }
 @property (readonly) UITextField *value;
 
+- (void)edit;
 @end

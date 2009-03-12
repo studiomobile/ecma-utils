@@ -27,11 +27,11 @@
 - (void)onFieldDescriptorUpdate {
     [super onFieldDescriptorUpdate];
     
-	self.switcher.on = [self.sourceValue boolValue];
+	self.switcher.on = [self.fieldDescriptor.value boolValue];
 }
 
 - (void)switched {
-    self.sourceValue = [NSNumber numberWithBool:switcher.on];
+    self.fieldDescriptor.value = [NSNumber numberWithBool:switcher.on];
 }
 
 @end

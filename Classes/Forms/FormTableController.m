@@ -5,6 +5,7 @@
 #import "AgreementController.h"
 #import "SwitchCell.h"
 #import "AgreementCell.h"
+#import "DateTimeCell.h"
 
 #import <objc/runtime.h>
 
@@ -57,6 +58,8 @@ void setNewSomeBool(id self, SEL _cmd, BOOL value) {
 
 
 @implementation FormTableController
+
+@synthesize currentIndexPath;
 
 - (void)viewDidLoad {
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_updateData) name:UIKeyboardDidHideNotification object:nil];
@@ -113,6 +116,10 @@ void setNewSomeBool(id self, SEL _cmd, BOOL value) {
 
 - (FormFieldDescriptor*)agreementFieldWithTitle:(NSString*)title forProperty:(NSString*)keyPath ofObject:(id)object {
 	return [self fieldWithTitle:title forProperty:keyPath ofObject:object type:FORM_FIELD_DESCRIPTOR_AGREEMENT];
+}
+
+- (FormFieldDescriptor*)dateTimeFieldWithTitle:(NSString*)title forProperty:(NSString*)keyPath ofObject:(id)object {
+    return [self fieldWithTitle:title forProperty:keyPath ofObject:object type:FORM_FIELD_DESCRIPTOR_DATETIME];
 }
 
 - (FormFieldDescriptor*)customFieldWithTitle:(NSString*)title forProperty:(NSString*)keyPath ofObject:(id)object {
@@ -186,44 +193,33 @@ void setNewSomeBool(id self, SEL _cmd, BOOL value) {
 }
 
 - (FormCell*)formCellWithClass:(Class)klass reuseIdentifier:(NSString*)reuseIdentifier descriptor:(FormFieldDescriptor*)desc {
-    FormCell *result = [[[klass alloc] initWithFrame:CGRectZero reuseIdentifier:reuseIdentifier] autorelease];
+	FormCell *result = (FormCell*)[self.table dequeueReusableCellWithIdentifier:reuseIdentifier];
+    if(!result) {
+        result = [[[klass alloc] initWithFrame:CGRectZero reuseIdentifier:reuseIdentifier] autorelease];
+    }
+    
     result.fieldDescriptor = desc;
     return result;
 }
 
 - (StaticFormCell*)immutableCellWithDescriptor:(FormFieldDescriptor*)desc{
 	static NSString *cellId = @"ImmutableFieldCell";
-	StaticFormCell *cell = (StaticFormCell*)[self.table dequeueReusableCellWithIdentifier:cellId];
-	if (cell == nil) { 
-        cell = (StaticFormCell*)[self formCellWithClass:[StaticFormCell class] reuseIdentifier:cellId descriptor:desc]; 
-        cell.title.textColor = [UIColor grayColor];
-        cell.value.textColor = [UIColor grayColor];
-    }
-	
-	cell.fieldDescriptor = desc;
-    
+	StaticFormCell *cell = (StaticFormCell*)[self formCellWithClass:[StaticFormCell class] reuseIdentifier:cellId descriptor:desc]; 
+    cell.title.textColor = [UIColor grayColor];
+    cell.value.textColor = [UIColor grayColor];
 	return cell;
 }
 
 - (StaticFormCell*)staticCellWithDescriptor:(FormFieldDescriptor*)desc {
 	static NSString *cellId = @"StaticFieldCell";
-	StaticFormCell *cell = (StaticFormCell*)[self.table dequeueReusableCellWithIdentifier:cellId];
-	if (cell == nil) { cell = (StaticFormCell*)[self formCellWithClass:[StaticFormCell class] reuseIdentifier:cellId descriptor:desc]; }
-	
-	cell.fieldDescriptor = desc;
-
+	StaticFormCell *cell = (StaticFormCell*)[self formCellWithClass:[StaticFormCell class] reuseIdentifier:cellId descriptor:desc];
 	return cell;
 }
 
 - (StaticFormCell*)disclosingCellWithDescriptor:(FormFieldDescriptor*)desc {
 	static NSString *cellId = @"TextCell";
-	StaticFormCell *cell = (StaticFormCell*)[self.table dequeueReusableCellWithIdentifier:cellId];
-	if (cell == nil) { 
-        cell = (StaticFormCell*)[self formCellWithClass:[StaticFormCell class] reuseIdentifier:cellId descriptor:desc];; 
-        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-    }
-    
-	cell.fieldDescriptor = desc;
+	StaticFormCell *cell = (StaticFormCell*)[self formCellWithClass:[StaticFormCell class] reuseIdentifier:cellId descriptor:desc];; 
+    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
 	return cell;
 }
 
@@ -233,29 +229,25 @@ void setNewSomeBool(id self, SEL _cmd, BOOL value) {
 
 - (TextFieldCell*)textFieldCellWithDescriptor:(FormFieldDescriptor*)desc {
 	static NSString *cellId = @"SettingsCell";
-	TextFieldCell *cell = (TextFieldCell*)[self.table dequeueReusableCellWithIdentifier:cellId];
-	if (cell == nil) { cell = (TextFieldCell*)[self formCellWithClass:[TextFieldCell class] reuseIdentifier:cellId descriptor:desc]; }
-	
-	cell.fieldDescriptor = desc;
-    cell.value.delegate = self;
+	TextFieldCell *cell = (TextFieldCell*)[self formCellWithClass:[TextFieldCell class] reuseIdentifier:cellId descriptor:desc];
 	return cell;
 }
 
 - (SwitchCell*)switchFieldCellWithDescriptor:(FormFieldDescriptor*)desc {
 	static NSString *cellId = @"SwitchCell";
-	SwitchCell *cell = (SwitchCell*)[self.table dequeueReusableCellWithIdentifier:cellId];
-	if (cell == nil) { cell = (SwitchCell*)[self formCellWithClass:[SwitchCell class] reuseIdentifier:cellId descriptor:desc]; }
-	
-	cell.fieldDescriptor = desc;
+	SwitchCell *cell = (SwitchCell*)[self formCellWithClass:[SwitchCell class] reuseIdentifier:cellId descriptor:desc];
 	return cell;
 }
 
 - (AgreementCell*)agreementFieldCellWithDescriptor:(FormFieldDescriptor*)desc {
 	static NSString *cellId = @"AgreementCell";
-	AgreementCell *cell = (AgreementCell*)[self.table dequeueReusableCellWithIdentifier:cellId];
-	if (cell == nil) { cell = (AgreementCell*)[self formCellWithClass:[AgreementCell class] reuseIdentifier:cellId descriptor:desc]; }
-	
-	cell.fieldDescriptor = desc;
+	AgreementCell *cell = (AgreementCell*)[self formCellWithClass:[AgreementCell class] reuseIdentifier:cellId descriptor:desc];
+	return cell;
+}
+
+- (DateTimeCell*)dateTimeFieldCellWithDescriptor:(FormFieldDescriptor*)desc {
+	static NSString *cellId = @"DateTimeCell";
+	DateTimeCell *cell = (DateTimeCell*)[self formCellWithClass:[DateTimeCell class] reuseIdentifier:cellId descriptor:desc];
 	return cell;
 }
 
@@ -283,6 +275,9 @@ void setNewSomeBool(id self, SEL _cmd, BOOL value) {
             break;
         case FORM_FIELD_DESCRIPTOR_AGREEMENT:
             return [self agreementFieldCellWithDescriptor:desc];
+            break;
+        case FORM_FIELD_DESCRIPTOR_DATETIME:
+            return [self dateTimeFieldCellWithDescriptor:desc];
             break;
         case FORM_FIELD_DESCRIPTOR_TEXT_AREA:
         case FORM_FIELD_DESCRIPTOR_COLLECTION:
@@ -326,17 +321,113 @@ void setNewSomeBool(id self, SEL _cmd, BOOL value) {
     return agreementController;
 }
 
+- (FormCell*)currentCell {
+    return (FormCell*)[self.table cellForRowAtIndexPath:self.currentIndexPath];
+}
+
+- (void)datePickerValueChanged {
+    // TODO
+    FormCell *cell = [self currentCell];
+    [cell.fieldDescriptor.dataSource setValue:self.datePicker.date forKey:cell.fieldDescriptor.keyPath];
+    [cell onFieldDescriptorUpdate];
+}
+
+- (void)createDatePickerViews {
+    CGFloat width = self.view.bounds.size.width;
+    
+    UIToolbar *toolbar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, width, 44)];
+    UIBarButtonItem *doneButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(hideDatePicker)];
+    UIBarButtonItem *space = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+    [toolbar setItems:[NSArray arrayWithObjects:space, doneButton, nil]];
+    toolbar.barStyle = UIBarStyleBlackOpaque;
+    [space release];
+    [doneButton release];
+    
+    datePicker = [[UIDatePicker alloc] init];
+    datePicker.frame = CGRectMake(0, toolbar.frame.size.height, datePicker.frame.size.width, datePicker.frame.size.height);
+    [datePicker addTarget:self action:@selector(datePickerValueChanged) forControlEvents:UIControlEventValueChanged];
+    
+    CGFloat viewHeight = toolbar.frame.size.height + datePicker.frame.size.height;
+    datePickerView = [[UIView alloc] initWithFrame:CGRectMake(0, self.view.bounds.size.height, width, viewHeight)];
+    [datePickerView addSubview:toolbar];
+    [toolbar release];
+    [datePickerView addSubview:datePicker];
+    [datePicker release];
+    
+    [self.view addSubview:datePickerView];
+    [datePickerView release];
+}
+
+- (UIView*)datePickerView {
+    if(!datePickerView) {
+        [self createDatePickerViews];
+    }
+    
+    return datePickerView;
+}
+
+- (UIDatePicker*)datePicker {
+    if(!datePicker) {
+        [self createDatePickerViews];
+    }
+    
+    return datePicker;
+}
+
+- (void)setDatePickerVisible:(BOOL)v {
+    if(datePickerVisible == v) return;
+    
+    datePickerVisible = v;
+    
+    CGRect frame = self.datePickerView.frame;
+    if(v) {
+        frame.origin.y -= frame.size.height;
+        [self adjustTableRelativeToFrame:frame frameView:self.view];
+    } else {
+        [self restoreTableFrame:NO];
+        frame.origin.y += frame.size.height;
+    }
+    
+    [UIView beginAnimations:nil context:nil];
+    [UIView setAnimationDuration:0.3];
+    
+    self.datePickerView.frame = frame;
+    
+    [UIView commitAnimations];
+}
+
+- (void)showDatePicker {
+    self.datePicker.datePickerMode = UIDatePickerModeDate;
+    self.datePicker.date = [self currentCell].fieldDescriptor.value;
+    [self setDatePickerVisible:YES];
+}
+
+- (void)hideDatePicker {
+    [self setDatePickerVisible:NO];
+}
+
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 	if (indexPath.section == [self numberOfDataSections]) {
 		[self buttonPressed];
 		return;
 	}
 	
-    [self scrollToField:indexPath animated:YES];
+    self.currentIndexPath = indexPath;
+//	FormFieldDescriptor *desc = [self descriptorForField:indexPath];
+	FormFieldDescriptor *desc = [self currentCell].fieldDescriptor;
+    
+    if(desc.type != FORM_FIELD_DESCRIPTOR_TEXT_FIELD) {
+        [self hideKeyboard];
+    }
 
-	FormFieldDescriptor *desc = [self descriptorForField:indexPath];
-
-	if(desc.type == FORM_FIELD_DESCRIPTOR_CUSTOM) {
+    if(desc.type != FORM_FIELD_DESCRIPTOR_DATETIME) {
+        [self hideDatePicker];
+    }
+    
+	if(desc.type == FORM_FIELD_DESCRIPTOR_TEXT_FIELD) {
+        TextFieldCell *cell = (TextFieldCell*)[self.table cellForRowAtIndexPath:indexPath];
+        [cell edit];
+	} else if(desc.type == FORM_FIELD_DESCRIPTOR_CUSTOM) {
 		[self didSelectCustomCellAtIndexPath:indexPath];
 	} else if (desc.type == FORM_FIELD_DESCRIPTOR_COLLECTION) {
 		NSString *title = [self selectControllerTitleForDescriptor:desc indexPath:indexPath];
@@ -352,7 +443,18 @@ void setNewSomeBool(id self, SEL _cmd, BOOL value) {
 		NSString *title = [self agreementControllerTitleForDescriptor:desc indexPath:indexPath];
 		UIViewController *agreementController = [self agreementControllerForIndexPath:indexPath title:title descriptor:(FormFieldDescriptor*)desc];
 		[self.navigationController pushViewController:agreementController animated:YES];
+	} else if(desc.type == FORM_FIELD_DESCRIPTOR_DATETIME) {
+        [self showDatePicker];
 	}
+    
+    if(desc.type != FORM_FIELD_DESCRIPTOR_TEXT_FIELD) {
+        [self scrollToField:indexPath animated:YES];
+    }
+}
+
+- (void)textFieldSelected {
+    self.currentIndexPath = [self indexPathOfSelectedTextField];
+    [self hideDatePicker];
 }
 
 - (void)viewWillAppear:(BOOL)animated {

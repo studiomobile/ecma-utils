@@ -6,6 +6,7 @@ typedef enum FormFieldDescriptorType {
     FORM_FIELD_DESCRIPTOR_COLLECTION,
     FORM_FIELD_DESCRIPTOR_SWITCH,
     FORM_FIELD_DESCRIPTOR_AGREEMENT,
+    FORM_FIELD_DESCRIPTOR_DATETIME,
     FORM_FIELD_DESCRIPTOR_CUSTOM
 } FormFieldDescriptorType;
 
@@ -23,6 +24,7 @@ typedef enum FormFieldDescriptorType {
 @property (retain) NSString *title;
 @property (assign) id dataSource;
 @property (retain) NSString *keyPath;
+@property (readwrite, assign) id value;
 
 @property (readonly) NSMutableDictionary *options;
 @end

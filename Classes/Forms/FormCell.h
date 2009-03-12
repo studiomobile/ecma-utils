@@ -8,7 +8,6 @@
     NSMutableDictionary *restoreData;
 }
 @property (readwrite, retain) FormFieldDescriptor *fieldDescriptor;
-@property (readwrite, retain) id sourceValue;
 
 - (void)onFieldDescriptorUpdate;
 

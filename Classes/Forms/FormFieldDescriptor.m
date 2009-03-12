@@ -16,6 +16,14 @@
     return self;
 }
 
+- (id)value {
+	return [self.dataSource valueForKey:self.keyPath];
+}
+
+- (void)setValue:(id)newValue {
+	return [self.dataSource setValue:newValue forKey:self.keyPath];
+}
+
 - (void)dealloc {
     [options release];
     [super dealloc];

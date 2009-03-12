@@ -51,6 +51,51 @@
 	[notifications removeObserver:self name:UITextFieldTextDidEndEditingNotification object:nil];
 }
 
+- (void)changeTableFrame:(CGRect)newFrame {
+	if(tableViewResized) {
+        return;
+    }
+    
+    oldTblViewFrame = self.table.frame;
+    tableViewResized = YES;
+    
+    [UIView beginAnimations:nil context:NULL];
+    [UIView setAnimationDuration: 0.3];	
+//    [UIView setAnimationDelegate:self];
+    self.table.frame = newFrame;
+	[UIView commitAnimations];
+}
+
+- (void)adjustTableRelativeToFrame:(CGRect)frame frameView:(UIView*)view {
+	CGRect tableFrameInView = [self.table convertRect:self.table.bounds toView:view];
+	CGRect intersection = CGRectIntersection(frame, tableFrameInView);
+
+	if(!CGRectIsNull(intersection)) {
+		CGRect newTableFrameInView, slice;
+		CGRectDivide(tableFrameInView, &slice, &newTableFrameInView, CGRectGetHeight(intersection), CGRectMaxYEdge);
+		CGRect newTableFrame = [view convertRect:newTableFrameInView toView:self.table.superview];
+        [self changeTableFrame:newTableFrame];
+	}
+}
+
+- (void)restoreTableFrame:(BOOL)animated {
+	if(tableViewResized) {
+		tableViewResized = NO;
+        
+        if(animated) {
+//            [UIView beginAnimations:nil context:nil];
+//            [UIView setAnimationDuration:0.3];
+        }
+        
+//        NSLog(@"old frame %@, new one %@", NSStringFromCGRect(self.table.frame), NSStringFromCGRect(oldTblViewFrame));
+		self.table.frame = oldTblViewFrame;
+        
+        if(animated) {
+//            [UIView commitAnimations];
+        }
+	}
+}
+
 - (void)kbdWillShow:(NSNotification*)notification {
 	if(tableViewResized) { //if you want to understand why this if statement see comments in kbdWillHide
 		return;
@@ -73,20 +118,18 @@
 	
 	UIView *appView = [UIApplication mainView];	
 	CGRect kbdAppFrame = CGRectOffset(kbdBounds, kbdCenter.x - kbdBounds.size.width/2, kbdCenter.y - kbdBounds.size.height/2 );
+
+    [self adjustTableRelativeToFrame:kbdAppFrame frameView:appView];
+    return;
+
 	CGRect tblAppFrame = [self.table convertRect:self.table.bounds toView:appView];
 	CGRect tblAndKbdIntersection = CGRectIntersection(kbdAppFrame, tblAppFrame);
 	if(!CGRectIsNull(tblAndKbdIntersection)) {
 		CGRect newTblAppFrame, slice;
 		CGRectDivide(tblAppFrame, &slice, &newTblAppFrame, CGRectGetHeight(tblAndKbdIntersection), CGRectMaxYEdge);
 		CGRect newTblFrame = [appView convertRect:newTblAppFrame toView:self.table.superview];
-		oldTblViewFrame = self.table.frame;
-		tableViewResized = YES;
 
-		[UIView beginAnimations: nil context: NULL];
-		[UIView setAnimationDuration: 0.3];	
-		[UIView setAnimationDelegate:self];
-		self.table.frame = newTblFrame;
-		[UIView commitAnimations];
+        [self changeTableFrame:newTblFrame];
 	}
 }
 
@@ -106,27 +149,22 @@
 	//(averbin)
 }
 
-- (void)restoreTableSize {
-    NSLog(@"restore!");
-	if(tableViewResized) {
-		tableViewResized = NO;
-		self.table.frame = oldTblViewFrame;
-        //self.table.superview.backgroundColor = superviewBackground;
-        //[superviewBackground release];
-	}
-}
-
 - (void)kbdDidHide {
 	keyboardShown = FALSE;
-    [self restoreTableSize];
+}
+
+- (void)textFieldSelected {
 }
 
 - (void)editingStarted:(NSNotification*)notification {
 	focusedTextField = (UITextField*)[notification object];
     [self scrollToFocusedTextField:YES];
+
+    [self textFieldSelected];
 }
 
 - (void)editingFinished:(NSNotification*)notification {
+    [self hideKeyboard];
 	focusedTextField = nil;
 }
 
@@ -134,22 +172,26 @@
     [self.table scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionMiddle animated:YES];		
 }
 
+- (NSIndexPath*)indexPathOfSelectedTextField {
+    if(!focusedTextField) return nil;
+    
+    UIView *cell = focusedTextField;
+    do {
+        cell = cell.superview;
+    } while(![cell isKindOfClass:[UITableViewCell class]] && cell != nil);
+    
+    return [self.table indexPathForCell:(UITableViewCell*)cell];
+}
+
 - (void)scrollToFocusedTextField:(BOOL)animated  {
 	if(focusedTextField) {
-		UIView *cell = focusedTextField;
-		do {
-			cell = cell.superview;
-		} while(![cell isKindOfClass:[UITableViewCell class]] && cell != nil);
-		
-		NSIndexPath *path = [self.table indexPathForCell:(UITableViewCell*)cell];
-		[self scrollToField:path animated:animated];		
+		[self scrollToField:[self indexPathOfSelectedTextField] animated:animated];		
 	}
 }
 
 - (void)hideKeyboard {
 	if(keyboardShown && focusedTextField) {
-        NSLog(@"hide");
-        [self restoreTableSize];
+        [self restoreTableFrame:YES];
 		[focusedTextField resignFirstResponder];
 	}
 }

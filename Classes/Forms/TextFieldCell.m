@@ -24,21 +24,25 @@
     return self;
 }
 
+- (void)edit {
+    [self.value becomeFirstResponder];
+}
+
 - (void)onFieldDescriptorUpdate {
     [super onFieldDescriptorUpdate];
     
-	self.value.text = self.sourceValue;
+	self.value.text = self.fieldDescriptor.value;
 	self.value.secureTextEntry = [[self.fieldDescriptor.options objectForKey:@"value.secureTextEntry"] boolValue];
 }
 
 - (void)textFieldDidEndEditing:(UITextField *)textField {
-	self.sourceValue = value.text;
+	self.fieldDescriptor.value = value.text;
 }
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
-	self.sourceValue = value.text;
+	self.fieldDescriptor.value = value.text;
 	[value resignFirstResponder];
-	return YES;
+    return YES;
 }
 
 - (void)layoutControls:(CGRect)controlsRect {
