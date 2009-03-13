@@ -5,6 +5,9 @@
 
 #import "TextFieldCell.h"
 #import "StaticFormCell.h"
+#import "SwitchCell.h"
+#import "AgreementCell.h"
+#import "DateTimeCell.h"
 
 @interface FormTableController : FormController<UITableViewDataSource> {
     NSIndexPath *currentIndexPath;
@@ -16,6 +19,7 @@
 @property (retain) NSIndexPath *currentIndexPath;
 @property (readonly) UIView *datePickerView;
 @property (readonly) UIDatePicker *datePicker;
+@property (readonly) FormCell *currentCell;
 
 - (void)enableButton:(BOOL)enable;
 - (NSString*)buttonTitle;
@@ -35,5 +39,8 @@
 - (StaticFormCell*)immutableCellWithDescriptor:(FormFieldDescriptor*)desc;
 - (StaticFormCell*)disclosingCellWithDescriptor:(FormFieldDescriptor*)desc;
 - (TextFieldCell*)textFieldCellWithDescriptor:(FormFieldDescriptor*)desc;
+- (SwitchCell*)switchFieldCellWithDescriptor:(FormFieldDescriptor*)desc;
+- (AgreementCell*)agreementFieldCellWithDescriptor:(FormFieldDescriptor*)desc;
+- (DateTimeCell*)dateTimeFieldCellWithDescriptor:(FormFieldDescriptor*)desc;
 
 @end
