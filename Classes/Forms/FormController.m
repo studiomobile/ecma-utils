@@ -20,12 +20,6 @@
 	[super awakeFromNib];
 }
 
-- (void)dealloc {
-    self.table = nil;
-    
-    [super dealloc];
-}
-
 - (void)viewWillAppear:(BOOL)animated {
 	[super viewWillAppear:animated];
 
