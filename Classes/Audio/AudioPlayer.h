@@ -1,12 +1,13 @@
 #import <UIKit/UIKit.h>
 #import "AudioQueueObject.h"
 
-#define kSecondsPerBuffer	0.5
+#define kSecondsPerBuffer	0.1
 
 typedef enum {
     kAudioPlayerStatePaused,
     kAudioPlayerStateStopped,
-    kAudioPlayerStatePlaying
+    kAudioPlayerStatePlaying,
+    kAudioPlayerStateInterrupted
 } AudioPlayerState;
 
 @protocol AudioPlayerDelegate
@@ -19,19 +20,26 @@ typedef enum {
 @interface AudioPlayer : AudioQueueObject {
     UInt32 numPacketsToRead;
     AudioStreamPacketDescription *packetDescriptions;
-    BOOL donePlayingFile;
     NSObject<AudioPlayerDelegate> *delegate;
     AudioPlayerState state;
-    BOOL interrupted;
+    AudioQueueBufferRef buffers[kNumberAudioDataBuffers];
+    SInt64 playbackStartPacket;
+    BOOL changingFrameOffset;
 }
 
-- (OSStatus) play;
-- (OSStatus) stop;
-- (OSStatus) pause;
-- (OSStatus) resume;
+- (OSStatus)prepareToPlay;
+- (OSStatus)play;
+- (OSStatus)stop;
+- (OSStatus)pause;
+- (OSStatus)resume;
+- (void)forward:(UInt64)packets;
+- (void)backward:(UInt64)packets;
 
 @property(readwrite, nonatomic, assign) NSObject<AudioPlayerDelegate> *delegate;
-@property(readonly, nonatomic) long currentTime;
+@property(readonly, nonatomic) Float32 currentTime;
+@property(readonly, nonatomic) UInt64 frameOffset;
+@property (readonly, nonatomic, assign) UInt64 packetsCount;
+@property (readwrite, nonatomic, assign) SInt64 packetOffset;
 @property(readonly, nonatomic) AudioPlayerState state;
 
 @end

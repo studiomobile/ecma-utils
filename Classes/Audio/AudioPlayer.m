@@ -1,12 +1,20 @@
 #import <AudioToolbox/AudioToolbox.h>
+#import <math.h>
+
 #import "AudioPlayer.h"
 #import "AudioSession.h"
 
 @interface AudioPlayer ()
 
-- (void)playbackData:(AudioQueueBufferRef)buffer;
+- (void)fillAndEnqueueBuffer:(AudioQueueBufferRef)buffer;
+- (void)fillQueueFromFile;
+- (void)playbackCallback:(AudioQueueBufferRef)buffer;
+- (OSStatus)startPlayback;
 - (void)notifyPropertyChange:(AudioQueuePropertyID)propertyID;
 - (OSStatus)setupPlayback;
+- (void)notifyIsRinningPropertyChange;
+
+@property(readwrite, nonatomic) AudioPlayerState state;
 
 @end
 
@@ -15,7 +23,7 @@ static void playbackCallback (void *inUserData,
                               AudioQueueRef inAudioQueue,
                               AudioQueueBufferRef bufferReference) {
     AudioPlayer *player = (AudioPlayer *) inUserData;
-    [player playbackData:bufferReference];
+    [player playbackCallback:bufferReference];
 }
 
 static void propertyListenerCallback (void *inUserData,
@@ -34,9 +42,8 @@ static void propertyListenerCallback (void *inUserData,
 - (id)initWithSoundFile:(CFURLRef)file {
     if(self = [super initWithSoundFile:file]) {
         packetDescriptions = NULL;
-        donePlayingFile = NO;
         delegate = nil;
-        state = kAudioPlayerStateStopped;
+        self.state = kAudioPlayerStateStopped;
         OSStatus status = [self setupPlayback];
         if(status != noErr) {
             NSLog(@"Failed to create Audio Player: %d", status);
@@ -51,6 +58,7 @@ static void propertyListenerCallback (void *inUserData,
     return self;
 }
 
+
 - (void)dealloc {
     NSNotificationCenter *c = [NSNotificationCenter defaultCenter];
     [c removeObserver:self];
@@ -58,27 +66,28 @@ static void propertyListenerCallback (void *inUserData,
     [super dealloc];
 }
 
+
 - (void)interrupt {
     if (state == kAudioPlayerStatePlaying) {
         [self pause];
-        interrupted = YES;
+        self.state = kAudioPlayerStateInterrupted;
     }
 }
+
 
 - (void)playIfWasInterrupted {
-    if (interrupted) {
-        [self play];
-        interrupted = NO;
+    if (state == kAudioPlayerStateInterrupted) {
+        [self resume];
     }
 }
 
+
 - (OSStatus)cleanUp {
-    state = kAudioPlayerStateStopped;
+    self.state = kAudioPlayerStateStopped;
     if(packetDescriptions) {
         free(packetDescriptions);
         packetDescriptions = NULL;
     }
-    startingPacketNumber = 0;
     AudioQueueRemovePropertyListener (queue,
                                       kAudioQueueProperty_IsRunning,
                                       propertyListenerCallback,
@@ -86,51 +95,59 @@ static void propertyListenerCallback (void *inUserData,
     return [super cleanUp];
 }
 
+
 - (void)notifyPropertyChange:(AudioQueuePropertyID)propertyID {
-    if(propertyID == kAudioQueueProperty_IsRunning) {
-        if(self.isRunning) {
-            state = kAudioPlayerStatePlaying;
-            if([delegate respondsToSelector:@selector(playingStarted:)]) {
-                [delegate playingStarted:self];
-            }
-        } else {
-            state = kAudioPlayerStateStopped;
-            if([delegate respondsToSelector:@selector(playingFinished:)]) {
-                [delegate playingFinished:self];
-            }
+    if (!changingFrameOffset) {
+        if(propertyID == kAudioQueueProperty_IsRunning) {
+            [self notifyIsRinningPropertyChange];
         }
     }
 }
 
-- (void)playbackData:(AudioQueueBufferRef)buffer {
-    NSLog(@"Buffer received!");
-    if(!donePlayingFile) {
-        UInt32 numBytes;
-        UInt32 numPackets = numPacketsToRead;
-        OSStatus status;
-        status = AudioFileReadPackets (audioFileID,
-                                       NO,
-                                       &numBytes,
-                                       packetDescriptions,
-                                       startingPacketNumber,
-                                       &numPackets, 
-                                       buffer->mAudioData);
-        if(numPackets > 0) {
-            buffer->mAudioDataByteSize = numBytes;
-            status = AudioQueueEnqueueBuffer (queue,
-                                              buffer,
-                                              numPackets,
-                                              packetDescriptions);
-            if(status == noErr) {
-                startingPacketNumber += numPackets;
-            }
-        } else {
-            status = AudioQueueStop(queue, FALSE);
-            donePlayingFile = YES;
+- (void)notifyIsRinningPropertyChange {
+    if(self.isRunning) {
+        self.state = kAudioPlayerStatePlaying;
+        if([delegate respondsToSelector:@selector(playingStarted:)]) {
+            [delegate playingStarted:self];
         }
-        if(status != noErr) {
-            NSLog(@"Playback failed: %d", status);
+    } else {
+        self.state = kAudioPlayerStateStopped;
+        if([delegate respondsToSelector:@selector(playingFinished:)]) {
+            [delegate playingFinished:self];
         }
+    }
+}
+
+
+- (void)fillAndEnqueueBuffer:(AudioQueueBufferRef)buffer {
+    UInt32 numBytes;
+    UInt32 numPackets = numPacketsToRead;
+    OSStatus status;
+    status = AudioFileReadPackets (audioFileID,
+                                   NO,
+                                   &numBytes,
+                                   packetDescriptions,
+                                   startingPacketNumber,
+                                   &numPackets, 
+                                   buffer->mAudioData);
+    if (numPackets > 0) {
+        buffer->mAudioDataByteSize = numBytes;
+        status = AudioQueueEnqueueBuffer (queue,
+                                          buffer,
+                                          numPackets,
+                                          packetDescriptions);
+        if (status == noErr) {
+            startingPacketNumber += numPackets;
+        }
+    }
+    if(status != noErr) {
+        NSLog(@"Playback failed: %d", status);
+    }
+}
+
+- (void)playbackCallback:(AudioQueueBufferRef)buffer {
+    if (!changingFrameOffset) {
+        [self fillAndEnqueueBuffer:buffer];
     }
 }
 
@@ -138,7 +155,6 @@ static void propertyListenerCallback (void *inUserData,
 #undef CHECK_STATUS
 #define CHECK_STATUS if (status != noErr) { NSLog(@"__FILE__:__LINE__ failed with status: %d", status); [self cleanUp]; return status; }
 - (OSStatus)setupPlayback {
-    donePlayingFile = NO;
     OSStatus status;
     status = AudioFileOpenURL ((CFURLRef) soundFile,
                                kAudioFileReadPermission,
@@ -209,7 +225,7 @@ static void propertyListenerCallback (void *inUserData,
         if(status != noErr) {
             break;
         } else {
-            [self playbackData:buffer];
+            buffers[bufferIndex] = buffer;
         }
     }
     CHECK_STATUS;
@@ -218,47 +234,183 @@ static void propertyListenerCallback (void *inUserData,
     return status;
 }
 
-- (OSStatus) play {
+
+- (void)fillQueueFromFile {
+    for (int i = 0; i < kNumberAudioDataBuffers; ++i) {
+        if (buffers[i] != NULL) {
+            [self fillAndEnqueueBuffer:buffers[i]];
+        }
+    }
+}
+
+- (OSStatus)startPlayback {
     OSStatus status = AudioQueueStart(queue, NULL);
     if(status == noErr) {
-        state = kAudioPlayerStatePlaying;
+        self.state = kAudioPlayerStatePlaying;
     }
     return status;
 }
 
-- (OSStatus) stop {
-    donePlayingFile = YES;
+
+- (OSStatus)prepareToPlay {
+    UInt32 prepared = 0;
+    return AudioQueuePrime(queue, audioFormat.mSampleRate/2, &prepared);
+}
+
+
+- (OSStatus)play {
+    if (state == kAudioPlayerStateStopped) {
+        [self fillQueueFromFile];
+        return [self startPlayback];
+    } else {
+        return noErr;
+    }
+}
+
+
+- (OSStatus)stop {
+    OSStatus status = noErr;
     startingPacketNumber = 0;
-    OSStatus status = AudioQueueStop(queue, TRUE);
+    playbackStartPacket = 0;
+    status = AudioQueueStop(queue, TRUE);
     if(status == noErr) {
-        state = kAudioPlayerStateStopped;
+        self.state = kAudioPlayerStateStopped;
     }
     return status;
 }
 
 
-- (OSStatus) pause {
-    OSStatus status = AudioQueuePause (queue);
-    if(status == noErr) {
-        state = kAudioPlayerStatePaused;
+- (OSStatus)pause {
+    OSStatus status = noErr;
+    if (state == kAudioPlayerStatePlaying) {
+        status = AudioQueuePause (queue);
+        if(status == noErr) {
+            self.state = kAudioPlayerStatePaused;
+        }
     }
     return status;
 }
 
-- (OSStatus) resume {
-    OSStatus status = AudioQueueStart(queue, NULL);
-    if(status == noErr) {
-        state = kAudioPlayerStatePlaying;
+
+- (OSStatus)resume {
+    OSStatus status = noErr;
+    if (state == kAudioPlayerStatePaused) {
+        status = AudioQueueStart(queue, NULL);
+        if(status == noErr) {
+            self.state = kAudioPlayerStatePlaying;
+        }        
     }
     return status;
 }
 
-- (long)currentTime {
-    AudioTimeStamp stamp;
-    stamp.mFlags = kAudioTimeStampSampleTimeValid;
-    AudioQueueGetCurrentTime(queue, nil, &stamp, NULL);
-    Float64 sampleTime = stamp.mSampleTime;
-    return (long) sampleTime/audioFormat.mSampleRate;
+
+- (Float32)currentTime {
+    return self.frameOffset/audioFormat.mSampleRate;
 }
+
+
+- (UInt64)frameOffset {
+    UInt64 frameOffset = 0;
+    if (self.isRunning) {
+        AudioTimeStamp stamp;
+        stamp.mFlags = kAudioTimeStampSampleTimeValid;
+        OSStatus s = AudioQueueGetCurrentTime(queue, nil, &stamp, NULL);
+        if (s == noErr) {
+            frameOffset = (UInt64)stamp.mSampleTime + playbackStartPacket * audioFormat.mFramesPerPacket;
+        } else {
+            NSLog(@"Debug: AudioQueueGetCurrentTime failed with error code: %d", s);
+        }
+    } else {
+        frameOffset = playbackStartPacket * audioFormat.mFramesPerPacket;
+    }
+    return frameOffset;
+}
+
+
+- (void)forward:(UInt64)packets {
+    UInt64 targetPacket = self.packetOffset + packets;
+    if (targetPacket > self.packetsCount) {
+        [self stop];
+    } else {
+        self.packetOffset = targetPacket;
+    }
+}
+
+
+- (void)backward:(UInt64)packets {
+    SInt64 targetPacket = self.packetOffset - packets;
+    if (targetPacket >= 0) {
+        self.packetOffset = targetPacket;
+    }
+}
+
+
+- (SInt64)packetOffset {
+    SInt64 packetOffset = 0;
+    if (self.isRunning) {
+        packetOffset = self.frameOffset / audioFormat.mFramesPerPacket;
+    } else {
+        packetOffset = playbackStartPacket;
+    }
+    return packetOffset;
+}
+
+- (void)setPacketOffset:(SInt64)packets {
+    NSAssert1(packets >= 0 && packets <= self.packetsCount, @"packets argument should be between 0 and %d", self.packetsCount);
+    changingFrameOffset = YES;
+    AudioQueueStop(queue, YES);
+    changingFrameOffset = NO;
+
+    startingPacketNumber = packets;
+    playbackStartPacket = startingPacketNumber;
+    
+    switch (state) {           
+    case kAudioPlayerStatePlaying:
+        [self fillQueueFromFile];
+        [self startPlayback];
+        break;
+    case kAudioPlayerStateInterrupted:
+    case kAudioPlayerStatePaused:
+        [self fillQueueFromFile];
+        AudioQueuePause(queue);
+        break;
+    case kAudioPlayerStateStopped:
+        //do nothing
+        break;
+    }
+}
+
+
+- (BOOL)isRunning {
+    UInt32 isRunning;
+    UInt32 propertySize = sizeof (UInt32);
+    OSStatus result;
+    result = AudioQueueGetProperty (queue,
+                                    kAudioQueueProperty_IsRunning,
+                                    &isRunning,
+                                    &propertySize);
+    if (result != noErr) {
+        return FALSE;
+    } else {
+        return isRunning;
+    }
+    return NO;
+}
+
+
+- (void)setState:(AudioPlayerState)newState {
+    state = newState;
+}
+
+- (UInt64)packetsCount {
+    UInt64 packetsCount = 0;
+    UInt32 propertySize = sizeof (packetsCount);
+    AudioFileGetProperty (audioFileID, 
+                          kAudioFilePropertyAudioDataPacketCount,
+                          &propertySize,
+                          &packetsCount);
+    return packetsCount;
+}
+
 
 @end

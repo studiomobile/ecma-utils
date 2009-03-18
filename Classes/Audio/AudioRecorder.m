@@ -32,6 +32,7 @@ static void propertyListenerCallback (void *inUserData,
 @implementation AudioRecorder
 
 @synthesize delegate;
+@synthesize state;
 
 - (void)notifyPropertyChange:(AudioQueuePropertyID)propertyID {
     if(propertyID == kAudioQueueProperty_IsRunning) {
@@ -92,11 +93,27 @@ static void propertyListenerCallback (void *inUserData,
 }
 
 - (OSStatus)record {
-    return AudioQueueStart (queue, NULL);;
+    OSStatus status = AudioQueueStart (queue, NULL);
+    if (status == noErr) {
+        state = kAudioRecorderStateRecording;
+    }
+    return status;
 }
 
 - (OSStatus)stop {
-    return AudioQueueStop(queue, YES);
+    OSStatus status = AudioQueueStop(queue, YES);
+    if (status == noErr) {
+        state = kAudioRecorderStateStopped;
+    }
+    return status;
+}
+
+- (OSStatus)pause {
+    OSStatus status = AudioQueuePause(queue);
+    if (status == noErr) {
+        state = kAudioRecorderStatePaused;
+    }
+    return status;
 }
 
 
@@ -155,6 +172,10 @@ static void propertyListenerCallback (void *inUserData,
                                      self);
     [super cleanUp];
 
+}
+
+- (BOOL)isRunning {
+    return kAudioRecorderStateRecording == state;
 }
 
 @end

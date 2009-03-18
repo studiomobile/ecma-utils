@@ -11,7 +11,6 @@
     AudioQueueRef queue;
     AudioQueueLevelMeterState *levels;
     CFURLRef soundFile;
-	
     SInt64 startingPacketNumber;
     AudioStreamBasicDescription audioFormat;
 }
@@ -27,5 +26,6 @@
 @property (readonly, nonatomic) CFURLRef soundFile;
 @property (readonly, nonatomic) BOOL isRunning;
 @property (readwrite, nonatomic) Float32 volume;
+@property (readonly, nonatomic, assign) AudioStreamBasicDescription audioFormat;
 
 @end
