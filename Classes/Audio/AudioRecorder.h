@@ -9,7 +9,6 @@
 @end
 
 typedef enum {
-    kAudioRecorderStatePaused,
     kAudioRecorderStateStopped,
     kAudioRecorderStateRecording
 } AudioRecorderState;
@@ -18,12 +17,13 @@ typedef enum {
 @interface AudioRecorder : AudioQueueObject {
     NSObject<AudioRecorderDelegate>* delegate;
     AudioRecorderState state;
+    AudioQueueBufferRef buffers[kNumberAudioDataBuffers];
 }
 
 - (id)initWithURL:(CFURLRef)file format:(AudioStreamBasicDescription*)audioFormat;
 - (OSStatus)record;
 - (OSStatus)stop;
-- (OSStatus)pause;
+- (void)close;
 
 @property(readwrite, nonatomic, assign) NSObject<AudioRecorderDelegate> *delegate;
 @property (readonly, nonatomic, assign) AudioRecorderState state;

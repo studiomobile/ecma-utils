@@ -37,9 +37,6 @@ static void propertyListenerCallback (void *inUserData,
 - (void)notifyPropertyChange:(AudioQueuePropertyID)propertyID {
     if(propertyID == kAudioQueueProperty_IsRunning) {
         if(!self.isRunning) {
-            [self writeMagicCookie];
-            AudioFileClose(audioFileID);
-            audioFileID = 0;
             if([delegate respondsToSelector:@selector(recordingFinished:)]) {
                 [delegate recordingFinished:self];
             }
@@ -93,12 +90,19 @@ static void propertyListenerCallback (void *inUserData,
 }
 
 - (OSStatus)record {
-    OSStatus status = AudioQueueStart (queue, NULL);
-    if (status == noErr) {
-        state = kAudioRecorderStateRecording;
+    OSStatus status = noErr;
+    if (state == kAudioRecorderStateStopped) {
+        for (int i = 0; i < kNumberAudioDataBuffers; ++i) {
+            AudioQueueEnqueueBuffer(queue, buffers[i], 0, NULL);
+        }
+        status = AudioQueueStart (queue, NULL);
+        if (status == noErr) {
+            state = kAudioRecorderStateRecording;
+        }
     }
     return status;
 }
+
 
 - (OSStatus)stop {
     OSStatus status = AudioQueueStop(queue, YES);
@@ -107,15 +111,6 @@ static void propertyListenerCallback (void *inUserData,
     }
     return status;
 }
-
-- (OSStatus)pause {
-    OSStatus status = AudioQueuePause(queue);
-    if (status == noErr) {
-        state = kAudioRecorderStatePaused;
-    }
-    return status;
-}
-
 
 #undef CHECK_STATUS
 #define CHECK_STATUS if (status != noErr) { NSLog(@"__FILE__ __LINE__, error: %d", status); return status; }
@@ -159,13 +154,28 @@ static void propertyListenerCallback (void *inUserData,
     int bufferIndex;
     for (bufferIndex = 0; bufferIndex < kNumberAudioDataBuffers; ++bufferIndex) {
         AudioQueueBufferRef buffer;
-        AudioQueueAllocateBuffer(queue, bufferByteSize, &buffer);
-        AudioQueueEnqueueBuffer(queue, buffer, 0, NULL);
-    }							
+        OSStatus s = AudioQueueAllocateBuffer(queue, bufferByteSize, &buffer);
+        if (s == noErr) {
+            buffers[bufferIndex] = buffer;
+        }
+    }
+    state = kAudioRecorderStateStopped;
     return noErr;
 }
 
+
+- (void)close {
+    if (audioFileID) {
+        AudioQueueFlush(queue);
+        [self stop];
+        [self writeMagicCookie];
+        AudioFileClose(audioFileID);
+        audioFileID = 0;
+    }
+}
+
 - (void)cleanUp {
+    [self close];
     AudioQueueRemovePropertyListener(queue,
                                      kAudioQueueProperty_IsRunning,
                                      propertyListenerCallback,

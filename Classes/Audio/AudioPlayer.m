@@ -6,8 +6,8 @@
 
 @interface AudioPlayer ()
 
-- (void)fillAndEnqueueBuffer:(AudioQueueBufferRef)buffer;
-- (void)fillQueueFromFile;
+- (UInt32)fillAndEnqueueBuffer:(AudioQueueBufferRef)buffer;
+- (UInt32)fillQueueFromFile;
 - (void)playbackCallback:(AudioQueueBufferRef)buffer;
 - (OSStatus)startPlayback;
 - (void)notifyPropertyChange:(AudioQueuePropertyID)propertyID;
@@ -119,7 +119,7 @@ static void propertyListenerCallback (void *inUserData,
 }
 
 
-- (void)fillAndEnqueueBuffer:(AudioQueueBufferRef)buffer {
+- (UInt32)fillAndEnqueueBuffer:(AudioQueueBufferRef)buffer {
     UInt32 numBytes;
     UInt32 numPackets = numPacketsToRead;
     OSStatus status;
@@ -143,11 +143,15 @@ static void propertyListenerCallback (void *inUserData,
     if(status != noErr) {
         NSLog(@"Playback failed: %d", status);
     }
+    return numPackets;
 }
 
 - (void)playbackCallback:(AudioQueueBufferRef)buffer {
     if (!changingFrameOffset) {
-        [self fillAndEnqueueBuffer:buffer];
+        UInt32 packetsRead = [self fillAndEnqueueBuffer:buffer];
+        if (packetsRead == 0) {
+            [self stop];
+        }
     }
 }
 
@@ -235,12 +239,16 @@ static void propertyListenerCallback (void *inUserData,
 }
 
 
-- (void)fillQueueFromFile {
+- (UInt32)fillQueueFromFile {
     for (int i = 0; i < kNumberAudioDataBuffers; ++i) {
         if (buffers[i] != NULL) {
-            [self fillAndEnqueueBuffer:buffers[i]];
+            UInt32 packetsRead = [self fillAndEnqueueBuffer:buffers[i]];
+            if (packetsRead == 0) {
+                return i;
+            }
         }
     }
+    return kNumberAudioDataBuffers;
 }
 
 - (OSStatus)startPlayback {
@@ -260,11 +268,12 @@ static void propertyListenerCallback (void *inUserData,
 
 - (OSStatus)play {
     if (state == kAudioPlayerStateStopped) {
-        [self fillQueueFromFile];
-        return [self startPlayback];
-    } else {
-        return noErr;
+        UInt32 buffersRead = [self fillQueueFromFile];
+        if (buffersRead > 0) {
+            return [self startPlayback];
+        }
     }
+    return noErr;
 }
 
 
@@ -355,6 +364,7 @@ static void propertyListenerCallback (void *inUserData,
     return packetOffset;
 }
 
+
 - (void)setPacketOffset:(SInt64)packets {
     NSAssert1(packets >= 0 && packets <= self.packetsCount, @"packets argument should be between 0 and %d", self.packetsCount);
     changingFrameOffset = YES;
@@ -363,16 +373,24 @@ static void propertyListenerCallback (void *inUserData,
 
     startingPacketNumber = packets;
     playbackStartPacket = startingPacketNumber;
-    
+    UInt32 buffersRead = 0;
     switch (state) {           
     case kAudioPlayerStatePlaying:
-        [self fillQueueFromFile];
-        [self startPlayback];
+        buffersRead = [self fillQueueFromFile];
+        if (buffersRead == 0) {
+            [self stop];
+        } else {
+            [self startPlayback];
+        }
         break;
     case kAudioPlayerStateInterrupted:
     case kAudioPlayerStatePaused:
-        [self fillQueueFromFile];
-        AudioQueuePause(queue);
+        buffersRead = [self fillQueueFromFile];
+        if (buffersRead == 0) {
+            [self stop];
+        } else {
+            AudioQueuePause(queue);
+        }
         break;
     case kAudioPlayerStateStopped:
         //do nothing
