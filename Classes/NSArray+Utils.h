@@ -10,3 +10,9 @@
 - (NSArray*)filterUsingSelector:(SEL)selector target:(id)target;
 
 @end
+
+@interface NSArray (CGGeometry)
+
+-(CGRect) pointsBoundingRect;
+
+@end

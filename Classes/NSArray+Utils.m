@@ -1,6 +1,7 @@
-#import "NSArray+Utils.h"
 #import "NSObject+Utils.h"
 #import "NSMutableArray+Utils.h"
+#import "CGGeometry+Utils.h"
+#import "NSArray+Utils.h"
 
 @implementation NSArray(Randomization)
 
@@ -36,4 +37,21 @@
 }
 
 @end
+
+@implementation NSArray (CGGeometry)
+
+-(CGRect) pointsBoundingRect{
+	
+	CGRect rect = CGRectNull;
+	
+	for(NSValue* v in self){
+		rect = CGRectConsume(rect, NSPointToCGPoint([v pointValue]));
+	}
+	
+	return rect;	
+}
+
+@end
+
+
 

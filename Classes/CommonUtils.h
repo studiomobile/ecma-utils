@@ -1,3 +1,4 @@
+#import "CGGeometry+Utils.h"
 #import "AsyncObject.h"
 #import "CollectionWindow.h"
 #import "NSArray+Utils.h"
@@ -12,3 +13,4 @@
 #import "UIBlockingAsyncObject.h"
 #import "NSBundle+Utils.h"
 #import "NSUserDefaults+Utils.h"
+#import "NSValue+Utils.h"
