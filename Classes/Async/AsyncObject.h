@@ -18,6 +18,7 @@
 
 - (id)initWithTarget:(id)target;
 
+- (id)asyncProxy;
 - (id)createAsyncProxy;
 
 // This method is invoked asyncronously from background thread, don't call it directly

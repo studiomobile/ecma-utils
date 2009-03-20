@@ -66,6 +66,11 @@
 }
 
 
+- (id)asyncProxy {
+	return [[self createAsyncProxy] autorelease];
+}
+
+
 - (id)createAsyncProxy {
 	return [[AsyncProxy alloc] initWithAsyncObject:self];
 }
