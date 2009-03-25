@@ -8,7 +8,7 @@
 	CGRect rect = CGRectNull;
 	
 	for(NSValue* v in self){
-		rect = CGRectConsume(rect, NSPointToCGPoint([v pointValue]));
+		rect = CGRectConsume(rect, [v CGPointValue]);
 	}
 	
 	return rect;	
