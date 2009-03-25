@@ -243,6 +243,13 @@
     return selection;
 }
 
+- (UIViewController*)textEditControllerForIndexPath:(NSIndexPath*)indexPath title:(NSString*)title descriptor:(FormFieldDescriptor*)desc {
+    TextEditController *textEdit = [[[TextEditController alloc] initWithTitle:title] autorelease];
+    textEdit.dataSource = desc.dataSource;
+    textEdit.keyPath = desc.keyPath;
+    return textEdit;
+}
+
 - (UIViewController*)agreementControllerForIndexPath:(NSIndexPath*)indexPath title:(NSString*)title descriptor:(FormFieldDescriptor*)desc {
     AgreementController *agreementController = [[[AgreementController alloc] initWithTitle:title] autorelease];
     agreementController.dataSource = desc.dataSource;
@@ -364,9 +371,7 @@
 		[self.navigationController pushViewController:selection animated:YES];
 	} else if(desc.type == FORM_FIELD_DESCRIPTOR_TEXT_AREA) {
 		NSString *title = [self textEditControllerTitleForDescriptor:desc indexPath:indexPath];
-		TextEditController *textEdit = [[[TextEditController alloc] initWithTitle:title] autorelease];
-		textEdit.dataSource = desc.dataSource;
-		textEdit.keyPath = desc.keyPath;
+		UIViewController *textEdit = [self textEditControllerForIndexPath:indexPath title:title descriptor:desc];
 		[self.navigationController pushViewController:textEdit animated:YES];
 	} else if(desc.type == FORM_FIELD_DESCRIPTOR_AGREEMENT) {
 		NSString *title = [self agreementControllerTitleForDescriptor:desc indexPath:indexPath];
