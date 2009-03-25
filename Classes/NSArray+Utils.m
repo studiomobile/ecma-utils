@@ -32,7 +32,7 @@
 - (NSArray*)filterUsingSelector:(SEL)selector target:(id)target {
 	NSMutableArray *filtered = [NSMutableArray arrayWithArray:self];
 	[filtered removeAllUsingSelector:selector target:target];
-	return [[self copy] autorelease];
+	return [[filtered copy] autorelease];
 }
 
 @end
