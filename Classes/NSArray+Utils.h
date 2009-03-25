@@ -1,4 +1,4 @@
-#import <UIKit/UIKit.h>
+#import <Foundation/Foundation.h>
 
 @interface NSArray(Randomization) 
 
@@ -11,8 +11,4 @@
 
 @end
 
-@interface NSArray (CGGeometry)
 
--(CGRect) pointsBoundingRect;
-
-@end
