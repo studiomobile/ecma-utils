@@ -1,6 +1,6 @@
-#import "TitledCell.h"
+#import "TitledFormCell.h"
 
-@interface SwitchCell : TitledCell {
+@interface SwitchCell : TitledFormCell {
     UISwitch *switcher;
 }
 @property (readonly) UISwitch *switcher;

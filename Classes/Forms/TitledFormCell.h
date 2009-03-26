@@ -1,6 +1,6 @@
 #import "FormCell.h"
 
-@interface TitledCell : FormCell {
+@interface TitledFormCell : FormCell {
 	UILabel *title;
     CGFloat titleWidth;
 }

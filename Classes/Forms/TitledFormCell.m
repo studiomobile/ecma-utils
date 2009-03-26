@@ -1,6 +1,6 @@
-#import "TitledCell.h"
+#import "TitledFormCell.h"
 
-@implementation TitledCell
+@implementation TitledFormCell
 
 @synthesize title;
 @synthesize titleWidth;

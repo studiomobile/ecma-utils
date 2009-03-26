@@ -1,6 +1,6 @@
-#import "TitledCell.h"
+#import "TitledFormCell.h"
 
-@interface StaticFormCell : TitledCell {
+@interface StaticFormCell : TitledFormCell {
 	UILabel *value;
 }
 @property (readonly) UILabel *value;
