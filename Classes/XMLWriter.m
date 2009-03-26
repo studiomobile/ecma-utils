@@ -25,7 +25,7 @@
 }
 
 - (NSString*)result {
-    for(int i = 0; i < tagStack.count; i++) { // unwind 
+    while(tagStack.count) { // unwind 
         [self pop];
     }
 
