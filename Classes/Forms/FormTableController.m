@@ -16,6 +16,7 @@
 }
 
 - (void)dealloc {
+    [datePickerView removeFromSuperview];
 	[[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardDidHideNotification object:nil];
 	[super dealloc];
 }
@@ -276,7 +277,7 @@
 - (void)createDatePickerViews {
     CGFloat width = self.view.bounds.size.width;
     
-    UIToolbar *toolbar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, width, 44)];
+    UIToolbar *toolbar = [[[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, width, 44)] autorelease];
     UIBarButtonItem *doneButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(hideDatePicker)];
     UIBarButtonItem *space = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
     [toolbar setItems:[NSArray arrayWithObjects:space, doneButton, nil]];
@@ -284,19 +285,16 @@
     [space release];
     [doneButton release];
     
-    datePicker = [[UIDatePicker alloc] init];
+    datePicker = [[[UIDatePicker alloc] init] autorelease];
     datePicker.frame = CGRectMake(0, toolbar.frame.size.height, datePicker.frame.size.width, datePicker.frame.size.height);
     [datePicker addTarget:self action:@selector(datePickerValueChanged) forControlEvents:UIControlEventValueChanged];
     
     CGFloat viewHeight = toolbar.frame.size.height + datePicker.frame.size.height;
-    datePickerView = [[UIView alloc] initWithFrame:CGRectMake(0, self.view.bounds.size.height, width, viewHeight)];
+    datePickerView = [[[UIView alloc] initWithFrame:CGRectMake(0, self.view.bounds.size.height, width, viewHeight)] autorelease];
     [datePickerView addSubview:toolbar];
-    [toolbar release];
     [datePickerView addSubview:datePicker];
-    [datePicker release];
     
-    [self.view addSubview:datePickerView];
-    [datePickerView release];
+    [self.table.superview addSubview:datePickerView];
 }
 
 - (UIView*)datePickerView {
