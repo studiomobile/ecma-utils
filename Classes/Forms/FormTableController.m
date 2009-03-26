@@ -121,6 +121,11 @@
     [self _updateData];
 }
 
+- (void)hideControls {
+    [self hideDatePicker];
+    [self hideKeyboard];
+}
+
 - (NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section {
 	return section < [self numberOfDataSections] ? [self missingFieldsDescriptionForSection:section] : nil;
 }
@@ -263,7 +268,6 @@
 }
 
 - (void)datePickerValueChanged {
-    // TODO
     FormCell *cell = [self currentCell];
     [cell.fieldDescriptor.dataSource setValue:self.datePicker.date forKey:cell.fieldDescriptor.keyPath];
     [cell onFieldDescriptorUpdate];

@@ -25,6 +25,8 @@
 - (NSString*)buttonTitle;
 - (IBAction)buttonPressed;
 - (void)reloadForm;
+- (void)hideDatePicker;
+- (void)hideControls;
 
 - (FormFieldDescriptor*)stringFieldWithTitle:(NSString*)title forProperty:(NSString*)keyPath ofObject:(id)object;
 - (FormFieldDescriptor*)secureFieldWithTitle:(NSString*)title forProperty:(NSString*)keyPath ofObject:(id)object;
