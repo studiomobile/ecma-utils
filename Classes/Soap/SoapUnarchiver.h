@@ -12,7 +12,5 @@
 +(SoapUnarchiver*) soapUnarchiverWithXmlString: (NSString*)xmlString;
 
 -(NSArray*) decodeObjectsOfType: (Class)aClass forXpath:(NSString*)path namespaceMappings: (NSDictionary*)mappings;
--(NSString*)decodeStringForKey:(NSString*)key;
--(NSDate*)decodeDateForKey:(NSString*)key;
 
 @end

@@ -71,14 +71,6 @@ typedef enum eSAS_tag {
 
 #pragma mark utility
 
-- (void)encodeString:(NSString*)str forKey:(NSString *)key{
-	[self encodeString:str forKey:key attributes: nil];
-}
-
-- (void)encodeDate:(NSDate*)date forKey:(NSString *)key{
-	[self encodeDate:date forKey:key attributes: nil];
-}
-
 
 -(void)encodeObject: (id)objv forKey:(NSString*)key namespace:(NSString*)ns{
 	if(!hasBody && !state == sasHeader){

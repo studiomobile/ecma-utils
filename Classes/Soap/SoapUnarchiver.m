@@ -1,5 +1,6 @@
 #import "TouchXML.h";
 #import "NSError+Utils.h"
+#import "SoapEntityProto.h"
 #import "SoapUnarchiver.h"
 
 
@@ -7,14 +8,17 @@
 {
 	NSDictionary* mappings;
 	CXMLNode* node;
+	id<SoapEntityProto> obj;
+	
 	NSDictionary* nodesCache;	
 }
 
 @property(assign) NSDictionary* mappings;
 @property(assign) CXMLNode* node;
+@property(assign) id<SoapEntityProto> obj;
 @property(retain) NSDictionary* nodesCache;
 
-+(SoapUnarchiverContext*) contextWithNode: (CXMLNode*)node mappings: (NSDictionary*)mappings;
++(SoapUnarchiverContext*) contextWithObject: (id<SoapEntityProto>) _obj node: (CXMLNode*)_node mappings: (NSDictionary*)_mappings;
 
 -(CXMLNode*)nodeNamed: (NSString*)name;
 
@@ -24,14 +28,16 @@
 
 @synthesize mappings;
 @synthesize node;
+@synthesize obj;
 @synthesize nodesCache;
 
-+(SoapUnarchiverContext*) contextWithNode: (CXMLNode*)_node mappings: (NSDictionary*)_mappings{
-	SoapUnarchiverContext* obj = [[self new]autorelease];
-	obj.mappings = _mappings;
-	obj.node = _node;
++(SoapUnarchiverContext*) contextWithObject: (id<SoapEntityProto>) _obj node: (CXMLNode*)_node mappings: (NSDictionary*)_mappings{
+	SoapUnarchiverContext* inst = [[self new]autorelease];
+	inst.mappings = _mappings;
+	inst.node = _node;
+	inst.obj = _obj;	
 	
-	return obj;
+	return inst;
 }
 
 -(void)dealloc{
@@ -62,7 +68,7 @@
 @end
 
 
-
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 @interface SoapUnarchiver ()
 
@@ -101,6 +107,22 @@
 	[super dealloc];
 }
 
+#pragma mark private
+
+-(NSString*)decodeStringForKey:(NSString*)key{
+	CXMLNode* node = [nodeContext nodeNamed:key];	
+	return [node stringValue];	
+}
+
+-(NSDate*)decodeDateForKey:(NSString*)key{
+	CXMLNode* node = [nodeContext nodeNamed:key];	
+	NSDateFormatter *dateFormat = [[[NSDateFormatter alloc]
+									initWithDateFormat:@"%1d/%1m/%Y" allowNaturalLanguage:NO]autorelease];
+	NSDate* date = [dateFormat dateFromString: [node stringValue]];
+	return date;
+}
+
+
 #pragma mark utility
 
 -(NSArray*) decodeObjectsOfType: (Class)aClass forXpath:(NSString*)path namespaceMappings: (NSDictionary*)mappings{
@@ -113,33 +135,30 @@
 	
 	NSMutableArray* result = [NSMutableArray array];
 	for(CXMLNode* node in nodes){
-		self.nodeContext = [SoapUnarchiverContext contextWithNode:node mappings:mappings];
-		
-		id obj = [[aClass alloc]initWithCoder:self];
+		id obj = [aClass alloc];
+		self.nodeContext = [SoapUnarchiverContext contextWithObject: obj node:node mappings:mappings];		
+		[obj initWithCoder:self];
 		[result addObject:obj];
 	}	   
 	
 	return [result copy];	
 }
 
--(NSString*)decodeStringForKey:(NSString*)key{
-	CXMLNode* node = [nodeContext nodeNamed:key];	
-	return [node stringValue];	
-}
-
--(NSDate*)decodeDateForKey:(NSString*)key{
-	CXMLNode* node = [nodeContext nodeNamed:key];	
-	NSDateFormatter *dateFormat = [[[NSDateFormatter alloc]
-								   initWithDateFormat:@"%1d/%1m/%Y" allowNaturalLanguage:NO]autorelease];
-	NSDate* date = [dateFormat dateFromString: [node stringValue]];
-	return date;
-}
-
-
 #pragma mark NSCoder
 
 - (id)decodeObjectForKey:(NSString *)key{
-	@throw [NSError errorWithDomain:@"SoapUnarchiving" code:1 description: @"decodeObjectForKey: not supported"];
+	Class c = [nodeContext.obj typeForKey:key];
+	if(!c){
+		@throw [NSError errorWithDomain:@"SoapUnarchiving" code:1 description: [NSString stringWithFormat: @"Unspecified type for key '%@'", key]];	
+	}
+	
+	if(c == [NSString class]){
+		return [self decodeStringForKey:key];
+	}else if(c == [NSDate class]){
+		return [self decodeDateForKey:key];
+	}else{
+		@throw [NSError errorWithDomain:@"SoapUnarchiving" code:2 description: [NSString stringWithFormat: @"Don't know how to decode type '%@'", c]];	
+	}
 }
 
 - (BOOL)decodeBoolForKey:(NSString *)key{
