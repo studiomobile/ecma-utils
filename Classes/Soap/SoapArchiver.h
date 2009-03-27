@@ -12,6 +12,8 @@
 
 @property(readonly) NSString* message;
 
++(SoapArchiver*)soapArchiver;
+
 -(void)encodeObject: (id)objv forKey:(NSString*)key namespace:(NSString*)ns;
 -(void)encodeHeader: (id)objv;
 

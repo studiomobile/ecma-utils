@@ -4,4 +4,8 @@
 
 -(Class)typeForKey: (NSString*)key;
 
+@optional
+
+@property(readonly) NSString* soapName;
+
 @end

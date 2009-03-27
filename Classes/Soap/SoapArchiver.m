@@ -1,4 +1,5 @@
 #import "SoapArchiver.h"
+#import "SoapEntityProto.h"
 #import "XMLWriter.h"
 
 typedef enum eSAS_tag {
@@ -8,6 +9,10 @@ typedef enum eSAS_tag {
 
 @implementation SoapArchiver
 @dynamic message;
+
++(SoapArchiver*)soapArchiver{
+	return [[[self class]new]autorelease];
+}
 
 -(id)init{
 	if(![super init])
@@ -93,6 +98,11 @@ typedef enum eSAS_tag {
 }
 
 #pragma mark NSCoder
+
+- (void)encodeObject:(id)objv{
+	NSString* key = [objv soapName];
+	[self encodeObject:objv forKey: key];
+}
 
 - (void)encodeObject:(id)objv forKey:(NSString *)key{
 	NSString* ns = [self namespaceOf: objv];
