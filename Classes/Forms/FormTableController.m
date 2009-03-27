@@ -60,6 +60,20 @@
     return [self fieldWithTitle:title forProperty:keyPath ofObject:object type:FORM_FIELD_DESCRIPTOR_DATETIME];
 }
 
+- (FormFieldDescriptor*)dateFieldWithTitle:(NSString*)title forProperty:(NSString*)keyPath ofObject:(id)object {
+    FormFieldDescriptor *desc = [self dateTimeFieldWithTitle:title forProperty:keyPath ofObject:object];
+    [desc.options setObject:@"yyyy-MM-dd" forKey:@"formatter.dateFormat"];
+    [desc.options setObject:[NSNumber numberWithInteger:UIDatePickerModeDate] forKey:@"datePicker.datePickerMode"];
+    return desc;
+}
+
+- (FormFieldDescriptor*)timeFieldWithTitle:(NSString*)title forProperty:(NSString*)keyPath ofObject:(id)object {
+    FormFieldDescriptor *desc = [self dateTimeFieldWithTitle:title forProperty:keyPath ofObject:object];
+    [desc.options setObject:@"hh:mm a" forKey:@"formatter.dateFormat"];
+    [desc.options setObject:[NSNumber numberWithInteger:UIDatePickerModeTime] forKey:@"datePicker.datePickerMode"];
+    return desc;
+}
+
 - (FormFieldDescriptor*)customFieldWithTitle:(NSString*)title forProperty:(NSString*)keyPath ofObject:(id)object {
 	return [self fieldWithTitle:title forProperty:keyPath ofObject:object type:FORM_FIELD_DESCRIPTOR_CUSTOM];
 }
@@ -241,11 +255,11 @@
 	return [NSString stringWithFormat:@"%@", desc.title];
 }
 
-- (UIViewController*)selectionControllerForIndexPath:(NSIndexPath*)indexPath title:(NSString*)title descriptor:(FormFieldDescriptor*)desc {
+- (UIViewController*)selectionControllerForIndexPath:(NSIndexPath*)indexPath title:(NSString*)title descriptor:(FormFieldDescriptor*)desc collection:(NSArray*)collection {
     SelectionController *selection = [[[SelectionController alloc] initWithTitle:title] autorelease];
     selection.dataSource = desc.dataSource;
     selection.keyPath = desc.keyPath;
-    selection.collection = [self collectionForField:indexPath];
+    selection.collection = collection;
     return selection;
 }
 
@@ -256,11 +270,11 @@
     return textEdit;
 }
 
-- (UIViewController*)agreementControllerForIndexPath:(NSIndexPath*)indexPath title:(NSString*)title descriptor:(FormFieldDescriptor*)desc {
+- (UIViewController*)agreementControllerForIndexPath:(NSIndexPath*)indexPath title:(NSString*)title descriptor:(FormFieldDescriptor*)desc html:(NSString*)html {
     AgreementController *agreementController = [[[AgreementController alloc] initWithTitle:title] autorelease];
     agreementController.dataSource = desc.dataSource;
     agreementController.keyPath = desc.keyPath;
-    agreementController.html = [self htmlForDescriptor:desc atIndexPath:indexPath];
+    agreementController.html = html;
     return agreementController;
 }
 
@@ -335,9 +349,12 @@
     [UIView commitAnimations];
 }
 
-- (void)showDatePicker {
-    self.datePicker.datePickerMode = UIDatePickerModeDate;
-    self.datePicker.date = [self currentCell].fieldDescriptor.value;
+- (void)showDatePickerForDescriptor:(FormFieldDescriptor*)desc {
+    NSNumber *styleNumber = [desc.options objectForKey:@"datePicker.datePickerMode"];
+    self.datePicker.datePickerMode = styleNumber ? [styleNumber integerValue] : UIDatePickerModeDateAndTime;
+    NSDate *date = [self currentCell].fieldDescriptor.value;
+    self.datePicker.date = date ? date : [NSDate date];
+    
     [self setDatePickerVisible:YES];
 }
 
@@ -373,7 +390,8 @@
 		[self didSelectCustomCellAtIndexPath:indexPath];
 	} else if (desc.type == FORM_FIELD_DESCRIPTOR_COLLECTION) {
 		NSString *title = [self selectControllerTitleForDescriptor:desc indexPath:indexPath];
-		UIViewController *selection = [self selectionControllerForIndexPath:indexPath title:title descriptor:(FormFieldDescriptor*)desc];
+        NSArray *collection = [self collectionForField:indexPath];
+		UIViewController *selection = [self selectionControllerForIndexPath:indexPath title:title descriptor:(FormFieldDescriptor*)desc collection:collection];
 		[self.navigationController pushViewController:selection animated:[self pushControllersAnimated]];
 	} else if(desc.type == FORM_FIELD_DESCRIPTOR_TEXT_AREA) {
 		NSString *title = [self textEditControllerTitleForDescriptor:desc indexPath:indexPath];
@@ -381,10 +399,11 @@
 		[self.navigationController pushViewController:textEdit animated:[self pushControllersAnimated]];
 	} else if(desc.type == FORM_FIELD_DESCRIPTOR_AGREEMENT) {
 		NSString *title = [self agreementControllerTitleForDescriptor:desc indexPath:indexPath];
-		UIViewController *agreementController = [self agreementControllerForIndexPath:indexPath title:title descriptor:(FormFieldDescriptor*)desc];
+        NSString *html = [self htmlForDescriptor:desc atIndexPath:indexPath];
+		UIViewController *agreementController = [self agreementControllerForIndexPath:indexPath title:title descriptor:(FormFieldDescriptor*)desc html:html];
 		[self.navigationController pushViewController:agreementController animated:[self pushControllersAnimated]];
 	} else if(desc.type == FORM_FIELD_DESCRIPTOR_DATETIME) {
-        [self showDatePicker];
+        [self showDatePickerForDescriptor:desc];
 	}
     
     if(desc.type != FORM_FIELD_DESCRIPTOR_TEXT_FIELD) {

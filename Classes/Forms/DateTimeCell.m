@@ -14,7 +14,7 @@
     [super onFieldDescriptorUpdate];
 
     NSString *dateFormat = [self.fieldDescriptor.options valueForKey:@"formatter.dateFormat"];
-    formatter.dateFormat = dateFormat ? dateFormat : @"yyyy-MM-dd";
+    formatter.dateFormat = dateFormat ? dateFormat : @"yyyy-MM-dd hh:mm";
 	self.value.text = [formatter stringFromDate:self.fieldDescriptor.value];
 }
 
