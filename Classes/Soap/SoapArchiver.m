@@ -16,8 +16,7 @@ typedef enum eSAS_tag {
 
 -(id)init{
 	if(![super init])
-		return nil;
-	
+		return nil;	
 	
 	writer = [[XMLWriter alloc]initWithIndentation:@"\t" lineBreak:@"\n"];
 	[writer instruct];
@@ -36,15 +35,6 @@ typedef enum eSAS_tag {
 
 #pragma mark private
 
--(NSString*)namespaceOf: (id)objv{
-	return [objv respondsToSelector:@selector(soapNamespace)] ? [objv performSelector: @selector(soapNamespace)] : nil;
-}
-
--(NSDictionary*)attributesFromNamespace: (NSString*)ns{
-	NSDictionary* attrs = ns ? [NSDictionary dictionaryWithObject: ns forKey: @"xmlns"] : nil;	
-	return attrs;
-}
-
 - (void)encodeString:(NSString*)str forKey:(NSString *)key attributes: (NSDictionary*)attrs{
 	[writer tag:key content:str attributes: attrs];
 }
@@ -56,9 +46,8 @@ typedef enum eSAS_tag {
 	[writer tag:key content:dateStr attributes: attrs];	
 }
 
-
--(void)privateEncodeObject: (id)objv forKey:(NSString*)key namespace:(NSString*)ns{
-	NSDictionary* attrs = [self attributesFromNamespace: ns];
+-(void)encodeObject: (id)objv forKey:(NSString*)key namespace:(NSString*)ns{
+	NSDictionary* attrs = ns ? [NSDictionary dictionaryWithObject: ns forKey: @"xmlns"] : nil;	
 	
 	if([objv isKindOfClass: [NSString class]]){
 		[self encodeString:(NSString*)objv forKey:key attributes: attrs];
@@ -73,28 +62,42 @@ typedef enum eSAS_tag {
 	}
 }
 
-
 #pragma mark utility
 
-
--(void)encodeObject: (id)objv forKey:(NSString*)key namespace:(NSString*)ns{
-	if(!hasBody && !state == sasHeader){
+-(void)encodeBody: (id)objv forKey: (NSString*)key{
+	if(state == sasHeader){	
+		[writer pop];
+		state = sasEnvelope;
+	}
+	
+	if(!hasBody){
 		[writer push:@"Body"];
 		hasBody = YES;
-	}
+	}	
+	
+	[self encodeObject:objv forKey: key];
+}
 
-	[self privateEncodeObject: objv forKey: key namespace: ns];
+-(void)encodeBody: (id)objv{
+	[self encodeBody:objv forKey: [objv soapName]];
+}
+
+-(void)encodeHeader: (id)objv forKey: (NSString*)key{
+	if(hasBody){		
+		return;
+	}
+	
+	if(!hasHeader){
+		[writer push:@"Header"];
+		hasHeader = YES;
+	}
+	
+	state = sasHeader;
+	[self encodeObject:objv forKey:key];
 }
 
 -(void)encodeHeader: (id)objv{
-	if(hasHeader || hasBody){		
-		return;
-	}	
-	
-	state = sasHeader;
-	[self privateEncodeObject:objv forKey:@"Header" namespace: [self namespaceOf: objv]];
-	state = sasEnvelope;
-	hasHeader = YES; 
+	[self encodeHeader:objv forKey: [objv soapName]];
 }
 
 #pragma mark NSCoder
@@ -105,7 +108,7 @@ typedef enum eSAS_tag {
 }
 
 - (void)encodeObject:(id)objv forKey:(NSString *)key{
-	NSString* ns = [self namespaceOf: objv];
+	NSString* ns = [objv respondsToSelector:@selector(soapNamespace)] ? [objv performSelector: @selector(soapNamespace)] : nil;
 	[self encodeObject:objv forKey:key namespace:ns];
 }
 

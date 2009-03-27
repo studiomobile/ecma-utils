@@ -14,7 +14,10 @@
 
 +(SoapArchiver*)soapArchiver;
 
--(void)encodeObject: (id)objv forKey:(NSString*)key namespace:(NSString*)ns;
 -(void)encodeHeader: (id)objv;
+-(void)encodeHeader: (id)objv forKey: (NSString*)key;
+
+-(void)encodeBody: (id)objv;
+-(void)encodeBody: (id)objv forKey: (NSString*)key;
 
 @end
