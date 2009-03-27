@@ -82,40 +82,45 @@ static NSMutableDictionary *databases = nil;
     [super dealloc];
 }
 
-- (id)createObjectOfClass:(Class)klass fromRow:(sqlite3_stmt*)stmt storedInTable:(NSString*)key {
-    DBObject *obj = [[klass alloc] init];
+- (void)loadObject:(DBObject*)obj fromRow:(sqlite3_stmt*)stmt storedInTable:(NSString*)key {
     for (int i = 0; i <  sqlite3_column_count(stmt); ++i) {
         NSString *colName = [NSString stringWithUTF8String:sqlite3_column_name(stmt, i)];
         int type = sqlite3_column_type(stmt, i);
         switch(type) {
-        case SQLITE_INTEGER: {
-            long long val = sqlite3_column_int64(stmt, i);
-            [obj setValue:[NSNumber numberWithLongLong:val] forKey:colName];
-            break;
-        }
-        case SQLITE_FLOAT: {
-            double val = sqlite3_column_double(stmt, i);
-            [obj setValue:[NSNumber numberWithDouble:val] forKey:colName];
-            break;
-        }
-        case SQLITE_TEXT: {
-            const unsigned char *txt = sqlite3_column_text(stmt, i);
-            [obj setValue:[NSString stringWithUTF8String:(const char*)txt] forKey:colName];
-            break;
-        }
-        case SQLITE_NULL:{
-            [obj setValue:nil forKey:colName];
-            break;
-        }
-        case SQLITE_BLOB:{
-            NSLog(@"Blobs unsupported");
-            break;
-        }
+            case SQLITE_INTEGER: {
+                long long val = sqlite3_column_int64(stmt, i);
+                [obj setValue:[NSNumber numberWithLongLong:val] forKey:colName];
+                break;
+            }
+            case SQLITE_FLOAT: {
+                double val = sqlite3_column_double(stmt, i);
+                [obj setValue:[NSNumber numberWithDouble:val] forKey:colName];
+                break;
+            }
+            case SQLITE_TEXT: {
+                const unsigned char *txt = sqlite3_column_text(stmt, i);
+                [obj setValue:[NSString stringWithUTF8String:(const char*)txt] forKey:colName];
+                break;
+            }
+            case SQLITE_NULL:{
+                [obj setValue:nil forKey:colName];
+                break;
+            }
+            case SQLITE_BLOB:{
+                NSLog(@"Blobs unsupported");
+                break;
+            }
         }
     }
 	
     [obj afterLoad];
+}
+
+- (id)createObjectOfClass:(Class)klass fromRow:(sqlite3_stmt*)stmt storedInTable:(NSString*)key {
+    DBObject *obj = [[klass alloc] init];
 	
+    [self loadObject:obj fromRow:stmt storedInTable:key];
+    
     return obj;
 }
 
@@ -162,6 +167,19 @@ static NSMutableDictionary *databases = nil;
     return NULL;
 }
 
+- (void)reload:(DBObject*)o {
+    NSString *tableName = [o tableName];
+    NSString *sql = [NSString stringWithFormat:@"select * from %@ where %@ = ?", tableName, [o pkColumn]];
+    sqlite3_stmt *statement = [self prepareStmt:sql arguments:sql, [NSNumber numberWithLongLong:o.pk]];
+
+    if(sqlite3_step(statement) == SQLITE_ROW) {
+        [self loadObject:o fromRow:statement storedInTable:tableName];
+    } else {
+        LOG2(@"Reload of %@ failed: no record with such id", o);
+    }
+    
+    sqlite3_finalize(statement);
+}
 
 - (void)update:(DBObject*)o {
     NSString *tableName = [o tableName];

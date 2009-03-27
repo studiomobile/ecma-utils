@@ -24,6 +24,7 @@ extern const NSUInteger kFailedToOpenDB;
 
 - (long long)executeNumber:(NSString *)query, ...;
 
+- (void)reload:(DBObject*)o;
 - (void)update:(DBObject*)o;
 - (void)insert:(DBObject*)o;
 - (void)save:(DBObject*)o; // insert or update based on pk value
