@@ -35,18 +35,31 @@ typedef enum eSAS_tag {
 	return [objv respondsToSelector:@selector(soapNamespace)] ? [objv performSelector: @selector(soapNamespace)] : nil;
 }
 
--(void)privateEncodeObject: (id)objv forKey:(NSString*)key namespace:(NSString*)ns{
+-(NSDictionary*)attributesFromNamespace: (NSString*)ns{
 	NSDictionary* attrs = ns ? [NSDictionary dictionaryWithObject: ns forKey: @"xmlns"] : nil;	
+	return attrs;
+}
+
+- (void)encodeString:(NSString*)str forKey:(NSString *)key attributes: (NSDictionary*)attrs{
+	[writer tag:key content:str attributes: attrs];
+}
+
+- (void)encodeDate:(NSDate*)date forKey:(NSString *)key  attributes: (NSDictionary*)attrs{
+	NSDateFormatter *formatter = [[NSDateFormatter new] autorelease];
+	[formatter setDateFormat:@"dd/MM/yyyy"];	
+	NSString* dateStr = [formatter stringFromDate:date];
+	[writer tag:key content:dateStr attributes: attrs];	
+}
+
+
+-(void)privateEncodeObject: (id)objv forKey:(NSString*)key namespace:(NSString*)ns{
+	NSDictionary* attrs = [self attributesFromNamespace: ns];
 	
 	if([objv isKindOfClass: [NSString class]]){
-		[writer tag:key content:objv attributes: attrs];
+		[self encodeString:(NSString*)objv forKey:key attributes: attrs];
 	}
 	else if([objv isKindOfClass:[NSDate class]]){
-		NSDate* date = (NSDate*)objv;
-		NSDateFormatter *formatter = [[NSDateFormatter new] autorelease];
-		[formatter setDateFormat:@"dd/MM/yyyy"];	
-		NSString* dateStr = [formatter stringFromDate:date];
-		[writer tag:key content:dateStr attributes: attrs];
+		[self encodeDate: (NSDate*)objv forKey: key attributes: attrs];
 	}
 	else{
 		[writer push: key attributes: attrs];
@@ -57,6 +70,15 @@ typedef enum eSAS_tag {
 
 
 #pragma mark utility
+
+- (void)encodeString:(NSString*)str forKey:(NSString *)key{
+	[self encodeString:str forKey:key attributes: nil];
+}
+
+- (void)encodeDate:(NSDate*)date forKey:(NSString *)key{
+	[self encodeDate:date forKey:key attributes: nil];
+}
+
 
 -(void)encodeObject: (id)objv forKey:(NSString*)key namespace:(NSString*)ns{
 	if(!hasBody && !state == sasHeader){

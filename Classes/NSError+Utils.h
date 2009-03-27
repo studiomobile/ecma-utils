@@ -10,6 +10,7 @@
 
 @interface NSError(Utils)
 
++(NSError*) errorWithDomain: (NSString*)domain code: (NSInteger) code description: (NSString*) description;
 - (void)display:(NSString*)actionDescription;
 
 @end
