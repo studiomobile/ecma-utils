@@ -8,6 +8,9 @@
 	return [NSError errorWithDomain:domain code:code userInfo:userInfo]; 
 }
 
+-(void)display{
+	[self display:nil];
+}
 
 - (void)display:(NSString*)actionDescription {
     UIAlertView *errorDisplay = [[UIAlertView alloc] init];

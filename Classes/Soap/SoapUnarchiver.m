@@ -87,6 +87,11 @@
 	return [[[[self class]alloc]initWithXmlString:xmlString]autorelease];
 }
 
++(SoapUnarchiver*) soapUnarchiverWithData: (NSData*)data{
+	NSString* xmlString = [[[NSString alloc]initWithData:data encoding:NSUTF8StringEncoding]autorelease];
+	return [self soapUnarchiverWithXmlString:xmlString];
+}
+
 -(id)initWithXmlString: (NSString*)xmlString{
 	if(![super init])
 		return nil;
@@ -116,8 +121,16 @@
 
 -(NSDate*)decodeDateForKey:(NSString*)key{
 	CXMLNode* node = [nodeContext nodeNamed:key];	
-	NSDateFormatter *dateFormat = [[[NSDateFormatter alloc]
-									initWithDateFormat:@"%1d/%1m/%Y" allowNaturalLanguage:NO]autorelease];
+	
+	NSString* stringDate = [node stringValue];
+	
+	NSDateFormatter *dateFormat = [[NSDateFormatter new]autorelease];
+	if([stringDate rangeOfString: @"T"].location == NSNotFound){
+		[dateFormat setDateFormat: @"yyyy-MM-dd" ];
+	}else{
+		[dateFormat setDateFormat:@"yyyy-MM-dd'T'HH:mm:SSSS"];
+	}	
+
 	NSDate* date = [dateFormat dateFromString: [node stringValue]];
 	return date;
 }
@@ -147,7 +160,7 @@
 #pragma mark NSCoder
 
 - (id)decodeObjectForKey:(NSString *)key{
-	Class c = [nodeContext.obj typeForKey:key];
+	Class c = [[(NSObject*)nodeContext.obj class] typeForKey:key];
 	if(!c){
 		@throw [NSError errorWithDomain:@"SoapUnarchiving" code:1 description: [NSString stringWithFormat: @"Unspecified type for key '%@'", key]];	
 	}
@@ -170,6 +183,17 @@
 	CXMLNode* node = [nodeContext nodeNamed:key];	
 	return [[node stringValue] intValue];
 }
+
+- (int32_t)decodeInt32ForKey:(NSString *)key{
+	CXMLNode* node = [nodeContext nodeNamed:key];	
+	return [[node stringValue] intValue];	
+}
+
+- (int64_t)decodeInt64ForKey:(NSString *)key{
+	CXMLNode* node = [nodeContext nodeNamed:key];	
+	return [[node stringValue] longLongValue];
+}
+
 
 - (float)decodeFloatForKey:(NSString *)key{
 	CXMLNode* node = [nodeContext nodeNamed:key];	

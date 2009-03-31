@@ -1,10 +1,10 @@
 @protocol SoapEntityProto
 
--(NSString*) soapNamespace;
--(Class)typeForKey: (NSString*)key;
++(NSString*) soapNamespace;
 
 @optional
 
--(NSString*) soapName;
++(NSString*) soapName;
++(Class)typeForKey: (NSString*)key;
 
 @end

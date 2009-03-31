@@ -10,6 +10,7 @@
 }
 
 +(SoapUnarchiver*) soapUnarchiverWithXmlString: (NSString*)xmlString;
++(SoapUnarchiver*) soapUnarchiverWithData: (NSData*)data;
 
 -(NSArray*) decodeObjectsOfType: (Class)aClass forXpath:(NSString*)path namespaceMappings: (NSDictionary*)mappings;
 

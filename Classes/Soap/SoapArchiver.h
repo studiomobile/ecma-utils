@@ -1,4 +1,5 @@
 #import <Foundation/Foundation.h>
+#import "SoapEntityProto.h"
 
 @class XMLWriter;
 
@@ -14,10 +15,10 @@
 
 +(SoapArchiver*)soapArchiver;
 
--(void)encodeHeader: (id)objv;
--(void)encodeHeader: (id)objv forKey: (NSString*)key;
+-(void)encodeHeader: (id<SoapEntityProto>)objv;
+-(void)encodeHeader: (id<SoapEntityProto>)objv forKey: (NSString*)key;
 
--(void)encodeBody: (id)objv;
--(void)encodeBody: (id)objv forKey: (NSString*)key;
+-(void)encodeBody: (id<SoapEntityProto>)objv;
+-(void)encodeBody: (id<SoapEntityProto>)objv forKey: (NSString*)key;
 
 @end

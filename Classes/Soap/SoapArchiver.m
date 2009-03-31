@@ -22,7 +22,7 @@ typedef enum eSAS_tag {
 	[writer instruct];
 	NSDictionary* attrs = [NSDictionary dictionaryWithObjectsAndKeys:@"http://www.w3.org/2001/XMLSchema-instance", @"xmlns:xsi",
 																	@"http://www.w3.org/2001/XMLSchema", @"xmlns:xsd",
-																	@"http://schemas.xmlsoap.org/soap/envelope/", @"xmlns",
+																	@"http://www.w3.org/2003/05/soap-envelope", @"xmlns",
 																	nil];	
 	[writer push:@"Envelope" attributes:attrs];
 	return self;
@@ -41,7 +41,7 @@ typedef enum eSAS_tag {
 
 - (void)encodeDate:(NSDate*)date forKey:(NSString *)key  attributes: (NSDictionary*)attrs{
 	NSDateFormatter *formatter = [[NSDateFormatter new] autorelease];
-	[formatter setDateFormat:@"dd/MM/yyyy"];	
+	[formatter setDateFormat:@"yyyy-MM-dd"];	
 	NSString* dateStr = [formatter stringFromDate:date];
 	[writer tag:key content:dateStr attributes: attrs];	
 }
@@ -64,7 +64,7 @@ typedef enum eSAS_tag {
 
 #pragma mark utility
 
--(void)encodeBody: (id)objv forKey: (NSString*)key{
+-(void)encodeBody: (id<SoapEntityProto>)objv forKey: (NSString*)key{
 	if(state == sasHeader){	
 		[writer pop];
 		state = sasEnvelope;
@@ -78,11 +78,11 @@ typedef enum eSAS_tag {
 	[self encodeObject:objv forKey: key];
 }
 
--(void)encodeBody: (id)objv{
-	[self encodeBody:objv forKey: [objv soapName]];
+-(void)encodeBody: (id<SoapEntityProto>)objv{
+	[self encodeBody:objv forKey: [[(NSObject*)objv class] soapName]];
 }
 
--(void)encodeHeader: (id)objv forKey: (NSString*)key{
+-(void)encodeHeader: (id<SoapEntityProto>)objv forKey: (NSString*)key{
 	if(hasBody){		
 		return;
 	}
@@ -96,19 +96,19 @@ typedef enum eSAS_tag {
 	[self encodeObject:objv forKey:key];
 }
 
--(void)encodeHeader: (id)objv{
-	[self encodeHeader:objv forKey: [objv soapName]];
+-(void)encodeHeader: (id<SoapEntityProto>)objv{
+	[self encodeHeader:objv forKey: [[(NSObject*)objv class] soapName]];
 }
 
 #pragma mark NSCoder
 
 - (void)encodeObject:(id)objv{
-	NSString* key = [objv soapName];
+	NSString* key = [[objv class] soapName];
 	[self encodeObject:objv forKey: key];
 }
 
 - (void)encodeObject:(id)objv forKey:(NSString *)key{
-	NSString* ns = [objv respondsToSelector:@selector(soapNamespace)] ? [objv performSelector: @selector(soapNamespace)] : nil;
+	NSString* ns = [[objv class] respondsToSelector:@selector(soapNamespace)] ? [[objv class] performSelector: @selector(soapNamespace)] : nil;
 	[self encodeObject:objv forKey:key namespace:ns];
 }
 
@@ -119,6 +119,15 @@ typedef enum eSAS_tag {
 - (void)encodeInt:(int)intv forKey:(NSString *)key{
 	[writer tag:key content: [NSString stringWithFormat:@"%d", intv]];
 }
+
+- (void)encodeInt32:(int32_t)intv forKey:(NSString *)key{
+	[writer tag:key content: [NSString stringWithFormat:@"%d", intv]];
+}
+
+- (void)encodeInt64:(int64_t)intv forKey:(NSString *)key{
+	[writer tag:key content: [NSString stringWithFormat:@"%qi", intv]];
+}
+
 
 - (void)encodeFloat:(float)realv forKey:(NSString *)key{
 	[writer tag:key content: [NSString stringWithFormat:@"%f", realv]];
