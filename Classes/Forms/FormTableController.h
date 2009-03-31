@@ -3,22 +3,21 @@
 
 #import "FormController.h"
 
+#import "FormDatePickerView.h"
 #import "TextFieldCell.h"
 #import "StaticFormCell.h"
 #import "SwitchCell.h"
 #import "AgreementCell.h"
 #import "DateTimeCell.h"
 
-@interface FormTableController : FormController<UITableViewDataSource> {
+@interface FormTableController : FormController<UITableViewDataSource, FormDatePickerViewDelegate> {
     NSIndexPath *currentIndexPath;
     
-    UIView *datePickerView;
-    UIDatePicker *datePicker;
+    FormDatePickerView *datePickerView;
     BOOL datePickerVisible;
 }
 @property (retain) NSIndexPath *currentIndexPath;
-@property (readonly) UIView *datePickerView;
-@property (readonly) UIDatePicker *datePicker;
+@property (readonly) FormDatePickerView *datePickerView;
 @property (readonly) FormCell *currentCell;
 
 - (void)enableButton:(BOOL)enable;
@@ -47,4 +46,8 @@
 - (AgreementCell*)agreementFieldCellWithDescriptor:(FormFieldDescriptor*)desc;
 - (DateTimeCell*)dateTimeFieldCellWithDescriptor:(FormFieldDescriptor*)desc;
 
+- (NSString*)selectControllerTitleForDescriptor:(FormFieldDescriptor*)desc indexPath:(NSIndexPath*)indexPath;
+- (NSString*)textEditControllerTitleForDescriptor:(FormFieldDescriptor*)desc indexPath:(NSIndexPath*)indexPath;
+- (NSString*)agreementControllerTitleForDescriptor:(FormFieldDescriptor*)desc indexPath:(NSIndexPath*)indexPath;
+    
 @end

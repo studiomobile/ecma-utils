@@ -282,49 +282,15 @@
     return (FormCell*)[self.table cellForRowAtIndexPath:self.currentIndexPath];
 }
 
-- (void)datePickerValueChanged {
-    FormCell *cell = [self currentCell];
-    [cell.fieldDescriptor.dataSource setValue:self.datePicker.date forKey:cell.fieldDescriptor.keyPath];
-    [cell onFieldDescriptorUpdate];
-}
-
-- (void)createDatePickerViews {
-    CGFloat width = self.view.bounds.size.width;
-    
-    UIToolbar *toolbar = [[[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, width, 44)] autorelease];
-    UIBarButtonItem *doneButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(hideDatePicker)];
-    UIBarButtonItem *space = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
-    [toolbar setItems:[NSArray arrayWithObjects:space, doneButton, nil]];
-    toolbar.barStyle = UIBarStyleBlackOpaque;
-    [space release];
-    [doneButton release];
-    
-    datePicker = [[[UIDatePicker alloc] init] autorelease];
-    datePicker.frame = CGRectMake(0, toolbar.frame.size.height, datePicker.frame.size.width, datePicker.frame.size.height);
-    [datePicker addTarget:self action:@selector(datePickerValueChanged) forControlEvents:UIControlEventValueChanged];
-    
-    CGFloat viewHeight = toolbar.frame.size.height + datePicker.frame.size.height;
-    datePickerView = [[[UIView alloc] initWithFrame:CGRectMake(0, self.view.bounds.size.height, width, viewHeight)] autorelease];
-    [datePickerView addSubview:toolbar];
-    [datePickerView addSubview:datePicker];
-    
-    [self.table.superview addSubview:datePickerView];
-}
-
-- (UIView*)datePickerView {
+- (FormDatePickerView*)datePickerView {
     if(!datePickerView) {
-        [self createDatePickerViews];
+        datePickerView = [[[FormDatePickerView alloc] initWithWidth:self.view.bounds.size.width] autorelease];
+        datePickerView.frame  = CGRectMake(0, self.view.bounds.size.height, datePickerView.frame.size.width, datePickerView.frame.size.height);
+        datePickerView.delegate = self;
+        [self.table.superview addSubview:datePickerView];
     }
     
     return datePickerView;
-}
-
-- (UIDatePicker*)datePicker {
-    if(!datePicker) {
-        [self createDatePickerViews];
-    }
-    
-    return datePicker;
 }
 
 - (void)setDatePickerVisible:(BOOL)v {
@@ -350,16 +316,23 @@
 }
 
 - (void)showDatePickerForDescriptor:(FormFieldDescriptor*)desc {
-    NSNumber *styleNumber = [desc.options objectForKey:@"datePicker.datePickerMode"];
-    self.datePicker.datePickerMode = styleNumber ? [styleNumber integerValue] : UIDatePickerModeDateAndTime;
-    NSDate *date = [self currentCell].fieldDescriptor.value;
-    self.datePicker.date = date ? date : [NSDate date];
+    [self.datePickerView reconfigureWithDescriptor:desc];
     
     [self setDatePickerVisible:YES];
 }
 
 - (void)hideDatePicker {
     [self setDatePickerVisible:NO];
+}
+
+- (void)formDatePickerViewDone:(FormDatePickerView*)datePickerView {
+    [self hideDatePicker];
+}
+
+- (void)formDatePickerViewDateChanged:(FormDatePickerView*)datePickerView {
+    FormCell *cell = [self currentCell];
+    [cell.fieldDescriptor.dataSource setValue:self.datePickerView.date forKey:cell.fieldDescriptor.keyPath];
+    [cell onFieldDescriptorUpdate];
 }
 
 - (BOOL)pushControllersAnimated {
