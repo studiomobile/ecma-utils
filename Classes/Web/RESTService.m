@@ -117,7 +117,7 @@ const NSString *RequestStatusCode = @"__RequestStatusCode__";
 }
 
 - (id)post:(NSData*)data to:(NSString*)localPath error:(NSError**)error {
-    NSDictionary *headers = [NSDictionary dictionaryWithObjectsAndKeys:@"Content-Type", @"text/xml", nil];
+    NSDictionary *headers = [NSDictionary dictionaryWithObjectsAndKeys:@"text/xml", @"Content-Type", nil];
     return [self post:data to:localPath headers:headers error:error];
 }
 
