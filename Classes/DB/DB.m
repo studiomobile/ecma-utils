@@ -182,6 +182,8 @@ static NSMutableDictionary *databases = nil;
 }
 
 - (void)update:(DBObject*)o {
+    [o beforeSave];
+    [o beforeUpdate];
     NSString *tableName = [o tableName];
     NSArray *columns = [self tableColumns:o];
     id *args = malloc(sizeof(id)*([columns count] + 1));
@@ -203,9 +205,12 @@ static NSMutableDictionary *databases = nil;
     LOG2(@"Update result: %d", stepResult);
     sqlite3_finalize(stmt);
     free(args);
+    [o afterSave];
 }
 
 - (void)insert:(DBObject*)o {
+    [o beforeSave];
+    [o beforeInsert];
     NSString *tableName = [o tableName];
     NSMutableArray *columns = [NSMutableArray arrayWithArray:[self tableColumns:o]];	
 
@@ -234,18 +239,16 @@ static NSMutableDictionary *databases = nil;
     sqlite3_finalize(stmt);
     o.pk = [self executeNumber:@"select last_insert_rowid()"];
     free(args);
+ 
+    [o afterSave];
 }
 
 - (void)save:(DBObject*)o {
-    [o beforeSave];
-
     if([o isNewRecord]) {
         [self insert:o];
     } else {
         [self update:o];
     }
-	
-    [o afterSave];
 }
 
 - (sqlite3_stmt*)prepareStmt:(NSString*)sql arguments:(id)arg1, ... {

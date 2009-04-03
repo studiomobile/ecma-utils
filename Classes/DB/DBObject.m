@@ -40,6 +40,12 @@
 - (void)beforeSave {
 }
 
+- (void)beforeInsert {
+}
+
+- (void)beforeUpdate {
+}
+
 - (void)afterSave {
 }
 

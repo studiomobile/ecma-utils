@@ -19,9 +19,9 @@
 
 - (void)tag:(NSString*)name content:(NSString*)content attributes:(NSDictionary*)attributes;
 - (void)tag:(NSString*)name content:(NSString*)content;
-- (void)push:(NSString*)name attributes:(NSDictionary*)attributes;
-- (void)push:(NSString*)name;
-- (void)pop;
+- (void)openTag:(NSString*)name attributes:(NSDictionary*)attributes;
+- (void)openTag:(NSString*)name;
+- (void)closeTag;
 
 - (void)comment:(NSString*)comment;
 @end

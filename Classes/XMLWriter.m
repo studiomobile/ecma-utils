@@ -26,7 +26,7 @@
 
 - (NSString*)result {
     while(tagStack.count) { // unwind 
-        [self pop];
+        [self closeTag];
     }
 
     return [NSString stringWithString:result];
@@ -77,18 +77,18 @@
     [self tag:name content:content attributes:nil];
 }
 
-- (void)push:(NSString*)name attributes:(NSDictionary*)attributes {
+- (void)openTag:(NSString*)name attributes:(NSDictionary*)attributes {
     if(!name) return;
     
     [self appendIndented:[NSString stringWithFormat:@"<%@%@>", name, [self attributesString:attributes]]];
     [tagStack addObject:name];
 }
 
-- (void)push:(NSString*)name {
-    [self push:name attributes:nil];
+- (void)openTag:(NSString*)name {
+    [self openTag:name attributes:nil];
 }
 
-- (void)pop {
+- (void)closeTag {
     if(!tagStack.count) return;
     
     NSString *name = [tagStack objectAtIndex:tagStack.count - 1];
