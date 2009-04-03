@@ -13,4 +13,11 @@ void checkArgument(BOOL result, NSString *message);
 
 @end
 
+@interface NSObject (Utils)
+
+-(NSArray*)arrayed;
+
+@end
+
+
 typedef NSObject DebugCheck;

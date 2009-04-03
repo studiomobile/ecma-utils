@@ -40,3 +40,12 @@ void checkArgument(BOOL result, NSString *message) {
 	checkArgument(result, message);
 }
 @end
+
+
+@implementation NSObject (Utils)
+
+-(NSArray*) arrayed{
+	return [NSArray arrayWithObject: self];
+}
+
+@end
