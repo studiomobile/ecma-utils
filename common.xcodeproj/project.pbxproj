@@ -16,8 +16,8 @@
 		0956EB110F408BFC0096310E /* NSUserDefaults+Utils.m in Sources */ = {isa = PBXBuildFile; fileRef = 0956EB080F408BFC0096310E /* NSUserDefaults+Utils.m */; };
 		0956EB120F408BFC0096310E /* RegexKitLite.h in Headers */ = {isa = PBXBuildFile; fileRef = 0956EB090F408BFC0096310E /* RegexKitLite.h */; };
 		0956EB130F408BFC0096310E /* RegexKitLite.m in Sources */ = {isa = PBXBuildFile; fileRef = 0956EB0A0F408BFC0096310E /* RegexKitLite.m */; };
-		0956F1550F4455C80096310E /* CustomTableCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 0956F1530F4455C80096310E /* CustomTableCell.h */; };
-		0956F1560F4455C80096310E /* CustomTableCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 0956F1540F4455C80096310E /* CustomTableCell.m */; };
+		0956F1550F4455C80096310E /* UITableViewCell+NIB.h in Headers */ = {isa = PBXBuildFile; fileRef = 0956F1530F4455C80096310E /* UITableViewCell+NIB.h */; };
+		0956F1560F4455C80096310E /* UITableViewCell+NIB.m in Sources */ = {isa = PBXBuildFile; fileRef = 0956F1540F4455C80096310E /* UITableViewCell+NIB.m */; };
 		0956F16A0F4455F60096310E /* FormCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 0956F1580F4455F60096310E /* FormCell.h */; };
 		0956F16B0F4455F60096310E /* FormCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 0956F1590F4455F60096310E /* FormCell.m */; };
 		0956F16C0F4455F60096310E /* FormController.h in Headers */ = {isa = PBXBuildFile; fileRef = 0956F15A0F4455F60096310E /* FormController.h */; };
@@ -88,8 +88,8 @@
 		0956EB080F408BFC0096310E /* NSUserDefaults+Utils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSUserDefaults+Utils.m"; sourceTree = "<group>"; };
 		0956EB090F408BFC0096310E /* RegexKitLite.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RegexKitLite.h; sourceTree = "<group>"; };
 		0956EB0A0F408BFC0096310E /* RegexKitLite.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RegexKitLite.m; sourceTree = "<group>"; };
-		0956F1530F4455C80096310E /* CustomTableCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomTableCell.h; sourceTree = "<group>"; };
-		0956F1540F4455C80096310E /* CustomTableCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CustomTableCell.m; sourceTree = "<group>"; };
+		0956F1530F4455C80096310E /* UITableViewCell+NIB.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UITableViewCell+NIB.h"; sourceTree = "<group>"; };
+		0956F1540F4455C80096310E /* UITableViewCell+NIB.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UITableViewCell+NIB.m"; sourceTree = "<group>"; };
 		0956F1580F4455F60096310E /* FormCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FormCell.h; sourceTree = "<group>"; };
 		0956F1590F4455F60096310E /* FormCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FormCell.m; sourceTree = "<group>"; };
 		0956F15A0F4455F60096310E /* FormController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FormController.h; sourceTree = "<group>"; };
@@ -212,8 +212,8 @@
 		0956F13E0F4454E50096310E /* View */ = {
 			isa = PBXGroup;
 			children = (
-				0956F1530F4455C80096310E /* CustomTableCell.h */,
-				0956F1540F4455C80096310E /* CustomTableCell.m */,
+				0956F1530F4455C80096310E /* UITableViewCell+NIB.h */,
+				0956F1540F4455C80096310E /* UITableViewCell+NIB.m */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -366,7 +366,7 @@
 				0956EB0E0F408BFC0096310E /* NSBundle+Utils.h in Headers */,
 				0956EB100F408BFC0096310E /* NSUserDefaults+Utils.h in Headers */,
 				0956EB120F408BFC0096310E /* RegexKitLite.h in Headers */,
-				0956F1550F4455C80096310E /* CustomTableCell.h in Headers */,
+				0956F1550F4455C80096310E /* UITableViewCell+NIB.h in Headers */,
 				0956F16A0F4455F60096310E /* FormCell.h in Headers */,
 				0956F16C0F4455F60096310E /* FormController.h in Headers */,
 				0956F16E0F4455F60096310E /* FormFieldDescriptor.h in Headers */,
@@ -445,7 +445,7 @@
 				0956EB0F0F408BFC0096310E /* NSBundle+Utils.m in Sources */,
 				0956EB110F408BFC0096310E /* NSUserDefaults+Utils.m in Sources */,
 				0956EB130F408BFC0096310E /* RegexKitLite.m in Sources */,
-				0956F1560F4455C80096310E /* CustomTableCell.m in Sources */,
+				0956F1560F4455C80096310E /* UITableViewCell+NIB.m in Sources */,
 				0956F16B0F4455F60096310E /* FormCell.m in Sources */,
 				0956F16D0F4455F60096310E /* FormController.m in Sources */,
 				0956F16F0F4455F60096310E /* FormFieldDescriptor.m in Sources */,
