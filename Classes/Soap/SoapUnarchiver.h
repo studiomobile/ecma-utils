@@ -1,17 +1,16 @@
 #import <Foundation/Foundation.h>
 
 @class CXMLDocument;
-
 @class SoapUnarchiverContext;
 
 @interface SoapUnarchiver : NSCoder{
-	CXMLDocument* xml;	
-	SoapUnarchiverContext* nodeContext;
+	CXMLDocument* xml;		
+	NSMutableArray* contextStack;
 }
 
 +(SoapUnarchiver*) soapUnarchiverWithXmlString: (NSString*)xmlString;
 +(SoapUnarchiver*) soapUnarchiverWithData: (NSData*)data;
 
--(NSArray*) decodeObjectsOfType: (Class)aClass forXpath:(NSString*)path namespaceMappings: (NSDictionary*)mappings;
+-(id) decodeBodyObjectOfType: (id)type;
 
 @end

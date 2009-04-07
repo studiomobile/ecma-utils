@@ -64,7 +64,7 @@ typedef enum eSAS_tag {
 
 #pragma mark utility
 
--(void)encodeBody: (id<SoapEntityProto>)objv forKey: (NSString*)key{
+-(void)encodeBodyObject: (id<SoapEntityProto>)objv forKey: (NSString*)key{
 	if(state == sasHeader){	
 		[writer closeTag];
 		state = sasEnvelope;
@@ -78,11 +78,11 @@ typedef enum eSAS_tag {
 	[self encodeObject:objv forKey: key];
 }
 
--(void)encodeBody: (id<SoapEntityProto>)objv{
-	[self encodeBody:objv forKey: [[(NSObject*)objv class] soapName]];
+-(void)encodeBodyObject: (id<SoapEntityProto>)objv{
+	[self encodeBodyObject:objv forKey: [[(NSObject*)objv class] soapName]];
 }
 
--(void)encodeHeader: (id<SoapEntityProto>)objv forKey: (NSString*)key{
+-(void)encodeHeaderObject: (id<SoapEntityProto>)objv forKey: (NSString*)key{
 	if(hasBody){		
 		return;
 	}
@@ -96,8 +96,8 @@ typedef enum eSAS_tag {
 	[self encodeObject:objv forKey:key];
 }
 
--(void)encodeHeader: (id<SoapEntityProto>)objv{
-	[self encodeHeader:objv forKey: [[(NSObject*)objv class] soapName]];
+-(void)encodeHeaderObject: (id<SoapEntityProto>)objv{
+	[self encodeHeaderObject:objv forKey: [[(NSObject*)objv class] soapName]];
 }
 
 #pragma mark NSCoder
@@ -139,7 +139,8 @@ typedef enum eSAS_tag {
 
 
 - (NSInteger)versionForClassName:(NSString *)className{
-	return 100000;
+	Class c = NSClassFromString(className);
+	return [c version];
 }
 
 -(NSString*)message{

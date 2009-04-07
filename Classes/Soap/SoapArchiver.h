@@ -15,10 +15,10 @@
 
 +(SoapArchiver*)soapArchiver;
 
--(void)encodeHeader: (id<SoapEntityProto>)objv;
--(void)encodeHeader: (id<SoapEntityProto>)objv forKey: (NSString*)key;
+-(void)encodeHeaderObject: (id<SoapEntityProto>)objv;
+-(void)encodeHeaderObject: (id<SoapEntityProto>)objv forKey: (NSString*)key;
 
--(void)encodeBody: (id<SoapEntityProto>)objv;
--(void)encodeBody: (id<SoapEntityProto>)objv forKey: (NSString*)key;
+-(void)encodeBodyObject: (id<SoapEntityProto>)objv;
+-(void)encodeBodyObject: (id<SoapEntityProto>)objv forKey: (NSString*)key;
 
 @end
