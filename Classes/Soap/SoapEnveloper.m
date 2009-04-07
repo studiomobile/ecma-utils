@@ -1,16 +1,38 @@
-#import "SoapArchiver.h"
+#import "SoapEnveloper.h"
 #import "SoapEntityProto.h"
 #import "XMLWriter.h"
+#import "NSError+Utils.h"
 
 typedef enum eSAS_tag {
 	sasEnvelope,
 	sasHeader
 } eSAS;
 
-@implementation SoapArchiver
+///////////////////////////////////////////////////////////////////////////
+@interface NSObject (SOAP)
+
+-(id)safeGetSoapClass;
+
+@end
+
+
+@implementation NSObject (SOAP)
+
+-(id)safeGetSoapClass{
+	if(![self respondsToSelector:@selector(soapClass)])
+		return [self class];
+	return [self performSelector:@selector(soapClass)];
+}
+
+@end
+
+///////////////////////////////////////////////////////////////////////////
+
+
+@implementation SoapEnveloper
 @dynamic message;
 
-+(SoapArchiver*)soapArchiver{
++(SoapEnveloper*)soapEnveloper{
 	return [[[self class]new]autorelease];
 }
 
@@ -79,12 +101,12 @@ typedef enum eSAS_tag {
 }
 
 -(void)encodeBodyObject: (id<SoapEntityProto>)objv{
-	[self encodeBodyObject:objv forKey: [[(NSObject*)objv class] soapName]];
+	[self encodeBodyObject:objv forKey: [[(NSObject*)objv safeGetSoapClass] soapName]];
 }
 
 -(void)encodeHeaderObject: (id<SoapEntityProto>)objv forKey: (NSString*)key{
 	if(hasBody){		
-		return;
+		@throw [NSError errorWithDomain:@"EncodingSoapMessage" code:1 description:@"encoding header must preceed body"];
 	}
 	
 	if(!hasHeader){
@@ -97,18 +119,19 @@ typedef enum eSAS_tag {
 }
 
 -(void)encodeHeaderObject: (id<SoapEntityProto>)objv{
-	[self encodeHeaderObject:objv forKey: [[(NSObject*)objv class] soapName]];
+	[self encodeHeaderObject:objv forKey: [[(NSObject*)objv safeGetSoapClass] soapName]];
 }
 
 #pragma mark NSCoder
 
 - (void)encodeObject:(id)objv{
-	NSString* key = [[objv class] soapName];
+	NSString* key = [[objv safeGetSoapClass] soapName];
 	[self encodeObject:objv forKey: key];
 }
 
 - (void)encodeObject:(id)objv forKey:(NSString *)key{
-	NSString* ns = [[objv class] respondsToSelector:@selector(soapNamespace)] ? [[objv class] performSelector: @selector(soapNamespace)] : nil;
+	id type = [objv safeGetSoapClass];	
+	NSString* ns = [type respondsToSelector:@selector(soapNamespace)] ? [type soapNamespace] : nil;
 	[self encodeObject:objv forKey:key namespace:ns];
 }
 

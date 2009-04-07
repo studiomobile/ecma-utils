@@ -13,7 +13,7 @@
 
 @property(readonly) NSString* message;
 
-+(SoapEnveloper*)soapArchiver;
++(SoapEnveloper*)soapEnveloper;
 
 -(void)encodeHeaderObject: (id<SoapEntityProto>)objv;
 -(void)encodeHeaderObject: (id<SoapEntityProto>)objv forKey: (NSString*)key;

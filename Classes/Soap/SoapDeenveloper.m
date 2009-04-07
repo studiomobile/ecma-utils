@@ -151,13 +151,13 @@
 @synthesize contextStack;
 @dynamic nodeContext;
 
-+(SoapDeenveloper*) soapUnarchiverWithXmlString: (NSString*)xmlString{
++(SoapDeenveloper*) soapDeenveloperWithXmlString: (NSString*)xmlString{
 	return [[[[self class]alloc]initWithXmlString:xmlString]autorelease];
 }
 
-+(SoapDeenveloper*) soapUnarchiverWithData: (NSData*)data{
++(SoapDeenveloper*) soapDeenveloperWithData: (NSData*)data{
 	NSString* xmlString = [[[NSString alloc]initWithData:data encoding:NSUTF8StringEncoding]autorelease];
-	return [self soapUnarchiverWithXmlString:xmlString];
+	return [self soapDeenveloperWithXmlString:xmlString];
 }
 
 -(id)initWithXmlString: (NSString*)xmlString{
