@@ -42,7 +42,7 @@
 	NSMutableDictionary* valueByKey;
 }
 
-@property(readonly) SoapCustomEntityType* type;
+@property(retain, readonly) SoapCustomEntityType* type;
 @property(retain) NSString* name;
 @property(retain) NSString* namespace;
 
