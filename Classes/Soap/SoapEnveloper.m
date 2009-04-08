@@ -27,6 +27,11 @@ typedef enum eSAS_tag {
 @end
 
 ///////////////////////////////////////////////////////////////////////////
+@interface SoapEnveloper ()
+
+-(void)encodeObject: (id)objv forKey:(NSString*)key namespace:(NSString*)ns;
+
+@end
 
 
 @implementation SoapEnveloper
@@ -68,19 +73,53 @@ typedef enum eSAS_tag {
 	[writer tag:key content:dateStr attributes: attrs];	
 }
 
+-(void)encodePrimitiveObject: (id)obj ofType: (NSString*)type forKey: (NSString*)key{
+	if([type isEqual:@"bool"]){
+		[self encodeBool:[obj boolValue] forKey:key];
+	}else if([type isEqual:@"int"]){
+		[self encodeInt:[obj intValue] forKey:key];
+	}else if([type isEqual:@"int32"]){
+		[self encodeInt32:[obj intValue] forKey:key];
+	}else if([type isEqual:@"int64"]){
+		[self encodeInt64:[obj longLongValue] forKey:key];
+	}else if([type isEqual:@"float"]){
+		[self encodeFloat:[obj floatValue] forKey:key];
+	}else if([type isEqual:@"double"]){
+		[self encodeDouble:[obj doubleValue] forKey:key];
+	}else{
+		@throw [NSError errorWithDomain:@"EncodingSoapMessage" code:1 description: [NSString stringWithFormat: @"Invalid primitive type '%@'", type]];			
+	}	
+}
+
+-(void)encodeCollection: (NSArray*)collection forKey: (NSString*)key{
+	id type = [[contextObject safeGetSoapClass] typeForKey:key];
+	
+	for(id obj in collection){
+		if([type isKindOfClass:[NSString class]]){
+			[self encodePrimitiveObject:obj ofType:type forKey:key];
+		}else{
+			[self encodeObject:obj forKey:key];
+		}
+	}
+}
+
 -(void)encodeObject: (id)objv forKey:(NSString*)key namespace:(NSString*)ns{
 	NSDictionary* attrs = ns ? [NSDictionary dictionaryWithObject: ns forKey: @"xmlns"] : nil;	
 	
 	if([objv isKindOfClass: [NSString class]]){
-		[self encodeString:(NSString*)objv forKey:key attributes: attrs];
+		[self encodeString:objv forKey:key attributes: attrs];
 	}
 	else if([objv isKindOfClass:[NSDate class]]){
-		[self encodeDate: (NSDate*)objv forKey: key attributes: attrs];
-	}
-	else{
-		[writer openTag: key attributes: attrs];
+		[self encodeDate: objv forKey: key attributes: attrs];
+	}else if([objv isKindOfClass: [NSArray class]]){
+		[self encodeCollection: objv forKey: key];
+	}else{
+		id oldContext = contextObject;
+		contextObject = objv;
+		[writer openTag: key attributes: attrs];		
 		[objv encodeWithCoder:self];
 		[writer closeTag];
+		contextObject = oldContext;
 	}
 }
 
@@ -106,7 +145,7 @@ typedef enum eSAS_tag {
 
 -(void)encodeHeaderObject: (id<SoapEntityProto>)objv forKey: (NSString*)key{
 	if(hasBody){		
-		@throw [NSError errorWithDomain:@"EncodingSoapMessage" code:1 description:@"encoding header must preceed body"];
+		@throw [NSError errorWithDomain:@"EncodingSoapMessage" code:2 description:@"encoding header must preceed body"];
 	}
 	
 	if(!hasHeader){
@@ -160,11 +199,16 @@ typedef enum eSAS_tag {
 	[writer tag:key content: [NSString stringWithFormat:@"%f", realv]];	
 }
 
-
 - (NSInteger)versionForClassName:(NSString *)className{
 	Class c = NSClassFromString(className);
 	return [c version];
 }
+
+- (BOOL)allowsKeyedCoding{
+	return YES;
+}
+
+#pragma mark public
 
 -(NSString*)message{
 	return writer.result;

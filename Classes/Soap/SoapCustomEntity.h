@@ -23,6 +23,16 @@
 -(void) addDateForKey: (NSString*)key;
 -(void) addObjectOfType: (id)type forKey: (NSString*)key;			
 
+-(void) addManyBoolsForKey: (NSString*)key;
+-(void) addManyIntsForKey: (NSString*)key;
+-(void) addManyInt32sForKey: (NSString*)key;
+-(void) addManyInt64sForKey: (NSString*)key;
+-(void) addManyFloatsForKey: (NSString*)key;
+-(void) addManyDoublesForKey: (NSString*)key;
+-(void) addManyStringsForKey: (NSString*)key;
+-(void) addManyDatesForKey: (NSString*)key;
+-(void) addManyObjectsOfType: (id)type forKey: (NSString*)key;			
+
 @end
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -32,6 +42,7 @@
 	NSMutableDictionary* valueByKey;
 }
 
+@property(readonly) SoapCustomEntityType* type;
 @property(retain) NSString* name;
 @property(retain) NSString* namespace;
 
@@ -44,6 +55,16 @@
 -(void) setString: (NSString*)val forKey: (NSString*)key;
 -(void) setDate: (NSDate*)val forKey: (NSString*)key;
 -(void) setObject: (id)val forKey: (NSString*)key;
+
+-(void) setManyBools: (NSArray*) val forKey: (NSString*)key;
+-(void) setManyInts: (NSArray*) val forKey: (NSString*)key;	
+-(void) setManyInt32s: (NSArray*) val forKey: (NSString*)key;
+-(void) setManyInt64s: (NSArray*) val forKey: (NSString*)key;
+-(void) setManyFloats: (NSArray*) val forKey: (NSString*)key;
+-(void) setManyDoubles: (NSArray*) val forKey: (NSString*)key;
+-(void) setManyStrings: (NSArray*) val forKey: (NSString*)key;
+-(void) setManyDates: (NSArray*) val forKey: (NSString*)key;
+-(void) setManyObjects: (NSArray*) val ofType: (id)valType forKey: (NSString*)key;
 
 -(id) objectForKey: (NSString*)key;
 

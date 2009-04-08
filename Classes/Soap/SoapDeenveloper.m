@@ -21,6 +21,7 @@
 
 -(id)typeForKey: (NSString*)key;
 -(id)isManyForKey: (NSString*)key;
+-(NSString*)namespace;
 -(NSArray*)nodesNamed: (NSString*)key namespace: (NSString*)ns;
 
 @end
@@ -64,10 +65,22 @@
 	return [type isManyForKey:key];
 }
 
+-(NSString*)namespace{
+	return [type soapNamespace];	 
+}
+
 -(NSArray*)nodesNamed: (NSString*)key namespace: (NSString*)ns{
 	NSError* error = nil;
-	NSDictionary* mappings =  [NSDictionary dictionaryWithObject: ns forKey: @"ns"];
-	NSString* xpath = [NSString stringWithFormat: @"ns:%@", key];
+	
+	NSMutableDictionary* mappings = [NSMutableDictionary dictionary];
+	NSString* xpath;
+	if(ns){
+		[mappings setObject:ns forKey:@"ns"];
+		xpath = [NSString stringWithFormat: @"ns:%@", key];
+	}else{
+		xpath = key;
+	}
+	
 	NSArray* nodes = [node nodesForXPath:xpath namespaceMappings: mappings error:&error];
 	if(error){
 		@throw error;
@@ -198,14 +211,13 @@
 	return [contextStack lastObject];
 }
 
--(NSString*)decodeStringForKey:(NSString*)key{
-	CXMLNode* node = [self.nodeContext nodeNamed:key];	
-	return [node stringValue];	
+#pragma mark specialized decoding methods
+
+-(id)decodeStringFromNode: (CXMLNode*)node type: (id)type{	
+	return [node stringValue];		
 }
 
--(NSDate*)decodeDateForKey:(NSString*)key{
-	CXMLNode* node = [self.nodeContext nodeNamed:key];	
-	
+-(id)decodeDateFromNode: (CXMLNode*)node type: (id)type{
 	NSString* stringDate = [node stringValue];
 	
 	NSDateFormatter *dateFormat = [[NSDateFormatter new]autorelease];
@@ -214,32 +226,56 @@
 	}else{
 		[dateFormat setDateFormat:@"yyyy-MM-dd'T'HH:mm:SSSS"];
 	}	
-
+	
 	NSDate* date = [dateFormat dateFromString: [node stringValue]];
-	return date;
+	return date;	
 }
 
--(id)decodeSoapEntityForKey: (NSString*)key{
+-(id)decodeSoapEntityFromNode: (CXMLNode*)node type: (id)type{
+	SoapDeenveloperContext* newContext = [SoapDeenveloperContext contextWithNode:node type:type];
+	[self pushContext: newContext];
+	id obj = [type alloc];
+	[obj initWithCoder: self];
+	[self popContext];
+	return [obj autorelease];
+}
+
+-(id)decodePrimitiveTypeFromNode: (CXMLNode*)node type: (id)type{
+	if([type isEqual:@"bool"]){
+		return [NSNumber numberWithBool: [[node stringValue] boolValue]];
+	}else if([type isEqual:@"int"]){
+		return [NSNumber numberWithInt:[[node stringValue] intValue]];
+	}else if([type isEqual:@"int32"]){
+		return [NSNumber numberWithInt:[[node stringValue] intValue]];
+	}else if([type isEqual:@"int64"]){
+		return [NSNumber numberWithLongLong:[[node stringValue] longLongValue]];
+	}else if([type isEqual:@"float"]){
+		return [NSNumber numberWithFloat:[[node stringValue] floatValue]];
+	}else if([type isEqual:@"double"]){
+		return [NSNumber numberWithDouble:[[node stringValue] doubleValue]];
+	}else{
+		@throw [NSError errorWithDomain:@"DecodingSoapMessage" code:1 description: [NSString stringWithFormat: @"Invalid primitive type '%@'", type]];			
+	}		
+}
+
+#pragma mark 
+
+-(id)decodeObjectsForKey: (NSString*)key namespace: (NSString*)ns decodingMethod: (SEL)decodingMethod{
 	id type = [self.nodeContext typeForKey:key];
-	NSArray* nodes = [self.nodeContext nodesNamed: key namespace: [type soapNamespace]];
+	
+	NSArray* nodes = [self.nodeContext nodesNamed: key namespace: ns];
 	NSMutableArray* objects = [NSMutableArray array];
 	for(CXMLNode* n in nodes){
-		SoapDeenveloperContext* newContext = [SoapDeenveloperContext contextWithNode:n type:type];
-		[self pushContext: newContext];
-		id obj = [type alloc];
-		[obj initWithCoder: self];
-		[self popContext];
+		id obj = [self performSelector:decodingMethod withObject:n withObject:type];
 		[objects addObject: obj];
-		[obj release];
 	}
 	
 	if([self.nodeContext isManyForKey: key]){
 		return [objects copy];
 	}else{
 		return objects.count ? [objects objectAtIndex:0] : nil;
-	}
+	}	
 }
-
 
 #pragma mark utility
 
@@ -272,11 +308,13 @@
 	}
 	
 	if(type == [NSString class]){
-		return [self decodeStringForKey:key];
+		return [self decodeObjectsForKey:key namespace:[self.nodeContext namespace] decodingMethod:@selector(decodeStringFromNode:type:)];
 	}else if(type == [NSDate class]){
-		return [self decodeDateForKey:key];
+		return [self decodeObjectsForKey:key namespace:[self.nodeContext namespace] decodingMethod:@selector(decodeDateFromNode:type:)];
+	}else if([type isKindOfClass:[NSString class]]){
+		return [self decodeObjectsForKey:key namespace:[self.nodeContext namespace] decodingMethod:@selector(decodePrimitiveTypeFromNode:type:)];
 	}else if([type conformsToProtocol: @protocol(SoapEntityProto)]){
-		return [self decodeSoapEntityForKey: key];
+		return [self decodeObjectsForKey:key namespace:[type soapNamespace] decodingMethod:@selector(decodeSoapEntityFromNode:type:)];
 	}else{
 		@throw [NSError errorWithDomain:@"SoapUnarchiving" code:2 description: [NSString stringWithFormat: @"Don't know how to decode type '%@'", type]];	
 	}
@@ -302,7 +340,6 @@
 	return [[node stringValue] longLongValue];
 }
 
-
 - (float)decodeFloatForKey:(NSString *)key{
 	CXMLNode* node = [self.nodeContext nodeNamed:key];	
 	return [[node stringValue] floatValue];
@@ -319,5 +356,8 @@
 	return ver;
 }
 
+- (BOOL)allowsKeyedCoding{
+	return YES;
+}
 
 @end

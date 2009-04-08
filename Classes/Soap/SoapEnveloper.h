@@ -9,6 +9,7 @@
 	BOOL hasHeader;
 	BOOL hasBody;
 	int state;
+	id contextObject;
 }
 
 @property(readonly) NSString* message;

@@ -3,7 +3,7 @@
 
 @interface SoapCustomEntity ()
 
-@property(retain) SoapCustomEntityType* type;
+@property(retain, readwrite) SoapCustomEntityType* type;
 
 @end
 
@@ -23,14 +23,16 @@ typedef enum eTypeCode_tag{
 {
 	NSString* name;
 	id type;
-	BOOL isMany;
 	eTypeCode typeCode;
+	BOOL isMany;
 }
 
 @property(retain) NSString* name;
 @property(retain) id type;
 @property(assign) BOOL isMany;
 @property(assign) eTypeCode typeCode;
+
++(CustomFieldDescriptor*) customFieldWithName: (NSString*)name typeCode: (eTypeCode)tc;
 
 -(void)encodeValue: (id)val withCoder: (NSCoder*)coder;
 -(id)decodeValueWithDecoder: (NSCoder*)coder;
@@ -50,7 +52,47 @@ typedef enum eTypeCode_tag{
 	[super dealloc];
 }
 
+-(NSString*)typeNameForTypeCode: (eTypeCode)tc{
+	switch (tc) {
+		case tcBool:
+			return @"bool";
+		case tcInt:
+			return @"int";
+		case tcInt32:
+			return @"int32";
+		case tcInt64:
+			return @"int64";
+		case tcFloat:
+			return @"float";
+		case tcDouble:
+			return @"double";
+		case tcObject:
+		default:
+			return nil;
+	}
+}
+
+-(void)setTypeCode:(eTypeCode)tc{
+	typeCode = tc;
+	id typename = [self typeNameForTypeCode: tc];
+	if(typename)
+		self.type = typename;
+}
+
++(CustomFieldDescriptor*) customFieldWithName: (NSString*)name typeCode: (eTypeCode)tc{
+	CustomFieldDescriptor* inst = [[CustomFieldDescriptor new]autorelease];
+	inst.name = name;
+	inst.typeCode = tc;
+	
+	return inst;
+}
+
 -(void)encodeValue: (id)val withCoder: (NSCoder*)coder{
+	if(isMany){
+		[coder encodeObject:val forKey:name];
+		return;
+	}
+	
 	switch (typeCode) {
 		case tcBool:
 			[coder encodeBool:[val boolValue] forKey:name];
@@ -78,6 +120,10 @@ typedef enum eTypeCode_tag{
 }
 
 -(id)decodeValueWithDecoder: (NSCoder*)coder{
+	if(isMany){
+		return [coder decodeObjectForKey:name];	
+	}
+	
 	switch (typeCode) {
 		case tcBool:
 			return [NSNumber numberWithBool: [coder decodeBoolForKey:name]];
@@ -143,46 +189,34 @@ typedef enum eTypeCode_tag{
 
 #pragma mark configuring
 
--(void) addBoolForKey: (NSString*)key{
-	CustomFieldDescriptor* field = [[CustomFieldDescriptor new]autorelease];
-	field.name = key;
-	field.typeCode = tcBool;
+-(CustomFieldDescriptor*)addFieldNamed: (NSString*)_name typeCode: (eTypeCode)tc{
+	CustomFieldDescriptor* field = [CustomFieldDescriptor customFieldWithName:_name typeCode:tc];
 	[fields addObject:field];
+	return field;
+}
+
+-(void) addBoolForKey: (NSString*)key{
+	[self addFieldNamed:key typeCode:tcBool];
 }
 
 -(void) addIntForKey: (NSString*)key;{
-	CustomFieldDescriptor* field = [[CustomFieldDescriptor new]autorelease];
-	field.name = key;
-	field.typeCode = tcInt;
-	[fields addObject:field];	
+	[self addFieldNamed:key typeCode:tcInt];
 }
 
 -(void) addInt32ForKey: (NSString*)key;{
-	CustomFieldDescriptor* field = [[CustomFieldDescriptor new]autorelease];
-	field.name = key;
-	field.typeCode = tcInt32;
-	[fields addObject:field];	
+	[self addFieldNamed:key typeCode:tcInt32];
 }
 
 -(void) addInt64ForKey: (NSString*)key;{
-	CustomFieldDescriptor* field = [[CustomFieldDescriptor new]autorelease];
-	field.name = key;
-	field.typeCode = tcInt64;
-	[fields addObject:field];	
+	[self addFieldNamed:key typeCode:tcInt64];
 }
 
 -(void) addFloatForKey: (NSString*)key{
-	CustomFieldDescriptor* field = [[CustomFieldDescriptor new]autorelease];
-	field.name = key;
-	field.typeCode = tcInt64;
-	[fields addObject:field];	
+	[self addFieldNamed:key typeCode:tcFloat];
 }
 
 -(void) addDoubleForKey: (NSString*)key{
-	CustomFieldDescriptor* field = [[CustomFieldDescriptor new]autorelease];
-	field.name = key;
-	field.typeCode = tcDouble;
-	[fields addObject:field];	
+	[self addFieldNamed:key typeCode:tcDouble];
 }
 
 -(void) addStringForKey: (NSString*)key{
@@ -194,11 +228,45 @@ typedef enum eTypeCode_tag{
 }
 
 -(void) addObjectOfType: (id)type forKey: (NSString*)key{
-	CustomFieldDescriptor* field = [[CustomFieldDescriptor new]autorelease];
-	field.name = key;
-	field.type = type;
-	field.typeCode = tcObject;
-	[fields addObject:field];	
+	[self addFieldNamed:key typeCode:tcObject].type = type;
+}
+
+-(void) addManyBoolsForKey: (NSString*)key{
+	[self addFieldNamed:key typeCode:tcBool].isMany = YES;
+}
+
+-(void) addManyIntsForKey: (NSString*)key;{
+	[self addFieldNamed:key typeCode:tcInt].isMany = YES;
+}
+
+-(void) addManyInt32sForKey: (NSString*)key;{
+	[self addFieldNamed:key typeCode:tcInt32].isMany = YES;
+}
+
+-(void) addManyInt64sForKey: (NSString*)key;{
+	[self addFieldNamed:key typeCode:tcInt64].isMany = YES;
+}
+
+-(void) addManyFloatsForKey: (NSString*)key{
+	[self addFieldNamed:key typeCode:tcFloat].isMany = YES;
+}
+
+-(void) addManyDoublesForKey: (NSString*)key{
+	[self addFieldNamed:key typeCode:tcDouble].isMany = YES;
+}
+
+-(void) addManyStringsForKey: (NSString*)key{
+	[self addManyObjectsOfType:[NSString class] forKey:key];
+}
+
+-(void) addManyDatesForKey: (NSString*)key{
+	[self addManyObjectsOfType:[NSDate class] forKey:key];
+}
+
+-(void) addManyObjectsOfType: (id)type forKey: (NSString*)key{
+	CustomFieldDescriptor* f = [self addFieldNamed:key typeCode:tcObject];
+	f.type = type;
+	f.isMany = YES;
 }
 
 #pragma mark SoapEntityProto
@@ -323,6 +391,56 @@ typedef enum eTypeCode_tag{
 	[valueByKey setObject:val forKey:key];
 	id valType = [val respondsToSelector:@selector(soapClass)] ? [val soapClass] : [val class];	
 	[type addObjectOfType:valType forKey:key];			
+}
+
+
+
+
+
+
+-(void) setManyBools: (NSArray*)val forKey: (NSString*)key{
+	[valueByKey setObject: val forKey:key];
+	[type addManyBoolsForKey:key];	
+}
+
+-(void) setManyInts: (NSArray*)val forKey: (NSString*)key{
+	[valueByKey setObject: val forKey:key];
+	[type addManyIntsForKey:key];		
+}
+
+-(void) setManyInt32s: (NSArray*)val forKey: (NSString*)key{
+	[valueByKey setObject: val forKey:key];
+	[type addManyInt32sForKey:key];		
+}
+
+-(void) setManyInt64s: (NSArray*)val forKey: (NSString*)key{
+	[valueByKey setObject: val forKey:key];
+	[type addManyInt64sForKey:key];		
+}
+
+-(void) setManyFloats: (NSArray*)val forKey: (NSString*)key{
+	[valueByKey setObject: val forKey:key];
+	[type addManyFloatsForKey:key];	
+}
+
+-(void) setManyDoubles: (NSArray*)val forKey: (NSString*)key{
+	[valueByKey setObject: val forKey:key];
+	[type addManyDoublesForKey:key];
+}
+
+-(void) setManyStrings: (NSArray*)val forKey: (NSString*)key{
+	[valueByKey setObject: val forKey:key];
+	[type addManyStringsForKey:key];	
+}
+
+-(void) setManyDates: (NSArray*)val forKey: (NSString*)key{
+	[valueByKey setObject: val forKey:key];
+	[type addManyDatesForKey:key];		
+}
+
+-(void) setManyObjects: (NSArray*) val ofType: (id)valType forKey: (NSString*)key{
+	[valueByKey setObject:val forKey:key];
+	[type addManyObjectsOfType:valType forKey:key];			
 }
 
 #pragma mark NSCoding
