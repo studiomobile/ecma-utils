@@ -11,5 +11,6 @@
 +(SoapDeenveloper*) soapDeenveloperWithData: (NSData*)data;
 
 -(id) decodeBodyObjectOfType: (id)type;
+-(NSArray*) decodeBodyObjectsOfType: (id)type;
 
 @end

@@ -114,27 +114,27 @@
 
 @interface PseudoSoapEntity : NSObject
 {	
-	id type;
+	id childType;
 	BOOL isMany;
 }
 
-@property(retain) id type;
+@property(retain) id childType;
 @property(assign) BOOL isMany;
 
 @end
 
 @implementation PseudoSoapEntity
 
-@synthesize type;
+@synthesize childType;
 @synthesize isMany;
 
 -(void)dealloc{
-	[type release];
+	[childType release];
 	[super dealloc];
 }
 
 -(id)typeForKey: (NSString*)key{
-	if([[type soapName] isEqual:key]) return type;
+	if([[childType soapName] isEqual:key]) return childType;
 	return nil;
 }
 
@@ -211,6 +211,26 @@
 	return [contextStack lastObject];
 }
 
+-(id) privateDecodeBodyObjectOfType: (id)type isMany: (BOOL)many{	
+	NSDictionary* mappings = [NSDictionary dictionaryWithObject:@"http://www.w3.org/2003/05/soap-envelope" forKey: @"env"];
+	NSString* xpath = [NSString stringWithString:@"env:Envelope/env:Body"];
+	NSError* error = nil;
+	NSArray* nodes = [xml nodesForXPath:xpath namespaceMappings:mappings error:&error];
+	if(error){
+		@throw error;
+	}
+	CXMLNode* root = [nodes lastObject];	 
+	
+	PseudoSoapEntity* bodyEntity = [[PseudoSoapEntity new]autorelease];
+	bodyEntity.childType = type;
+	bodyEntity.isMany = many;
+	
+	SoapDeenveloperContext* ctx = [SoapDeenveloperContext contextWithNode:root type:bodyEntity];
+	[self setInitialContext: ctx];
+	
+	return [self decodeObjectForKey: [type soapName]];
+}
+
 #pragma mark specialized decoding methods
 
 -(id)decodeStringFromNode: (CXMLNode*)node type: (id)type{	
@@ -267,7 +287,9 @@
 	NSMutableArray* objects = [NSMutableArray array];
 	for(CXMLNode* n in nodes){
 		id obj = [self performSelector:decodingMethod withObject:n withObject:type];
-		[objects addObject: obj];
+		if(obj){
+			[objects addObject: obj];	
+		}		
 	}
 	
 	if([self.nodeContext isManyForKey: key]){
@@ -280,23 +302,11 @@
 #pragma mark utility
 
 -(id) decodeBodyObjectOfType: (id)type{	
-	NSDictionary* mappings = [NSDictionary dictionaryWithObject:@"http://www.w3.org/2003/05/soap-envelope" forKey: @"env"];
-	NSString* xpath = [NSString stringWithString:@"env:Envelope/env:Body"];
-	NSError* error = nil;
-	NSArray* nodes = [xml nodesForXPath:xpath namespaceMappings:mappings error:&error];
-	if(error){
-		@throw error;
-	}
-	CXMLNode* root = [nodes lastObject];	 
-	
-	PseudoSoapEntity* initial = [[PseudoSoapEntity new]autorelease];
-	initial.type = type;
-	initial.isMany = NO;
-	
-	SoapDeenveloperContext* ctx = [SoapDeenveloperContext contextWithNode:root type:initial];
-	[self setInitialContext: ctx];
-	
-	return [self decodeObjectForKey: [type soapName]];
+	return [self privateDecodeBodyObjectOfType: type isMany: NO];
+}
+
+-(NSArray*) decodeBodyObjectsOfType: (id)type{	
+	return [self privateDecodeBodyObjectOfType: type isMany: YES];
 }
 
 #pragma mark NSCoder

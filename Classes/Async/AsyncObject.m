@@ -86,8 +86,14 @@
 	}
 
 	id result = nil;
-	[invocation invoke];
-	[invocation getReturnValue:&result];
+	@try {
+		[invocation invoke];
+		[invocation getReturnValue:&result];
+	}
+	@catch (NSError * e) {
+		result = e;
+	}
+	
 	[self invocationCompletedWithResult:result];
 	
 	id handler = delegate ? delegate : observer;

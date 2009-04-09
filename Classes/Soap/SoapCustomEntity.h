@@ -13,6 +13,9 @@
 @property(retain) 	NSString* namespace;
 @property(readonly) NSArray* fields;
 
++(SoapCustomEntityType*)soapCustomEntityTypeNamed: (NSString*)name namespace: (NSString*)namespace;
+-(id)initWithName: (NSString*)_name namespace: (NSString*)_namespace;
+
 -(void) addBoolForKey: (NSString*)key;
 -(void) addIntForKey: (NSString*)key;
 -(void) addInt32ForKey: (NSString*)key;
@@ -21,7 +24,8 @@
 -(void) addDoubleForKey: (NSString*)key;
 -(void) addStringForKey: (NSString*)key;
 -(void) addDateForKey: (NSString*)key;
--(void) addObjectOfType: (id)type forKey: (NSString*)key;			
+-(void) addObjectOfType: (id)type;
+-(void) addObjectOfType: (id)type forKey: (NSString*)key;
 
 -(void) addManyBoolsForKey: (NSString*)key;
 -(void) addManyIntsForKey: (NSString*)key;
@@ -31,9 +35,18 @@
 -(void) addManyDoublesForKey: (NSString*)key;
 -(void) addManyStringsForKey: (NSString*)key;
 -(void) addManyDatesForKey: (NSString*)key;
--(void) addManyObjectsOfType: (id)type forKey: (NSString*)key;			
+-(void) addManyObjectsOfType: (id)type;
+-(void) addManyObjectsOfType: (id)type forKey: (NSString*)key;	
 
 @end
+
+@interface SoapCustomEntityType (Utils)
+
+-(SoapCustomEntityType*)addObjectNamed: (NSString*)name namespace: (NSString*)namespace;
+-(SoapCustomEntityType*)addManyObjectsNamed: (NSString*)name namespace: (NSString*)namespace;
+
+@end
+
 
 ////////////////////////////////////////////////////////////////////////////////////
 
@@ -46,6 +59,9 @@
 @property(retain) NSString* name;
 @property(retain) NSString* namespace;
 
++(SoapCustomEntity*)soapCustomEntityNamed: (NSString*)name namespace: (NSString*)namespace;
+-(id)initWithName: (NSString*)_name namespace: (NSString*)_namespace;
+
 -(void) setBool: (BOOL)val forKey: (NSString*)key;
 -(void) setInt: (int)val forKey: (NSString*)key;	
 -(void) setInt32: (int)val forKey: (NSString*)key;
@@ -54,6 +70,7 @@
 -(void) setDouble: (double)val forKey: (NSString*)key;
 -(void) setString: (NSString*)val forKey: (NSString*)key;
 -(void) setDate: (NSDate*)val forKey: (NSString*)key;
+-(void) setObject: (id)val;
 -(void) setObject: (id)val forKey: (NSString*)key;
 
 -(void) setManyBools: (NSArray*) val forKey: (NSString*)key;
@@ -64,8 +81,15 @@
 -(void) setManyDoubles: (NSArray*) val forKey: (NSString*)key;
 -(void) setManyStrings: (NSArray*) val forKey: (NSString*)key;
 -(void) setManyDates: (NSArray*) val forKey: (NSString*)key;
+-(void) setManyObjects: (NSArray*) val ofType: (id)valType;
 -(void) setManyObjects: (NSArray*) val ofType: (id)valType forKey: (NSString*)key;
 
 -(id) objectForKey: (NSString*)key;
+
+@end
+
+@interface SoapCustomEntity (Utils)
+
+-(id)objectForPath: (NSArray*)path;
 
 @end

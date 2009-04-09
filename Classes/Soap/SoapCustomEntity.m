@@ -155,6 +155,21 @@ typedef enum eTypeCode_tag{
 @synthesize namespace;
 @synthesize fields;
 
++(SoapCustomEntityType*)soapCustomEntityTypeNamed: (NSString*)name namespace: (NSString*)namespace{
+	return [[[[self class]alloc] initWithName: name namespace: namespace]autorelease];
+}
+
+-(id)initWithName: (NSString*)_name namespace: (NSString*)_namespace{
+	if(![self init]){
+		return nil;
+	}
+	
+	self.name = _name;
+	self.namespace = _namespace;
+	
+	return self;
+}
+
 -(id)init{	
 	if(![super init])
 		return nil;
@@ -231,6 +246,13 @@ typedef enum eTypeCode_tag{
 	[self addFieldNamed:key typeCode:tcObject].type = type;
 }
 
+-(void) addObjectOfType: (id)type{
+	[self addObjectOfType:type forKey:[type soapName]];
+}
+
+
+
+
 -(void) addManyBoolsForKey: (NSString*)key{
 	[self addFieldNamed:key typeCode:tcBool].isMany = YES;
 }
@@ -269,6 +291,11 @@ typedef enum eTypeCode_tag{
 	f.isMany = YES;
 }
 
+-(void) addManyObjectsOfType: (id)type{
+	[self addManyObjectsOfType:type forKey: [type soapName]];	 
+}
+
+
 #pragma mark SoapEntityProto
 
 -(NSString*) soapNamespace{
@@ -299,11 +326,44 @@ typedef enum eTypeCode_tag{
 
 //////////////////////////////////////////////////////////////////////
 
+@implementation SoapCustomEntityType (Utils)
+
+-(SoapCustomEntityType*)addObjectNamed: (NSString*)_name namespace: (NSString*)_namespace{
+	SoapCustomEntityType* innerType = [SoapCustomEntityType soapCustomEntityTypeNamed:_name namespace:_namespace];
+	[self addObjectOfType:innerType];
+	return innerType;
+}
+
+-(SoapCustomEntityType*)addManyObjectsNamed: (NSString*)_name namespace: (NSString*)_namespace{
+	SoapCustomEntityType* innerType = [SoapCustomEntityType soapCustomEntityTypeNamed:_name namespace:_namespace];
+	[self addManyObjectsOfType:innerType];
+	return innerType;	
+}
+
+@end
+
+//////////////////////////////////////////////////////////////////////
+
 @implementation SoapCustomEntity
 
 @synthesize type;
 @dynamic name;
 @dynamic namespace;
+
++(SoapCustomEntity*)soapCustomEntityNamed: (NSString*)name namespace: (NSString*)namespace{
+	return [[[[self class]alloc] initWithName: name namespace: namespace]autorelease];
+}
+
+-(id)initWithName: (NSString*)_name namespace: (NSString*)_namespace{
+	if(![self init]){
+		return nil;
+	}
+	
+	self.name = _name;
+	self.namespace = _namespace;
+	
+	return self;
+}
 
 -(id)init{
 	if(![super init])
@@ -393,6 +453,10 @@ typedef enum eTypeCode_tag{
 	[type addObjectOfType:valType forKey:key];			
 }
 
+-(void) setObject: (id)val{	
+	id valType = [val respondsToSelector:@selector(soapClass)] ? [val soapClass] : [val class];	
+	[self setObject:val forKey:[valType soapName]];
+}
 
 
 
@@ -443,6 +507,11 @@ typedef enum eTypeCode_tag{
 	[type addManyObjectsOfType:valType forKey:key];			
 }
 
+-(void) setManyObjects: (NSArray*) val ofType: (id)valType{
+	[self setManyObjects:val ofType:valType forKey: [valType soapName]];
+}
+
+
 #pragma mark NSCoding
 
 - (void)encodeWithCoder:(NSCoder *)aCoder{
@@ -473,8 +542,25 @@ typedef enum eTypeCode_tag{
 }
 
 +(NSString*) soapName{
-	@throw [NSError errorWithDomain:@"RuntimeError" code:1 description:@"Should not call"];	
+	@throw [NSError errorWithDomain:@"RuntimeError" code:2 description:@"Should not call"];	
 }
 
+
+@end
+
+
+@implementation SoapCustomEntity (Utils)
+
+-(id)objectForPath: (NSArray*)path{
+	SoapCustomEntity* last = self;
+	for(NSString* key in path){
+		last = [last objectForKey:key];
+		if(!last){
+			@throw [NSError errorWithDomain:@"RuntimeError" code:3 description:[NSString stringWithFormat:@"No object for key '%@' found", key]];
+		}		
+	}
+	
+	return last;
+}
 
 @end

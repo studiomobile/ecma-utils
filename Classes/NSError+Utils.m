@@ -1,4 +1,5 @@
 #import "NSError+Utils.h"
+#import "UIAlertView+Utils.h"
 
 
 @implementation NSError(Utils)
@@ -13,8 +14,6 @@
 }
 
 - (void)display:(NSString*)actionDescription {
-    UIAlertView *errorDisplay = [[UIAlertView alloc] init];
-    errorDisplay.title = @"Error";
     NSString *errorMessage;
     if (actionDescription) {
         errorMessage = [NSString stringWithFormat:@"%@: \n%@", actionDescription, [self localizedDescription]];
@@ -22,10 +21,7 @@
         errorMessage = [self localizedDescription];
     }
     NSLog(errorMessage);
-    errorDisplay.message = errorMessage;
-    [errorDisplay addButtonWithTitle:@"OK"];
-    [errorDisplay show];
-    [errorDisplay release];
+	[UIAlertView showAlertViewWithTitle:@"Error" message: errorMessage];
 }
 
 @end
