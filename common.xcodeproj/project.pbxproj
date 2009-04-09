@@ -69,6 +69,8 @@
 		79BC74540EE044B50058ADAA /* UIWebView+Utils.m in Sources */ = {isa = PBXBuildFile; fileRef = 79BC74520EE044B50058ADAA /* UIWebView+Utils.m */; };
 		79BC74550EE044B50058ADAA /* UIWebView+Utils.h in Headers */ = {isa = PBXBuildFile; fileRef = 79BC74530EE044B50058ADAA /* UIWebView+Utils.h */; };
 		79BD32090E9935AF0039C25A /* NSString+Utils.m in Sources */ = {isa = PBXBuildFile; fileRef = 79BD32080E9935AF0039C25A /* NSString+Utils.m */; };
+		8B6CFB550F8E39CB00E85F08 /* UIView+Rotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 8B6CFB530F8E39CB00E85F08 /* UIView+Rotation.m */; };
+		8B6CFB560F8E39CB00E85F08 /* UIView+Rotation.h in Headers */ = {isa = PBXBuildFile; fileRef = 8B6CFB540F8E39CB00E85F08 /* UIView+Rotation.h */; };
 		B4D5B2B00F73AFAA008021D6 /* AsyncObject.h in Headers */ = {isa = PBXBuildFile; fileRef = B4D5B2AB0F73AFAA008021D6 /* AsyncObject.h */; };
 		B4D5B2B10F73AFAA008021D6 /* AsyncObject.m in Sources */ = {isa = PBXBuildFile; fileRef = B4D5B2AC0F73AFAA008021D6 /* AsyncObject.m */; };
 		B4D5B2B20F73AFAA008021D6 /* UIBlockingAsyncObject.h in Headers */ = {isa = PBXBuildFile; fileRef = B4D5B2AD0F73AFAA008021D6 /* UIBlockingAsyncObject.h */; };
@@ -146,6 +148,8 @@
 		79BC74520EE044B50058ADAA /* UIWebView+Utils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIWebView+Utils.m"; sourceTree = "<group>"; };
 		79BC74530EE044B50058ADAA /* UIWebView+Utils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIWebView+Utils.h"; sourceTree = "<group>"; };
 		79BD32080E9935AF0039C25A /* NSString+Utils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Utils.m"; sourceTree = "<group>"; };
+		8B6CFB530F8E39CB00E85F08 /* UIView+Rotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+Rotation.m"; sourceTree = "<group>"; };
+		8B6CFB540F8E39CB00E85F08 /* UIView+Rotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+Rotation.h"; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B4D5B2AB0F73AFAA008021D6 /* AsyncObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AsyncObject.h; sourceTree = "<group>"; };
 		B4D5B2AC0F73AFAA008021D6 /* AsyncObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AsyncObject.m; sourceTree = "<group>"; };
@@ -214,6 +218,8 @@
 			children = (
 				0956F1530F4455C80096310E /* UITableViewCell+NIB.h */,
 				0956F1540F4455C80096310E /* UITableViewCell+NIB.m */,
+				8B6CFB540F8E39CB00E85F08 /* UIView+Rotation.h */,
+				8B6CFB530F8E39CB00E85F08 /* UIView+Rotation.m */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -380,6 +386,7 @@
 				B4D5B2B00F73AFAA008021D6 /* AsyncObject.h in Headers */,
 				B4D5B2B20F73AFAA008021D6 /* UIBlockingAsyncObject.h in Headers */,
 				B4D5B2B40F73AFAA008021D6 /* UIBlockingView.h in Headers */,
+				8B6CFB560F8E39CB00E85F08 /* UIView+Rotation.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -458,6 +465,7 @@
 				DAC946810F66643600CDAD3C /* XMLWriter.m in Sources */,
 				B4D5B2B10F73AFAA008021D6 /* AsyncObject.m in Sources */,
 				B4D5B2B30F73AFAA008021D6 /* UIBlockingAsyncObject.m in Sources */,
+				8B6CFB550F8E39CB00E85F08 /* UIView+Rotation.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
