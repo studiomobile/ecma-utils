@@ -207,6 +207,23 @@ static const NSDictionary *primitives() {
 	}
 }
 
+
++ (POXMapping*)mapper {
+    return [[[POXMapping alloc] init] autorelease];
+}
+
+
+- (id)map:(NSData*)data {
+	NSXMLParser *parser = [[NSXMLParser alloc] initWithData:data];
+	[parser setDelegate:self];
+	if(![parser parse]) {
+		NSLog(@"Parse error: %@", [parser parserError]);
+	}
+	id result = [[[self result] retain] autorelease];
+	[parser release];
+	return result;
+}
+
 @end
 
 

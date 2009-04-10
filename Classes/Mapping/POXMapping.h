@@ -19,12 +19,13 @@ struct POXElement {
 };
 
 
-@interface POXMapping : NSObject {
+@interface POXMapping : NSObject <RESTServiceDataMapper> {
 	SelfDescribing *result;
 	struct POXElement *top;
 }
 
 - (SelfDescribing *)result;
+- (id)map:(NSData*)data;
 
 @end
 
