@@ -1,7 +1,7 @@
 #!/bin/bash
 if [ $# -ne 1 ]
 then
-  echo "Usage: makedist.sh <path to project which depends on library> \nExample:makedist.sh ~/Projects/MyProject"
+  echo "Usage: dist.sh <path to project which depends on library> \nExample:dist.sh ~/Projects/MyProject"
   exit -1
 fi
 
