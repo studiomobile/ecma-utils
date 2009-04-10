@@ -93,6 +93,12 @@
 	@catch (NSError * e) {
 		result = e;
 	}
+	@catch (NSException * e) {
+		NSMutableDictionary* dict = [NSMutableDictionary dictionaryWithDictionary:[e userInfo]];
+		[dict setObject:[e reason] forKey:NSLocalizedFailureReasonErrorKey];
+		NSError* err = [NSError errorWithDomain:[e name] code:0 userInfo:[dict copy]];
+		result = err;		
+	}	
 	
 	[self invocationCompletedWithResult:result];
 	
