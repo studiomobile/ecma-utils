@@ -19,8 +19,8 @@
 
 - (void)tag:(NSString*)name content:(NSString*)content attributes:(NSDictionary*)attributes;
 - (void)tag:(NSString*)name content:(NSString*)content;
-- (void)openTag:(NSString*)name attributes:(NSDictionary*)attributes;
-- (void)openTag:(NSString*)name;
+- (void)tag:(NSString*)name attributes:(NSDictionary*)attributes;
+- (void)tag:(NSString*)name;
 - (void)closeTag;
 
 - (void)comment:(NSString*)comment;
