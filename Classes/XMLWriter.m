@@ -77,15 +77,15 @@
     [self tag:name content:content attributes:nil];
 }
 
-- (void)tag:(NSString*)name attributes:(NSDictionary*)attributes {
+- (void)openTag:(NSString*)name attributes:(NSDictionary*)attributes {
     if(!name) return;
     
     [self appendIndented:[NSString stringWithFormat:@"<%@%@>", name, [self attributesString:attributes]]];
     [tagStack addObject:name];
 }
 
-- (void)tag:(NSString*)name {
-    [self tag:name attributes:nil];
+- (void)openTag:(NSString*)name {
+    [self openTag:name attributes:nil];
 }
 
 - (void)closeTag {
