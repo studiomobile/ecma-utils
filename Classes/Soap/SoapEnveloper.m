@@ -51,7 +51,7 @@ typedef enum eSAS_tag {
 																	@"http://www.w3.org/2001/XMLSchema", @"xmlns:xsd",
 																	@"http://www.w3.org/2003/05/soap-envelope", @"xmlns",
 																	nil];	
-	[writer openTag:@"Envelope" attributes:attrs];
+	[writer tag:@"Envelope" attributes:attrs];
 	return self;
 }
 
@@ -116,7 +116,7 @@ typedef enum eSAS_tag {
 	}else{
 		id oldContext = contextObject;
 		contextObject = objv;
-		[writer openTag: key attributes: attrs];		
+		[writer tag: key attributes: attrs];		
 		[objv encodeWithCoder:self];
 		[writer closeTag];
 		contextObject = oldContext;
@@ -132,7 +132,7 @@ typedef enum eSAS_tag {
 	}
 	
 	if(!hasBody){
-		[writer openTag:@"Body"];
+		[writer tag:@"Body"];
 		hasBody = YES;
 	}	
 	
@@ -149,7 +149,7 @@ typedef enum eSAS_tag {
 	}
 	
 	if(!hasHeader){
-		[writer openTag:@"Header"];
+		[writer tag:@"Header"];
 		hasHeader = YES;
 	}
 	
