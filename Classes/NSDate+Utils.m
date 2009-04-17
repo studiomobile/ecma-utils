@@ -1,4 +1,4 @@
-@implementation NSDate(ChronologicAdditions)
+@implementation NSDate(Utils)
 
 - (BOOL)isAfter:(NSDate*)other {
 	return [self compare:other] == NSOrderedDescending;

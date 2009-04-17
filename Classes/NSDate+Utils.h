@@ -1,4 +1,4 @@
-@interface NSDate(ChronologicAdditions) 
+@interface NSDate(Utils) 
 
 - (BOOL)isAfter:(NSDate*)other;
 - (BOOL)isBefore:(NSDate*)other;

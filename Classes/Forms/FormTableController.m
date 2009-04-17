@@ -270,11 +270,11 @@
     return textEdit;
 }
 
-- (UIViewController*)agreementControllerForIndexPath:(NSIndexPath*)indexPath title:(NSString*)title descriptor:(FormFieldDescriptor*)desc html:(NSString*)html {
+- (UIViewController*)agreementControllerForIndexPath:(NSIndexPath*)indexPath title:(NSString*)title descriptor:(FormFieldDescriptor*)desc data:(id)data {
     AgreementController *agreementController = [[[AgreementController alloc] initWithTitle:title] autorelease];
     agreementController.dataSource = desc.dataSource;
     agreementController.keyPath = desc.keyPath;
-    agreementController.html = html;
+    agreementController.html = (NSString*)data;
     return agreementController;
 }
 
