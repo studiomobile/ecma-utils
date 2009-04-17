@@ -116,7 +116,7 @@
 	return nil;
 }
 
-- (NSString*)htmlForDescriptor:(FormFieldDescriptor*)desc atIndexPath:(NSIndexPath*)indexPath {
+- (id)agreementDataForDescriptor:(FormFieldDescriptor*)desc atIndexPath:(NSIndexPath*)indexPath {
 	return nil;
 }
 
@@ -372,8 +372,8 @@
 		[self.navigationController pushViewController:textEdit animated:[self pushControllersAnimated]];
 	} else if(desc.type == FORM_FIELD_DESCRIPTOR_AGREEMENT) {
 		NSString *title = [self agreementControllerTitleForDescriptor:desc indexPath:indexPath];
-        NSString *html = [self htmlForDescriptor:desc atIndexPath:indexPath];
-		UIViewController *agreementController = [self agreementControllerForIndexPath:indexPath title:title descriptor:(FormFieldDescriptor*)desc html:html];
+        id data = [self agreementDataForDescriptor:desc atIndexPath:indexPath];
+		UIViewController *agreementController = [self agreementControllerForIndexPath:indexPath title:title descriptor:(FormFieldDescriptor*)desc data:data];
 		[self.navigationController pushViewController:agreementController animated:[self pushControllersAnimated]];
 	} else if(desc.type == FORM_FIELD_DESCRIPTOR_DATETIME) {
         [self showDatePickerForDescriptor:desc];
