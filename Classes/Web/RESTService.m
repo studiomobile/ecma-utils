@@ -11,7 +11,7 @@ const NSString *RequestStatusCode = @"__RequestStatusCode__";
 @synthesize baseUrl;
 @synthesize additionalUrlEncodechars;
 
-- (id)initWithBaseUrl:(NSString*)url mapper:(NSObject<RESTServiceDataMapper>*)m {
+- (id)initWithBaseUrl:(NSString*)url mapper:(id<RESTServiceDataMapper>)m {
 	checkNotNil(url, @"nil url");
 
 	if (self = [super init]) {

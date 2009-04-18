@@ -11,17 +11,21 @@
 	return [NSString stringWithCString:class_getName([self class])];
 }
 
+
 - (NSString*)tableName {
 	return [[self class] tableName];
 }
+
 
 + (NSString*)pkColumn {
 	return @"pk";
 }
 
+
 - (NSString*)pkColumn {
 	return [[self class] pkColumn];
 }
+
 
 - (id)init {
 	if(self = [super init]) {
@@ -30,28 +34,36 @@
 	return self;
 }
 
+
 - (BOOL)isNewRecord {
 	return pk == DBOBJECT_NO_ID;
 }
 
+
 - (void)afterLoad {
 }
+
 
 - (void)beforeSave {
 }
 
+
 - (void)beforeInsert {
 }
+
 
 - (void)beforeUpdate {
 }
 
+
 - (void)afterSave {
 }
+
 
 - (void)bindToParam:(NSUInteger)i inStatement:(sqlite3_stmt*)statement {
 	sqlite3_bind_int64(statement, i, self.pk);
 }
+
 
 - (void)setValue:(id)value forUndefinedKey:(NSString*)key {
 	if([key isEqual:[self pkColumn]]) {
@@ -60,6 +72,7 @@
 	
 	return [super setValue:value forUndefinedKey:key];
 }
+
 
 - (id)valueForUndefinedKey:(NSString*)key {
 	if([key isEqual:[self pkColumn]]) {

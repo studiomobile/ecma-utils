@@ -12,18 +12,29 @@ static id va_listIterator(void *list, int idx) {
     return va_arg(*lst, id);
 }
 
-static id arrayIterator(void *list, int idx) {
+static id arrayAccessor(void *list, int idx) {
     id *a = (id*)list;
     return a[idx];
 }
 
+typedef id(*ArgAccessor)(void *list, int idx);
 
 const NSUInteger kFailedToOpenDB = 1;
 static NSMutableDictionary *databases = nil;
 
+
+@interface DB ()
+
+- (sqlite3_stmt*)prepareStmt:(NSString*)sql params:(void*)stmtParams argAccessor:(ArgAccessor)argumentAccessor;
+- (id)createObjectOfClass:(Class)klass fromRow:(sqlite3_stmt*)stmt storedInTable:(NSString*)key;
+- (NSArray*)tableColumns:(DBObject*)obj;
+
+@end
+
+
 @implementation DB
 
--(NSString*)checkAndCreateDatabase:(NSError**)error{
+- (NSString*)checkAndCreateDatabase:(NSError**)error{
     NSFileManager *fileManager = [NSFileManager defaultManager];
     NSArray *documentPaths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
     NSString *documentsDir = [documentPaths objectAtIndex:0];
@@ -36,6 +47,7 @@ static NSMutableDictionary *databases = nil;
     [fileManager release];
     return databasePath;
 }
+
 
 - (id)initWithDBName:(NSString*)db error:(NSError**)error {
     if (self = [super init]) {
@@ -52,9 +64,11 @@ static NSMutableDictionary *databases = nil;
     return self;
 }
 
+
 + (DB*)dbNamed:(NSString*)dbName {
     return [databases objectForKey:dbName];
 }
+
 
 + (DB*)createDB:(NSString*)dbName error:(NSError**)error {
     DB *database;
@@ -81,6 +95,263 @@ static NSMutableDictionary *databases = nil;
     [dbName release];
     [super dealloc];
 }
+
+//prepare statement methods
+- (sqlite3_stmt*)prepareStmt:(NSString*)sql params:(void*)stmtParams argAccessor:(ArgAccessor)argumentAccessor {
+    checkNotNil(sql, @"sql cannot be nil");
+    sqlite3_stmt *statement;
+    LOG2(@"Preparing SQL:%@", sql);
+    int r = sqlite3_prepare_v2(impl, [sql UTF8String], -1, &statement, NULL);
+    if (r == SQLITE_OK) {
+        int paramCount = sqlite3_bind_parameter_count(statement);
+        for(int i = 0 ; i < paramCount; ++i) {
+            id param = argumentAccessor(stmtParams, i);
+            LOG2(@"SQL param: %@", param);
+            [param bindToParam:i + 1 inStatement:statement];
+        }
+        return statement;
+    } else {
+        const char *error = sqlite3_errmsg(impl);
+        checkArgument(FALSE, [NSString stringWithFormat:@"SQLite error: %s", error]);
+    }
+    return NULL;
+}
+
+
+- (sqlite3_stmt*)prepareStmt:(NSString*)sql params:(NSArray*)params {
+    return [self prepareStmt:sql params:params argAccessor:&arrayAccessor];
+}
+
+    
+- (sqlite3_stmt*)prepareStmt:(NSString*)sql arguments:(id)arg1, ... {
+    va_list stmtParams;
+    va_start(stmtParams, arg1);
+    sqlite3_stmt *stmt = [self prepareStmt:sql params:&stmtParams argAccessor:&va_listIterator];
+    va_end(stmtParams);
+    return stmt;
+}
+
+
+//select methods
+- (NSArray*)select:(Class)klass
+        conditions:(NSString*)criteria
+            params:(void*)stmtParams
+           argAccessor:(ArgAccessor)argumentAccessor {
+    checkNotNil(criteria, @"Criteria cannot be nil");
+    checkNotNil(klass, @"klass cannot be nil");
+	
+    NSString *tableName = [klass tableName];
+    NSString *sql = [NSString stringWithFormat:@"select * from %@ %@", tableName, criteria];
+    sqlite3_stmt *statement = [self prepareStmt:sql params:stmtParams argAccessor:argumentAccessor];
+    NSMutableArray *result = [NSMutableArray array];
+    while (sqlite3_step(statement) == SQLITE_ROW) {
+        id obj = [self createObjectOfClass:klass fromRow:statement storedInTable:tableName];
+        if(obj != nil) {
+            [result addObject:obj];
+            [obj release];
+        }
+    }
+    sqlite3_finalize(statement);
+    return result;
+}
+
+
+- (NSArray*)select:(Class)klass conditions:(NSString*)criteria params:(NSArray*)params {
+    return [self select:klass conditions:criteria params:params argAccessor:&arrayAccessor];
+}
+
+
+- (NSArray*)select:(Class)klass conditions:(NSString*)criteria, ... {
+    va_list stmtParams;
+    va_start(stmtParams, criteria);
+    NSArray *result = [self select:klass conditions:criteria params:&stmtParams argAccessor:&va_listIterator];
+    va_end(stmtParams);
+    return result;
+}
+
+
+- (id)select:(Class)klass wherePk:(long long)pk {
+    NSString *where = [NSString stringWithFormat:@"WHERE %@ = ?", [klass pkColumn]];
+    NSArray *result = [self select:klass conditions:where, [NSNumber numberWithLongLong:pk]];
+    if([result count] == 1) {
+        return [result objectAtIndex:0];
+    } else {
+        return nil;
+    }
+}
+
+
+//select one methods
+- (DBObject*)selectOne:(Class)klass
+                offset:(NSInteger)offset
+            conditions:(NSString*)criteria
+                params:(void*)stmtParams
+           argAccessor:(ArgAccessor)argumentAccessor{
+    NSString *conditions = [NSString stringWithFormat:@"%@ limit 1 offset %d", criteria, offset];
+    NSArray *result = [self select:klass conditions:conditions params:stmtParams argAccessor:argumentAccessor];
+    if([result count] > 0) {
+        return [result objectAtIndex:0];
+    } else {
+        return nil;
+    }
+}
+
+
+- (DBObject*)selectOne:(Class)klass offset:(NSInteger)offset conditions:(NSString*)criteria, ... {
+    va_list stmtParams;
+    va_start(stmtParams, criteria);
+    DBObject *result =[self selectOne:klass offset:offset conditions:criteria params:&stmtParams argAccessor:&va_listIterator];
+    va_end(stmtParams);
+    return result;
+}
+
+
+- (DBObject*)selectOne:(Class)klass offset:(NSInteger)offset conditions:(NSString*)criteria params:(NSArray*)params {
+    return [self selectOne:klass offset:offset conditions:criteria params:params argAccessor:&arrayAccessor];
+}
+
+
+//save methods
+- (void)save:(DBObject*)o {
+    if([o isNewRecord]) {
+        [self insert:o];
+    } else {
+        [self update:o];
+    }
+}
+
+
+- (void)insert:(DBObject*)o {
+    [o beforeSave];
+    [o beforeInsert];
+    NSString *tableName = [o tableName];
+    NSMutableArray *columns = [NSMutableArray arrayWithArray:[self tableColumns:o]];	
+
+    if(!o.isNewRecord) {
+        [columns addObject:[o pkColumn]];
+    }
+    
+    NSMutableString *insertQuery = [NSMutableString string];
+    id *args = malloc(sizeof(id)*[columns count]);
+    [insertQuery appendFormat:@"insert into %@ (", tableName];
+    for(int i = 0; i < [columns count] - 1; ++i) {
+        NSString *propName = [columns objectAtIndex:i];
+        [insertQuery appendFormat:@"%@,", propName];
+        args[i] = [o valueForKey:propName];
+    }
+    [insertQuery appendFormat:@"%@) values (", [columns lastObject]];
+    args[[columns count] - 1] = [o valueForKey:[columns lastObject]];
+    for(int i = 0; i < [columns count] - 1; ++i) {
+        [insertQuery appendString:@"?,"];
+    }
+    [insertQuery appendString:@"?)"];
+	
+    sqlite3_stmt *stmt = [self prepareStmt:insertQuery params:args argAccessor:&arrayAccessor];
+    int stepResult = sqlite3_step(stmt);
+    LOG2(@"Insert sql returned:%d", stepResult);
+    sqlite3_finalize(stmt);
+    o.pk = [self executeNumber:@"select last_insert_rowid()"];
+    free(args);
+ 
+    [o afterSave];
+}
+
+
+- (void)update:(DBObject*)o {
+    [o beforeSave];
+    [o beforeUpdate];
+    NSString *tableName = [o tableName];
+    NSArray *columns = [self tableColumns:o];
+    id *args = malloc(sizeof(id)*([columns count] + 1));
+    NSMutableString *updateQuery = [NSMutableString string];
+    [updateQuery appendFormat:@"update %@ set ", tableName];
+    for(int i = 0; i < [columns count] - 1; ++i) {
+        NSString *propName = [columns objectAtIndex:i];
+        [updateQuery appendFormat:@"%@ = ?,", propName];
+        args[i] = [o valueForKey:propName];
+    }
+    [updateQuery appendFormat:@"%@ = ? where %@ = ?", [columns lastObject], [o pkColumn]];
+    args[[columns count] - 1] = [o valueForKey:[columns lastObject]];
+    args[[columns count]] = [NSNumber numberWithLongLong:o.pk];
+	
+    sqlite3_stmt *stmt = [self prepareStmt:updateQuery params:args argAccessor:&arrayAccessor];
+    id param = [NSNumber numberWithLongLong:o.pk];
+    [param bindToParam:[columns count] + 1 inStatement:stmt];
+    int stepResult = sqlite3_step(stmt);
+    LOG2(@"Update result: %d", stepResult);
+    sqlite3_finalize(stmt);
+    free(args);
+    [o afterSave];
+}
+
+//delete methods
+- (void)delete:(Class)klass
+    conditions:(NSString*)criteria
+        params:(void*)stmtParams
+   argAccessor:(ArgAccessor)argumentAccessor {
+    checkNotNil(criteria, @"Criteria cannot be nil");
+    checkNotNil(klass, @"klass cannot be nil");
+    NSString *sql = [NSString stringWithFormat:@"delete from %@ %@", [klass tableName], criteria];
+    sqlite3_stmt *stmt = [self prepareStmt:sql params:stmtParams argAccessor:argumentAccessor];
+    while(sqlite3_step(stmt) == SQLITE_ROW);
+    sqlite3_finalize(stmt);
+}
+
+
+- (void)delete:(Class)klass conditions:(NSString*)criteria params:(NSArray*)params {
+    [self delete:klass conditions:criteria params:params argAccessor:&arrayAccessor];
+}
+
+
+- (void)delete:(Class)klass conditions:(NSString*)criteria, ... {
+    va_list stmtParams;
+    va_start(stmtParams, criteria);
+    [self delete:klass conditions:criteria params:&stmtParams argAccessor:&va_listIterator];
+    va_end(stmtParams);
+}
+
+//execute number
+- (long long)executeNumber:(NSString*)query
+        params:(void*)stmtParams
+   argAccessor:(ArgAccessor)argumentAccessor {
+    sqlite3_stmt *statement = [self prepareStmt:query params:&stmtParams argAccessor:&va_listIterator];
+    long long result = 0;
+    while (sqlite3_step(statement) == SQLITE_ROW) {
+        result = sqlite3_column_int64(statement, 0);
+    }
+    sqlite3_finalize(statement);
+    return result;
+}
+
+
+- (long long)executeNumber:(NSString *)query params:(NSArray*)params {
+    return [self executeNumber:query params:params argAccessor:&arrayAccessor];
+}
+
+
+- (long long)executeNumber:(NSString *)query, ... {
+    va_list stmtParams;
+    va_start(stmtParams, query);
+    long long result = [self executeNumber:query params:&stmtParams argAccessor:&va_listIterator];
+    va_end(stmtParams);
+    return result;
+}
+
+
+- (void)beginTransaction {
+    [self executeNumber:@"begin transaction"];
+}
+
+
+- (void)commit {
+    [self executeNumber:@"commit transaction"];
+}
+
+
+- (void)rollback {
+    [self executeNumber:@"rollback transaction"];
+}
+
 
 - (void)loadObject:(DBObject*)obj fromRow:(sqlite3_stmt*)stmt storedInTable:(NSString*)key {
     for (int i = 0; i <  sqlite3_column_count(stmt); ++i) {
@@ -148,25 +419,6 @@ static NSMutableDictionary *databases = nil;
 }
 
 
-- (sqlite3_stmt*)prepareStmt:(NSString*)sql params:(void*)stmtParams nextArg:(id(*)(void *list, int idx))nextArgumentCallback {
-    sqlite3_stmt *statement;
-    LOG2(@"Preparing SQL:%@", sql);
-    int r = sqlite3_prepare_v2(impl, [sql UTF8String], -1, &statement, NULL);
-    if (r == SQLITE_OK) {
-        int paramCount = sqlite3_bind_parameter_count(statement);
-        for(int i = 0 ; i < paramCount; ++i) {
-            id param = nextArgumentCallback(stmtParams, i);
-            LOG2(@"SQL param: %@", param);
-            [param bindToParam:i + 1 inStatement:statement];
-        }
-        return statement;
-    } else {
-        const char *error = sqlite3_errmsg(impl);
-        checkArgument(FALSE, [NSString stringWithFormat:@"SQLite error: %s", error]);
-    }
-    return NULL;
-}
-
 - (void)reload:(DBObject*)o {
     NSString *tableName = [o tableName];
     NSString *sql = [NSString stringWithFormat:@"select * from %@ where %@ = ?", tableName, [o pkColumn]];
@@ -179,174 +431,6 @@ static NSMutableDictionary *databases = nil;
     }
     
     sqlite3_finalize(statement);
-}
-
-- (void)update:(DBObject*)o {
-    [o beforeSave];
-    [o beforeUpdate];
-    NSString *tableName = [o tableName];
-    NSArray *columns = [self tableColumns:o];
-    id *args = malloc(sizeof(id)*([columns count] + 1));
-    NSMutableString *updateQuery = [NSMutableString string];
-    [updateQuery appendFormat:@"update %@ set ", tableName];
-    for(int i = 0; i < [columns count] - 1; ++i) {
-        NSString *propName = [columns objectAtIndex:i];
-        [updateQuery appendFormat:@"%@ = ?,", propName];
-        args[i] = [o valueForKey:propName];
-    }
-    [updateQuery appendFormat:@"%@ = ? where %@ = ?", [columns lastObject], [o pkColumn]];
-    args[[columns count] - 1] = [o valueForKey:[columns lastObject]];
-    args[[columns count]] = [NSNumber numberWithLongLong:o.pk];
-	
-    sqlite3_stmt *stmt = [self prepareStmt:updateQuery params:args nextArg:&arrayIterator];
-    id param = [NSNumber numberWithLongLong:o.pk];
-    [param bindToParam:[columns count] + 1 inStatement:stmt];
-    int stepResult = sqlite3_step(stmt);
-    LOG2(@"Update result: %d", stepResult);
-    sqlite3_finalize(stmt);
-    free(args);
-    [o afterSave];
-}
-
-- (void)insert:(DBObject*)o {
-    [o beforeSave];
-    [o beforeInsert];
-    NSString *tableName = [o tableName];
-    NSMutableArray *columns = [NSMutableArray arrayWithArray:[self tableColumns:o]];	
-
-    if(!o.isNewRecord) {
-        [columns addObject:[o pkColumn]];
-    }
-    
-    NSMutableString *insertQuery = [NSMutableString string];
-    id *args = malloc(sizeof(id)*[columns count]);
-    [insertQuery appendFormat:@"insert into %@ (", tableName];
-    for(int i = 0; i < [columns count] - 1; ++i) {
-        NSString *propName = [columns objectAtIndex:i];
-        [insertQuery appendFormat:@"%@,", propName];
-        args[i] = [o valueForKey:propName];
-    }
-    [insertQuery appendFormat:@"%@) values (", [columns lastObject]];
-    args[[columns count] - 1] = [o valueForKey:[columns lastObject]];
-    for(int i = 0; i < [columns count] - 1; ++i) {
-        [insertQuery appendString:@"?,"];
-    }
-    [insertQuery appendString:@"?)"];
-	
-    sqlite3_stmt *stmt = [self prepareStmt:insertQuery params:args nextArg:&arrayIterator];
-    int stepResult = sqlite3_step(stmt);
-    LOG2(@"Insert sql returned:%d", stepResult);
-    sqlite3_finalize(stmt);
-    o.pk = [self executeNumber:@"select last_insert_rowid()"];
-    free(args);
- 
-    [o afterSave];
-}
-
-- (void)save:(DBObject*)o {
-    if([o isNewRecord]) {
-        [self insert:o];
-    } else {
-        [self update:o];
-    }
-}
-
-- (sqlite3_stmt*)prepareStmt:(NSString*)sql arguments:(id)arg1, ... {
-    checkNotNil(sql, @"sql cannot be nil");
-    va_list stmtParams;
-    va_start(stmtParams, arg1);
-    sqlite3_stmt *stmt = [self prepareStmt:sql params:&stmtParams nextArg:&va_listIterator];
-    va_end(stmtParams);
-    return stmt;
-}
-
-- (NSArray*)select:(Class)klass conditions:(NSString*)criteria params:(va_list)stmtParams {
-    checkNotNil(criteria, @"Criteria cannot be nil");
-    checkNotNil(klass, @"klass cannot be nil");
-	
-    NSString *tableName = [klass tableName];
-    NSString *sql = [NSString stringWithFormat:@"select * from %@ %@", tableName, criteria];
-    sqlite3_stmt *statement = [self prepareStmt:sql params:&stmtParams nextArg:&va_listIterator];
-    NSMutableArray *result = [NSMutableArray array];
-    while (sqlite3_step(statement) == SQLITE_ROW) {
-        id obj = [self createObjectOfClass:klass fromRow:statement storedInTable:tableName];
-        if(obj != nil) {
-            [result addObject:obj];
-            [obj release];
-        }
-    }
-    sqlite3_finalize(statement);
-    return result;
-}
-
-- (NSArray*)select:(Class)klass conditions:(NSString*)criteria, ... {
-    va_list stmtParams;
-    va_start(stmtParams, criteria);
-    NSArray *result = [self select:klass conditions:criteria params:stmtParams];
-    va_end(stmtParams);
-    return result;
-}
-
-- (DBObject*)selectOne:(Class)klass offset:(NSInteger)offset conditions:(NSString*)criteria, ... {
-    va_list stmtParams;
-    va_start(stmtParams, criteria);
-    NSString *conditions = [NSString stringWithFormat:@"%@ limit 1 offset %d", criteria, offset];
-    NSArray *result = [self select:klass conditions:conditions params:stmtParams];
-    va_end(stmtParams);
-    if([result count] > 0) {
-        return [result objectAtIndex:0];
-    } else {
-        return nil;
-    }
-}
-
-- (id)select:(Class)klass wherePk:(long long)pk {
-    NSString *where = [NSString stringWithFormat:@"WHERE %@ = ?", [klass pkColumn]];
-    NSArray *result = [self select:klass conditions:where, [NSNumber numberWithLongLong:pk]];
-    if([result count] == 1) {
-        return [result objectAtIndex:0];
-    } else {
-        return nil;
-    }
-}
-
-- (void)delete:(Class)klass conditions:(NSString*)criteria, ... {
-    checkNotNil(criteria, @"Criteria cannot be nil");
-    checkNotNil(klass, @"klass cannot be nil");
-	
-    va_list stmtParams;
-    va_start(stmtParams, criteria);
-    NSString *sql = [NSString stringWithFormat:@"delete from %@ %@", [klass tableName], criteria];
-    sqlite3_stmt *stmt = [self prepareStmt:sql params:&stmtParams nextArg:&va_listIterator];
-    while(sqlite3_step(stmt) == SQLITE_ROW);
-    sqlite3_finalize(stmt);
-    va_end(stmtParams);
-}
-
-- (long long)executeNumber:(NSString *)query, ... {
-    va_list stmtParams;
-    va_start(stmtParams, query);
-	
-    sqlite3_stmt *statement = [self prepareStmt:query params:&stmtParams nextArg:&va_listIterator];
-    long long result = 0;
-    while (sqlite3_step(statement) == SQLITE_ROW) {
-        result = sqlite3_column_int64(statement, 0);
-    }
-    sqlite3_finalize(statement);
-    va_end(stmtParams);
-    return result;
-}
-
-- (void)beginTransaction {
-    [self executeNumber:@"begin transaction"];
-}
-
-- (void)commit {
-    [self executeNumber:@"commit transaction"];
-}
-
-- (void)rollback {
-    [self executeNumber:@"rollback transaction"];
 }
 
 @end

@@ -219,9 +219,9 @@ static const NSDictionary *primitives() {
 	if(![parser parse]) {
 		NSLog(@"Parse error: %@", [parser parserError]);
 	}
-	id result = [[[self result] retain] autorelease];
+	id parseResult = [[[self result] retain] autorelease];
 	[parser release];
-	return result;
+	return parseResult;
 }
 
 @end

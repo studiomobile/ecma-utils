@@ -1,5 +1,6 @@
 #import <Foundation/Foundation.h>
 #import "SelfDescribing.h"
+#import "RESTService.h"
 
 enum {
 	kPOXElementObject = 1,
@@ -26,6 +27,7 @@ struct POXElement {
 
 - (SelfDescribing *)result;
 - (id)map:(NSData*)data;
++ (POXMapping*)mapper;
 
 @end
 

@@ -12,11 +12,11 @@ extern const NSString *RequestStatusCode;
 @interface RESTService : NSObject {
 	NSString *baseUrl;
     NSString *additionalUrlEncodechars;
-    id<RESTServiceDataMapper> *mapper;
+    id<RESTServiceDataMapper> mapper;
 }
 
 - (id)initWithBaseUrl:(NSString*)url;
-- (id)initWithBaseUrl:(NSString*)url mapper:(id<RESTServiceDataMapper>*)m;
+- (id)initWithBaseUrl:(NSString*)url mapper:(id<RESTServiceDataMapper>)m;
 - (id)post:(NSData*)data to:(NSString*)localPath error:(NSError**)error;
 - (id)post:(NSData*)data to:(NSString*)localPath headers:(NSDictionary*)headers error:(NSError**)error;
 - (id)get:(NSString*)localPath withParams:(NSDictionary*)params error:(NSError**)error;

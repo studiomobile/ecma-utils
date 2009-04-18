@@ -11,3 +11,9 @@ build/*
 # osx noise
 .DS_Store
 profile
+
+#emacs noise
+TAGS
+ID
+*~
+.emacs.desktop
