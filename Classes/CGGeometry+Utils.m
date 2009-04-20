@@ -25,3 +25,17 @@ CGSize CGSizeFitIntoSize(CGSize original, CGSize fitInto){
 }
 
 
+CGPoint CGRectCenter(CGRect r){
+	return CGPointMake(CGRectGetMidX(r), CGRectGetMidY(r));	
+}
+
+CGRect CGRectCenterToPoint(CGRect original, CGPoint newCenter){
+	CGPoint oldCenter = CGRectCenter(original);	
+	original.origin.x += (newCenter.x - oldCenter.x);
+	original.origin.y += (newCenter.y - oldCenter.y);
+	return original;
+}
+
+CGRect CGRectCenterToRect(CGRect original, CGRect otherRect){
+	return CGRectCenterToPoint(original, CGRectCenter(otherRect));	 
+}

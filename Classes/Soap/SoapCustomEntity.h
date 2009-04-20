@@ -65,8 +65,8 @@
 -(void) setBool: (BOOL)val forKey: (NSString*)key;
 -(void) setInt: (int)val forKey: (NSString*)key;	
 -(void) setInt32: (int)val forKey: (NSString*)key;
--(void) setInt64: (int)val forKey: (NSString*)key;
--(void) setFloat: (int)val forKey: (NSString*)key;
+-(void) setInt64: (long long)val forKey: (NSString*)key;
+-(void) setFloat: (float)val forKey: (NSString*)key;
 -(void) setDouble: (double)val forKey: (NSString*)key;
 -(void) setString: (NSString*)val forKey: (NSString*)key;
 -(void) setDate: (NSDate*)val forKey: (NSString*)key;

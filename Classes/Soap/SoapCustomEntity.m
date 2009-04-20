@@ -422,12 +422,12 @@ typedef enum eTypeCode_tag{
 	[type addInt32ForKey:key];		
 }
 
--(void) setInt64: (int)val forKey: (NSString*)key{
+-(void) setInt64: (long long)val forKey: (NSString*)key{
 	[valueByKey setObject:[NSNumber numberWithLongLong:val] forKey:key];
 	[type addInt64ForKey:key];		
 }
 
--(void) setFloat: (int)val forKey: (NSString*)key{
+-(void) setFloat: (float)val forKey: (NSString*)key{
 	[valueByKey setObject:[NSNumber numberWithFloat:val] forKey:key];
 	[type addFloatForKey:key];	
 }
