@@ -27,9 +27,11 @@
 - (void)hideDatePicker;
 - (void)hideControls;
 
-- (FormFieldDescriptor*)stringFieldWithTitle:(NSString*)title forProperty:(NSString*)keyPath ofObject:(id)object;
-- (FormFieldDescriptor*)secureFieldWithTitle:(NSString*)title forProperty:(NSString*)keyPath ofObject:(id)object;
 - (FormFieldDescriptor*)textFieldWithTitle:(NSString*)title forProperty:(NSString*)keyPath ofObject:(id)object;
+- (FormFieldDescriptor*)borderedTextFieldWithTitle:(NSString*)title forProperty:(NSString*)keyPath ofObject:(id)object;
+- (FormFieldDescriptor*)secureFieldWithTitle:(NSString*)title forProperty:(NSString*)keyPath ofObject:(id)object;
+- (FormFieldDescriptor*)borderedSecureFieldWithTitle:(NSString*)title forProperty:(NSString*)keyPath ofObject:(id)object;
+- (FormFieldDescriptor*)textEditFieldWithTitle:(NSString*)title forProperty:(NSString*)keyPath ofObject:(id)object;
 - (FormFieldDescriptor*)collectionFieldWithTitle:(NSString*)title forProperty:(NSString*)keyPath ofObject:(id)object;
 - (FormFieldDescriptor*)switchFieldWithTitle:(NSString*)title forProperty:(NSString*)keyPath ofObject:(id)object;
 - (FormFieldDescriptor*)agreementFieldWithTitle:(NSString*)title forProperty:(NSString*)keyPath ofObject:(id)object;
@@ -38,6 +40,7 @@
 - (FormFieldDescriptor*)timeFieldWithTitle:(NSString*)title forProperty:(NSString*)keyPath ofObject:(id)object;
 - (FormFieldDescriptor*)customFieldWithTitle:(NSString*)title forProperty:(NSString*)keyPath ofObject:(id)object;
 
+- (FormCell*)formCellWithClass:(Class)klass reuseIdentifier:(NSString*)reuseIdentifier descriptor:(FormFieldDescriptor*)desc;
 - (StaticFormCell*)staticCellWithDescriptor:(FormFieldDescriptor*)desc;
 - (StaticFormCell*)immutableCellWithDescriptor:(FormFieldDescriptor*)desc;
 - (StaticFormCell*)disclosingCellWithDescriptor:(FormFieldDescriptor*)desc;

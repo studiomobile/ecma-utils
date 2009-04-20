@@ -30,17 +30,29 @@
 	return [desc autorelease];
 }
 
-- (FormFieldDescriptor*)stringFieldWithTitle:(NSString*)title forProperty:(NSString*)keyPath ofObject:(id)object {
+- (FormFieldDescriptor*)textFieldWithTitle:(NSString*)title forProperty:(NSString*)keyPath ofObject:(id)object {
 	return [self fieldWithTitle:title forProperty:keyPath ofObject:object type:FORM_FIELD_DESCRIPTOR_TEXT_FIELD];
 }
 
+- (FormFieldDescriptor*)borderedTextFieldWithTitle:(NSString*)title forProperty:(NSString*)keyPath ofObject:(id)object {
+    FormFieldDescriptor *desc = [self textFieldWithTitle:title forProperty:keyPath ofObject:object];
+    [desc.options setObject:[NSNumber numberWithInteger:UITextBorderStyleRoundedRect] forKey:@"value.borderStyle"];
+    return desc;
+}
+
 - (FormFieldDescriptor*)secureFieldWithTitle:(NSString*)title forProperty:(NSString*)keyPath ofObject:(id)object {
-	FormFieldDescriptor *desc = [self stringFieldWithTitle:title forProperty:keyPath ofObject:object];
+	FormFieldDescriptor *desc = [self textFieldWithTitle:title forProperty:keyPath ofObject:object];
     [desc.options setValue:[NSNumber numberWithBool:YES] forKey:@"value.secureTextEntry"];
 	return desc;
 }
 
-- (FormFieldDescriptor*)textFieldWithTitle:(NSString*)title forProperty:(NSString*)keyPath ofObject:(id)object {
+- (FormFieldDescriptor*)borderedSecureFieldWithTitle:(NSString*)title forProperty:(NSString*)keyPath ofObject:(id)object {
+	FormFieldDescriptor *desc = [self secureFieldWithTitle:title forProperty:keyPath ofObject:object];
+    [desc.options setObject:[NSNumber numberWithInteger:UITextBorderStyleRoundedRect] forKey:@"value.borderStyle"];
+	return desc;
+}
+
+- (FormFieldDescriptor*)textEditFieldWithTitle:(NSString*)title forProperty:(NSString*)keyPath ofObject:(id)object {
 	return [self fieldWithTitle:title forProperty:keyPath ofObject:object type:FORM_FIELD_DESCRIPTOR_TEXT_AREA];
 }
 
