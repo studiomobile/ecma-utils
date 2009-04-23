@@ -12,6 +12,7 @@ static char *skip(char *str, int n) {
 	return prop;
 }
 
+
 + (Class)propertyClass:(NSString*)prop {
 	prop = [self __propertyNameFromExternalProp:prop];
 	objc_property_t objcProp = class_getProperty(self, [prop cStringUsingEncoding:NSASCIIStringEncoding]);

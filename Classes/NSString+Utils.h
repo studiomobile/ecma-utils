@@ -11,6 +11,11 @@ int from_base64(const char *data, size_t dataLen, void **result, size_t *resultL
 - (NSString *)trimSpaces;
 - (NSString *)trim:(NSString*)chars;
 
+- (BOOL)caseInsensitiveStartsWith:(NSString*)prefix;
+- (BOOL)startsWith:(NSString*)prefix;
+- (BOOL)caseInsensitiveEndsWith:(NSString*)suffix;
+- (BOOL)endsWith:(NSString*)suffix;
+
 - (NSURL*)toUrl;
 - (NSURL*)toFileUrl;
 - (NSString*)urlEncode:(NSString*)additionalCharacters;
