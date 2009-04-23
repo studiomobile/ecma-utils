@@ -154,7 +154,7 @@
 -(void)pushContext: (SoapDeenveloperContext*)ctx;
 -(void)popContext;
 
-@property(retain) NSArray* contextStack;
+@property(retain) NSMutableArray* contextStack;
 
 @end
 

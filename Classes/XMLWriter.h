@@ -9,7 +9,7 @@
     NSMutableArray *indentsCache;
     NSInteger indentationLevel;
 }
-@property (readonly) NSString* result;
+@property (readonly) NSMutableString* result;
 
 + (NSString*)cdata:(NSString*)content;
 

@@ -417,12 +417,12 @@ typedef enum eTypeCode_tag{
 	[type addIntForKey:key];		
 }
 
--(void) setInt32: (int)val forKey: (NSString*)key{
+-(void) setInt32: (int32_t)val forKey: (NSString*)key{
 	[valueByKey setObject:[NSNumber numberWithInt:val] forKey:key];
 	[type addInt32ForKey:key];		
 }
 
--(void) setInt64: (long long)val forKey: (NSString*)key{
+-(void) setInt64: (int64_t)val forKey: (NSString*)key{
 	[valueByKey setObject:[NSNumber numberWithLongLong:val] forKey:key];
 	[type addInt64ForKey:key];		
 }
@@ -457,8 +457,6 @@ typedef enum eTypeCode_tag{
 	id valType = [val respondsToSelector:@selector(soapClass)] ? [val soapClass] : [val class];	
 	[self setObject:val forKey:[valType soapName]];
 }
-
-
 
 
 
