@@ -133,6 +133,7 @@
 
 
 - (void)forwardInvocation:(NSInvocation*)invocation {
+	[invocation retainArguments];
 	[opQ addOperation:[[[AsyncOperation alloc] initWithAsyncObject:async invocation:invocation] autorelease]];
 }
 
