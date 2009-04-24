@@ -11,7 +11,7 @@
         indentation = [indent retain];
         lineBreak = [br retain];
         
-        result = [[NSMutableString alloc] init];
+        resultMutable = [[NSMutableString alloc] init];
         tagStack = [[NSMutableArray alloc] init];
         indentationLevel = 0;
         indentsCache = [[NSMutableArray alloc] initWithObjects:@"", nil];
@@ -29,7 +29,7 @@
         [self closeTag];
     }
 
-    return [NSString stringWithString:result];
+    return [NSString stringWithString:resultMutable];
 }
 
 - (void)appendIndented:(NSString*)str {
@@ -43,7 +43,7 @@
     
     NSString *indent = [indentsCache objectAtIndex:level];
     
-    [result appendFormat:@"%@%@%@", indent, str, lineBreak];
+    [resultMutable appendFormat:@"%@%@%@", indent, str, lineBreak];
 }
 
 - (void)instruct {
@@ -103,7 +103,7 @@
 - (void)dealloc {
     [lineBreak release];
     [indentation release];
-    [result release];
+    [resultMutable release];
     [tagStack release];
     [indentsCache release];
     

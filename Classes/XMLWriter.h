@@ -4,12 +4,12 @@
     NSString *indentation;
     NSString *lineBreak;
     
-    NSMutableString *result;
+    NSMutableString *resultMutable;
     NSMutableArray *tagStack;
     NSMutableArray *indentsCache;
     NSInteger indentationLevel;
 }
-@property (readonly) NSMutableString* result;
+@property (readonly) NSString* result;
 
 + (NSString*)cdata:(NSString*)content;
 
