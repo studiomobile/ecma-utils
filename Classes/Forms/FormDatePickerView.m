@@ -16,6 +16,9 @@
     NSNumber *modeNumber = [desc.options objectForKey:@"datePicker.datePickerMode"];
     datePicker.datePickerMode = modeNumber ? [modeNumber integerValue] : UIDatePickerModeDateAndTime;
 
+    NSNumber *buttonsStyleNumber = [desc.options objectForKey:@"datePicker.buttonsStyle"];
+    UIBarButtonItemStyle buttonsStyle = buttonsStyleNumber ? [buttonsStyleNumber integerValue] : UIBarButtonItemStyleBordered;
+
     NSDate *descDate = desc.value;
     [self setDate:(descDate ? descDate : [NSDate date])];
     [datePicker setDate:date animated:NO];
@@ -28,7 +31,7 @@
 
     if([desc.options objectForKey:@"allowsClear"]) {
         UIBarButtonItem *clearButton = [[[UIBarButtonItem alloc] initWithTitle:@"Clear" 
-                                                                         style:UIBarButtonItemStyleDone 
+                                                                         style:buttonsStyle 
                                                                         target:self 
                                                                         action:@selector(datePickerClear)] autorelease];
         
@@ -41,9 +44,10 @@
     
     [items addObject:space];
     
-    UIBarButtonItem *doneButton = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone 
-                                                                                 target:self 
-                                                                                 action:@selector(datePickerDone)] autorelease];
+    UIBarButtonItem *doneButton = [[[UIBarButtonItem alloc] initWithTitle:@"Done" 
+                                                                    style:buttonsStyle 
+                                                                   target:self 
+                                                                   action:@selector(datePickerDone)] autorelease];
     
     [items addObject:doneButton];
     
