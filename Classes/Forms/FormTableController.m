@@ -15,11 +15,13 @@
 	[super viewDidLoad];
 }
 
+
 - (void)dealloc {
     [datePickerView removeFromSuperview];
 	[[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardDidHideNotification object:nil];
 	[super dealloc];
 }
+
 
 - (FormFieldDescriptor*)fieldWithTitle:(NSString*)title forProperty:(NSString*)keyPath ofObject:(id)object type:(FormFieldDescriptorType)type {
 	FormFieldDescriptor *desc = [FormFieldDescriptor new];
@@ -30,9 +32,11 @@
 	return [desc autorelease];
 }
 
+
 - (FormFieldDescriptor*)textFieldWithTitle:(NSString*)title forProperty:(NSString*)keyPath ofObject:(id)object {
 	return [self fieldWithTitle:title forProperty:keyPath ofObject:object type:FORM_FIELD_DESCRIPTOR_TEXT_FIELD];
 }
+
 
 - (FormFieldDescriptor*)borderedTextFieldWithTitle:(NSString*)title forProperty:(NSString*)keyPath ofObject:(id)object {
     FormFieldDescriptor *desc = [self textFieldWithTitle:title forProperty:keyPath ofObject:object];
@@ -40,11 +44,13 @@
     return desc;
 }
 
+
 - (FormFieldDescriptor*)secureFieldWithTitle:(NSString*)title forProperty:(NSString*)keyPath ofObject:(id)object {
 	FormFieldDescriptor *desc = [self textFieldWithTitle:title forProperty:keyPath ofObject:object];
     [desc.options setValue:[NSNumber numberWithBool:YES] forKey:@"value.secureTextEntry"];
 	return desc;
 }
+
 
 - (FormFieldDescriptor*)borderedSecureFieldWithTitle:(NSString*)title forProperty:(NSString*)keyPath ofObject:(id)object {
 	FormFieldDescriptor *desc = [self secureFieldWithTitle:title forProperty:keyPath ofObject:object];
@@ -52,25 +58,31 @@
 	return desc;
 }
 
+
 - (FormFieldDescriptor*)textEditFieldWithTitle:(NSString*)title forProperty:(NSString*)keyPath ofObject:(id)object {
 	return [self fieldWithTitle:title forProperty:keyPath ofObject:object type:FORM_FIELD_DESCRIPTOR_TEXT_AREA];
 }
+
 
 - (FormFieldDescriptor*)collectionFieldWithTitle:(NSString*)title forProperty:(NSString*)keyPath ofObject:(id)object {
 	return [self fieldWithTitle:title forProperty:keyPath ofObject:object type:FORM_FIELD_DESCRIPTOR_COLLECTION];
 }
 
+
 - (FormFieldDescriptor*)switchFieldWithTitle:(NSString*)title forProperty:(NSString*)keyPath ofObject:(id)object {
 	return [self fieldWithTitle:title forProperty:keyPath ofObject:object type:FORM_FIELD_DESCRIPTOR_SWITCH];
 }
+
 
 - (FormFieldDescriptor*)agreementFieldWithTitle:(NSString*)title forProperty:(NSString*)keyPath ofObject:(id)object {
 	return [self fieldWithTitle:title forProperty:keyPath ofObject:object type:FORM_FIELD_DESCRIPTOR_AGREEMENT];
 }
 
+
 - (FormFieldDescriptor*)dateTimeFieldWithTitle:(NSString*)title forProperty:(NSString*)keyPath ofObject:(id)object {
     return [self fieldWithTitle:title forProperty:keyPath ofObject:object type:FORM_FIELD_DESCRIPTOR_DATETIME];
 }
+
 
 - (FormFieldDescriptor*)dateFieldWithTitle:(NSString*)title forProperty:(NSString*)keyPath ofObject:(id)object {
     FormFieldDescriptor *desc = [self dateTimeFieldWithTitle:title forProperty:keyPath ofObject:object];
@@ -79,6 +91,7 @@
     return desc;
 }
 
+
 - (FormFieldDescriptor*)timeFieldWithTitle:(NSString*)title forProperty:(NSString*)keyPath ofObject:(id)object {
     FormFieldDescriptor *desc = [self dateTimeFieldWithTitle:title forProperty:keyPath ofObject:object];
     [desc.options setObject:@"hh:mm a" forKey:@"formatter.dateFormat"];
@@ -86,28 +99,35 @@
     return desc;
 }
 
+
 - (FormFieldDescriptor*)customFieldWithTitle:(NSString*)title forProperty:(NSString*)keyPath ofObject:(id)object {
 	return [self fieldWithTitle:title forProperty:keyPath ofObject:object type:FORM_FIELD_DESCRIPTOR_CUSTOM];
 }
 
+
 - (void)enableButton:(BOOL)enable {
 }
+
 
 - (NSInteger)numberOfDataSections {
 	return 0;
 }
 
+
 - (NSInteger)numberOfFieldsInDataSection:(NSInteger)section {
 	return 0;
 }
+
 
 - (FormFieldDescriptor*)descriptorForField:(NSIndexPath*)indexPath {
 	return nil;
 }
 
+
 - (NSString*)missingFieldsDescriptionForSection:(NSInteger)section {
 	return nil;
 }
+
 
 - (BOOL)valid {
 	for(int i = 0; i < [self numberOfDataSections]; i++) {
@@ -117,20 +137,25 @@
 	return YES;
 }
 
+
 - (NSString*)buttonTitle {
 	return nil;
 }
 
+
 - (IBAction)buttonPressed {
 }
 
-- (NSArray*)collectionForField:(NSIndexPath*)indexPath {
+
+- (NSArray*)collectionForDescriptor:(FormFieldDescriptor*)desc atIndexPath:(NSIndexPath*)indexPath {
 	return nil;
 }
+
 
 - (id)agreementDataForDescriptor:(FormFieldDescriptor*)desc atIndexPath:(NSIndexPath*)indexPath {
 	return nil;
 }
+
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
 	NSInteger sections = [self numberOfDataSections];
@@ -139,27 +164,33 @@
     return sections;
 }
 
+
 - (void)_updateData {
 	[self enableButton:[self valid]];
 	[self.table reloadData];
 }
 
+
 - (void)reloadForm {
     [self _updateData];
 }
+
 
 - (void)hideControls {
     [self hideDatePicker];
     [self hideKeyboard];
 }
 
+
 - (NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section {
 	return section < [self numberOfDataSections] ? [self missingFieldsDescriptionForSection:section] : nil;
 }
 
+
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
 	return section < [self numberOfDataSections] ? [self numberOfFieldsInDataSection:section] : 1;
 }
+
 
 - (FormCell*)formCellWithClass:(Class)klass reuseIdentifier:(NSString*)reuseIdentifier descriptor:(FormFieldDescriptor*)desc {
 	FormCell *result = (FormCell*)[self.table dequeueReusableCellWithIdentifier:reuseIdentifier];
@@ -171,6 +202,7 @@
     return result;
 }
 
+
 - (StaticFormCell*)immutableCellWithDescriptor:(FormFieldDescriptor*)desc{
 	StaticFormCell *cell = (StaticFormCell*)[self formCellWithClass:[StaticFormCell class] reuseIdentifier:@"ImmutableFieldCell" descriptor:desc]; 
     cell.title.textColor = [UIColor grayColor];
@@ -178,10 +210,12 @@
 	return cell;
 }
 
+
 - (StaticFormCell*)staticCellWithDescriptor:(FormFieldDescriptor*)desc {
 	StaticFormCell *cell = (StaticFormCell*)[self formCellWithClass:[StaticFormCell class] reuseIdentifier:@"StaticFieldCell" descriptor:desc];
 	return cell;
 }
+
 
 - (StaticFormCell*)disclosingCellWithDescriptor:(FormFieldDescriptor*)desc {
 	StaticFormCell *cell = (StaticFormCell*)[self formCellWithClass:[StaticFormCell class] reuseIdentifier:@"TextCell" descriptor:desc];; 
@@ -189,29 +223,35 @@
 	return cell;
 }
 
+
 - (TextFieldCell*)textFieldCellWithDescriptor:(FormFieldDescriptor*)desc {
 	TextFieldCell *cell = (TextFieldCell*)[self formCellWithClass:[TextFieldCell class] reuseIdentifier:@"SettingsCell" descriptor:desc];
 	return cell;
 }
+
 
 - (SwitchCell*)switchFieldCellWithDescriptor:(FormFieldDescriptor*)desc {
 	SwitchCell *cell = (SwitchCell*)[self formCellWithClass:[SwitchCell class] reuseIdentifier:@"SwitchCell" descriptor:desc];
 	return cell;
 }
 
+
 - (AgreementCell*)agreementFieldCellWithDescriptor:(FormFieldDescriptor*)desc {
 	AgreementCell *cell = (AgreementCell*)[self formCellWithClass:[AgreementCell class] reuseIdentifier:@"AgreementCell" descriptor:desc];
 	return cell;
 }
+
 
 - (DateTimeCell*)dateTimeFieldCellWithDescriptor:(FormFieldDescriptor*)desc {
 	DateTimeCell *cell = (DateTimeCell*)[self formCellWithClass:[DateTimeCell class] reuseIdentifier:@"DateTimeCell" descriptor:desc];
 	return cell;
 }
 
+
 - (UITableViewCell*)customCellWithDescriptor:(FormFieldDescriptor*)desc forIndexPath:indexPath {
 	return [self staticCellWithDescriptor:desc];
 }
+
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
 	if (indexPath.section == [self numberOfDataSections]) {
@@ -252,20 +292,25 @@
     return [self customCellWithDescriptor:desc forIndexPath:indexPath];
 }
 
+
 - (void)didSelectCustomCellAtIndexPath:(NSIndexPath*)indexPath {
 }
+
 
 - (NSString*)selectControllerTitleForDescriptor:(FormFieldDescriptor*)desc indexPath:(NSIndexPath*)indexPath {
 	return [NSString stringWithFormat:@"Select %@", [desc.title lowercaseString]];
 }
 
+
 - (NSString*)textEditControllerTitleForDescriptor:(FormFieldDescriptor*)desc indexPath:(NSIndexPath*)indexPath {
 	return [NSString stringWithFormat:@"Edit %@", [desc.title lowercaseString]];
 }
 
+
 - (NSString*)agreementControllerTitleForDescriptor:(FormFieldDescriptor*)desc indexPath:(NSIndexPath*)indexPath {
 	return [NSString stringWithFormat:@"%@", desc.title];
 }
+
 
 - (UIViewController*)selectionControllerForIndexPath:(NSIndexPath*)indexPath title:(NSString*)title descriptor:(FormFieldDescriptor*)desc collection:(NSArray*)collection {
     SelectionController *selection = [[[SelectionController alloc] initWithTitle:title] autorelease];
@@ -275,12 +320,14 @@
     return selection;
 }
 
+
 - (UIViewController*)textEditControllerForIndexPath:(NSIndexPath*)indexPath title:(NSString*)title descriptor:(FormFieldDescriptor*)desc {
     TextEditController *textEdit = [[[TextEditController alloc] initWithTitle:title] autorelease];
     textEdit.dataSource = desc.dataSource;
     textEdit.keyPath = desc.keyPath;
     return textEdit;
 }
+
 
 - (UIViewController*)agreementControllerForIndexPath:(NSIndexPath*)indexPath title:(NSString*)title descriptor:(FormFieldDescriptor*)desc data:(id)data {
     AgreementController *agreementController = [[[AgreementController alloc] initWithTitle:title] autorelease];
@@ -290,9 +337,11 @@
     return agreementController;
 }
 
+
 - (FormCell*)currentCell {
     return (FormCell*)[self.table cellForRowAtIndexPath:self.currentIndexPath];
 }
+
 
 - (FormDatePickerView*)datePickerView {
     if(!datePickerView) {
@@ -304,6 +353,7 @@
     
     return datePickerView;
 }
+
 
 - (void)setDatePickerVisible:(BOOL)v {
     if(datePickerVisible == v) return;
@@ -327,19 +377,23 @@
     [UIView commitAnimations];
 }
 
+
 - (void)showDatePickerForDescriptor:(FormFieldDescriptor*)desc {
     [self.datePickerView reconfigureWithDescriptor:desc];
     
     [self setDatePickerVisible:YES];
 }
 
+
 - (void)hideDatePicker {
     [self setDatePickerVisible:NO];
 }
 
+
 - (void)formDatePickerViewDone:(FormDatePickerView*)datePickerView {
     [self hideDatePicker];
 }
+
 
 - (void)formDatePickerViewDateChanged:(FormDatePickerView*)datePickerView {
     FormCell *cell = [self currentCell];
@@ -347,9 +401,11 @@
     [cell onFieldDescriptorUpdate];
 }
 
+
 - (BOOL)pushControllersAnimated {
     return YES;
 }
+
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 	if (indexPath.section == [self numberOfDataSections]) {
@@ -375,7 +431,7 @@
 		[self didSelectCustomCellAtIndexPath:indexPath];
 	} else if (desc.type == FORM_FIELD_DESCRIPTOR_COLLECTION) {
 		NSString *title = [self selectControllerTitleForDescriptor:desc indexPath:indexPath];
-        NSArray *collection = [self collectionForField:indexPath];
+        NSArray *collection = [self collectionForDescriptor:desc atIndexPath:indexPath];
 		UIViewController *selection = [self selectionControllerForIndexPath:indexPath title:title descriptor:(FormFieldDescriptor*)desc collection:collection];
 		[self.navigationController pushViewController:selection animated:[self pushControllersAnimated]];
 	} else if(desc.type == FORM_FIELD_DESCRIPTOR_TEXT_AREA) {
@@ -396,10 +452,12 @@
     }
 }
 
+
 - (void)textFieldSelected {
     self.currentIndexPath = [self indexPathOfSelectedTextField];
     [self hideDatePicker];
 }
+
 
 - (void)viewWillAppear:(BOOL)animated {
 	[self _updateData];
