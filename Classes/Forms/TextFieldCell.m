@@ -31,7 +31,7 @@
 - (void)onFieldDescriptorUpdate {
     [super onFieldDescriptorUpdate];
     
-	self.value.text = self.fieldDescriptor.value;
+	self.value.text = [self.fieldDescriptor.value description];
 	self.value.secureTextEntry = [[self.fieldDescriptor.options objectForKey:@"value.secureTextEntry"] boolValue];
     
     NSNumber *keyboardNumber = [self.fieldDescriptor.options objectForKey:@"value.keyboardType"];
@@ -54,9 +54,10 @@
 }
 
 - (void)layoutControls:(CGRect)controlsRect {
+    // TODO cleanup
     if(self.value.borderStyle == UITextBorderStyleNone) {
-    	controlsRect.origin.y += 10;
-    	controlsRect.size.height -= 10;
+    	controlsRect.origin.y += 6;
+    	controlsRect.size.height -= 6;
     }
     
     CGFloat fieldHeight = self.value.font.pointSize + 10;

@@ -1,6 +1,7 @@
 #import "StaticFormCell.h"
+#import "TextFieldCell.h"
 
-@interface DateTimeCell : StaticFormCell {
+@interface DateTimeCell : TextFieldCell {
     NSDateFormatter *formatter;
 }
 

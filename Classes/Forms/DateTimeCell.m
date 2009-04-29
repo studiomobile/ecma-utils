@@ -5,6 +5,7 @@
 - (id)initWithFrame:(CGRect)frame reuseIdentifier:(NSString *)reuseIdentifier {
     if (self = [super initWithFrame:frame reuseIdentifier:reuseIdentifier]) {
 		formatter = [[NSDateFormatter alloc] init];
+        self.value.enabled = NO;
     }
     
     return self;

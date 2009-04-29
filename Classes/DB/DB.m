@@ -17,6 +17,11 @@ static id arrayAccessor(void *list, int idx) {
     return a[idx];
 }
 
+static id nsArrayAccessor(void *list, int idx) {
+    NSArray *array = (NSArray*)list;
+    return [array objectAtIndex:idx];
+}
+
 typedef id(*ArgAccessor)(void *list, int idx);
 
 const NSUInteger kFailedToOpenDB = 1;
@@ -119,7 +124,7 @@ static NSMutableDictionary *databases = nil;
 
 
 - (sqlite3_stmt*)prepareStmt:(NSString*)sql params:(NSArray*)params {
-    return [self prepareStmt:sql params:params argAccessor:&arrayAccessor];
+    return [self prepareStmt:sql params:params argAccessor:&nsArrayAccessor];
 }
 
     
@@ -157,7 +162,7 @@ static NSMutableDictionary *databases = nil;
 
 
 - (NSArray*)select:(Class)klass conditions:(NSString*)criteria params:(NSArray*)params {
-    return [self select:klass conditions:criteria params:params argAccessor:&arrayAccessor];
+    return [self select:klass conditions:criteria params:params argAccessor:&nsArrayAccessor];
 }
 
 
@@ -207,7 +212,7 @@ static NSMutableDictionary *databases = nil;
 
 
 - (DBObject*)selectOne:(Class)klass offset:(NSInteger)offset conditions:(NSString*)criteria params:(NSArray*)params {
-    return [self selectOne:klass offset:offset conditions:criteria params:params argAccessor:&arrayAccessor];
+    return [self selectOne:klass offset:offset conditions:criteria params:params argAccessor:&nsArrayAccessor];
 }
 
 
@@ -299,7 +304,7 @@ static NSMutableDictionary *databases = nil;
 
 
 - (void)delete:(Class)klass conditions:(NSString*)criteria params:(NSArray*)params {
-    [self delete:klass conditions:criteria params:params argAccessor:&arrayAccessor];
+    [self delete:klass conditions:criteria params:params argAccessor:&nsArrayAccessor];
 }
 
 
@@ -314,7 +319,7 @@ static NSMutableDictionary *databases = nil;
 - (long long)executeNumber:(NSString*)query
         params:(void*)stmtParams
    argAccessor:(ArgAccessor)argumentAccessor {
-    sqlite3_stmt *statement = [self prepareStmt:query params:&stmtParams argAccessor:&va_listIterator];
+    sqlite3_stmt *statement = [self prepareStmt:query params:stmtParams argAccessor:argumentAccessor];
     long long result = 0;
     while (sqlite3_step(statement) == SQLITE_ROW) {
         result = sqlite3_column_int64(statement, 0);
@@ -325,7 +330,7 @@ static NSMutableDictionary *databases = nil;
 
 
 - (long long)executeNumber:(NSString *)query params:(NSArray*)params {
-    return [self executeNumber:query params:params argAccessor:&arrayAccessor];
+    return [self executeNumber:query params:params argAccessor:&nsArrayAccessor];
 }
 
 

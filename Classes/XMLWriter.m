@@ -1,10 +1,26 @@
 #import "XMLWriter.h"
 
-@implementation XMLWriter
+@interface NSString (XMLAdditions)
 
-+ (NSString*)cdata:(NSString*)content {
-    return [NSString stringWithFormat:@"<![CDATA[%@]]>", content];
+- (NSString*)xmlEscapedString;
+
+@end
+
+
+@implementation NSString (XMLAdditions)
+
+- (NSString*)xmlEscapedString {
+    // TODO this is too slow & ugly
+    NSString *result = [self stringByReplacingOccurrencesOfString:@"&" withString:@"&amp;"];
+    result = [result stringByReplacingOccurrencesOfString:@"<" withString:@"&lt;"];
+    result = [result stringByReplacingOccurrencesOfString:@">" withString:@"&gt;"];
+    return result;
 }
+
+@end
+
+
+@implementation XMLWriter
 
 - (id)initWithIndentation:(NSString*)indent lineBreak:(NSString*)br {
     if(self = [super init]) {
@@ -20,9 +36,11 @@
     return self;
 }
 
+
 - (id)init {
     return [self initWithIndentation:@"" lineBreak:@""];
 }
+
 
 - (NSString*)result {
     while(tagStack.count) { // unwind 
@@ -31,6 +49,7 @@
 
     return [NSString stringWithString:resultMutable];
 }
+
 
 - (void)appendIndented:(NSString*)str {
     NSInteger level = tagStack.count;
@@ -46,9 +65,11 @@
     [resultMutable appendFormat:@"%@%@%@", indent, str, lineBreak];
 }
 
+
 - (void)instruct {
     [self appendIndented:@"<?xml version=\"1.0\" encoding=\"UTF-8\"?>"];
 }
+
 
 - (NSString*)attributesString:(NSDictionary*)attributes {
     if(!attributes) return @"";
@@ -62,20 +83,42 @@
     return attributesString;
 }
 
-- (void)tag:(NSString*)name content:(NSString*)content attributes:(NSDictionary*)attributes {
+
+- (void)tag:(NSString*)name content:(NSString*)content attributes:(NSDictionary*)attributes escape:(BOOL)escape {
     if(!name) return;
     NSString *attributesString = [self attributesString:attributes];
     
     if(content && content.length > 0) {
+        if(escape) {
+            content = [content xmlEscapedString];
+        }
+        
         [self appendIndented:[NSString stringWithFormat:@"<%@%@>%@</%@>", name, attributesString, content, name]];
     } else {
         [self appendIndented:[NSString stringWithFormat:@"<%@%@/>", name, attributesString]];
     }
 }
 
+
+- (void)tag:(NSString*)name content:(NSString*)content attributes:(NSDictionary*)attributes {
+    [self tag:name content:content attributes:attributes escape:YES];
+}
+
+
 - (void)tag:(NSString*)name content:(NSString*)content {
     [self tag:name content:content attributes:nil];
 }
+
+
+- (void)tag:(NSString*)name cdata:(NSString*)content attributes:(NSDictionary*)attributes {
+    [self tag:name content:[NSString stringWithFormat:@"<![CDATA[%@]]>", content] attributes:attributes escape:NO];
+}
+
+
+- (void)tag:(NSString*)name cdata:(NSString*)content {
+    [self tag:name cdata:content attributes:nil];
+}
+
 
 - (void)openTag:(NSString*)name attributes:(NSDictionary*)attributes {
     if(!name) return;
@@ -84,9 +127,11 @@
     [tagStack addObject:name];
 }
 
+
 - (void)openTag:(NSString*)name {
     [self openTag:name attributes:nil];
 }
+
 
 - (void)closeTag {
     if(!tagStack.count) return;
@@ -96,9 +141,11 @@
     [self appendIndented:[NSString stringWithFormat:@"</%@>", name]];
 }
 
+
 - (void)comment:(NSString*)comment {
     [self appendIndented:[NSString stringWithFormat:@"<!-- %@ -->", comment]];
 }
+
 
 - (void)dealloc {
     [lineBreak release];

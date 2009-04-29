@@ -11,7 +11,6 @@
 }
 @property (readonly) NSString* result;
 
-+ (NSString*)cdata:(NSString*)content;
 
 - (id)initWithIndentation:(NSString*)indent lineBreak:(NSString*)br;
 
@@ -19,6 +18,8 @@
 
 - (void)tag:(NSString*)name content:(NSString*)content attributes:(NSDictionary*)attributes;
 - (void)tag:(NSString*)name content:(NSString*)content;
+- (void)tag:(NSString*)name cdata:(NSString*)content attributes:(NSDictionary*)attributes;
+- (void)tag:(NSString*)name cdata:(NSString*)content;
 - (void)openTag:(NSString*)name attributes:(NSDictionary*)attributes;
 - (void)openTag:(NSString*)name;
 - (void)closeTag;
