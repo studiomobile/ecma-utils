@@ -29,8 +29,14 @@
 
 - (void)onFieldDescriptorUpdate {
     [super onFieldDescriptorUpdate];
-    
-	self.value.text = [self.fieldDescriptor.value boolValue] ? @"Accepted" :  @"Not accepted";
+
+    NSString *acceptedText = [self.fieldDescriptor.options objectForKey:@"acceptedText"];
+    acceptedText = acceptedText ? acceptedText : @"Accepted";
+
+    NSString *notAcceptedText = [self.fieldDescriptor.options objectForKey:@"notAcceptedText"];
+    notAcceptedText = notAcceptedText ? notAcceptedText : @"Not accepted";
+
+    self.value.text = [self.fieldDescriptor.value boolValue] ? acceptedText : notAcceptedText;
 	self.value.textColor = [self.fieldDescriptor.value boolValue] 
     ? [UIColor colorWithRed:80/255. green:160/255. blue:15/255. alpha:1] 
     : [UIColor colorWithRed:240/255. green:50/255. blue:50/255. alpha:1];
