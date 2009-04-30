@@ -62,10 +62,11 @@
 		[enveloper encodeHeaderObject:header];	
 	}
 	[enveloper encodeBodyObject:body];	
-	NSString* xmlString = enveloper.message;
 	
+	NSString* xmlString = enveloper.message;
+	NSLog(@"SOAP REQUEST:\n%@", xmlString);	
 	NSData* requestData = [xmlString dataUsingEncoding: NSUTF8StringEncoding];
-	NSLog(@"SOAP REQUEST:\n%@", xmlString);
+	
 	NSError* err = nil;
 	NSData* responseData = [service post:requestData to:@"" headers: httpHeaders error: &err];
 	if(err){

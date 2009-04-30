@@ -438,7 +438,7 @@ typedef enum eTypeCode_tag{
 }
 
 -(void) setString: (NSString*)val forKey: (NSString*)key{
-	[valueByKey setObject:val forKey:key];
+	[valueByKey setObject:val ? val : @"" forKey:key];
 	[type addStringForKey:key];	
 }
 

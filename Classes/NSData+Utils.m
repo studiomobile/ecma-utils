@@ -21,7 +21,7 @@ int to_base64(const unsigned char *data, size_t dataLen, unsigned char **base64R
 	}
 	//add padding characters
 	if(unsafeBytes != 0) {
-		char dataAndPadding[3] = {'\0','\0','\0'};
+		unsigned char dataAndPadding[3] = {'\0','\0','\0'};
 		memcpy(dataAndPadding, data + safeBytes, unsafeBytes);
 		NSUInteger bytesWrittenSoFar = 4*safeBytes/3;
 		base64Data[bytesWrittenSoFar] = base64alphabet[dataAndPadding[0] >> 2];
