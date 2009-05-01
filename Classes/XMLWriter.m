@@ -10,11 +10,12 @@
 @implementation NSString (XMLAdditions)
 
 - (NSString*)xmlEscapedString {
-    // TODO this is too slow & ugly
-    NSString *result = [self stringByReplacingOccurrencesOfString:@"&" withString:@"&amp;"];
-    result = [result stringByReplacingOccurrencesOfString:@"<" withString:@"&lt;"];
-    result = [result stringByReplacingOccurrencesOfString:@">" withString:@"&gt;"];
-    return result;
+    // TODO refactor, this is too slow & ugly
+    NSMutableString *result = [[self mutableCopy] autorelease];
+    [result replaceOccurrencesOfString:@"&" withString:@"&amp;" options:0 range:NSMakeRange(0, result.length)];
+    [result replaceOccurrencesOfString:@"<" withString:@"&lt;" options:0 range:NSMakeRange(0, result.length)];
+    [result replaceOccurrencesOfString:@">" withString:@"&gt;" options:0 range:NSMakeRange(0, result.length)];
+    return [[result copy] autorelease];
 }
 
 @end

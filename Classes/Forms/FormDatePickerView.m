@@ -16,6 +16,9 @@
     NSNumber *modeNumber = [desc.options objectForKey:@"datePicker.datePickerMode"];
     datePicker.datePickerMode = modeNumber ? [modeNumber integerValue] : UIDatePickerModeDateAndTime;
 
+    NSNumber *minuteIntervalNumber = [desc.options objectForKey:@"datePicker.minuteInterval"];
+    datePicker.minuteInterval = minuteIntervalNumber ? [minuteIntervalNumber integerValue] : 1;
+
     NSNumber *buttonsStyleNumber = [desc.options objectForKey:@"datePicker.buttonsStyle"];
     UIBarButtonItemStyle buttonsStyle = buttonsStyleNumber ? [buttonsStyleNumber integerValue] : UIBarButtonItemStyleBordered;
 
