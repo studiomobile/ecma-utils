@@ -55,7 +55,6 @@
     
     [UIView beginAnimations:nil context:NULL];
     [UIView setAnimationDuration: 0.3];	
-//    [UIView setAnimationDelegate:self];
     self.table.frame = newFrame;
 	[UIView commitAnimations];
 }
@@ -74,19 +73,8 @@
 
 - (void)restoreTableFrame:(BOOL)animated {
 	if(tableViewResized) {
-		tableViewResized = NO;
-        
-        if(animated) {
-//            [UIView beginAnimations:nil context:nil];
-//            [UIView setAnimationDuration:0.3];
-        }
-        
-//        NSLog(@"old frame %@, new one %@", NSStringFromCGRect(self.table.frame), NSStringFromCGRect(oldTblViewFrame));
-		self.table.frame = oldTblViewFrame;
-        
-        if(animated) {
-//            [UIView commitAnimations];
-        }
+		tableViewResized = NO;        
+		self.table.frame = oldTblViewFrame;        
 	}
 }
 
@@ -115,16 +103,6 @@
 
     [self adjustTableRelativeToFrame:kbdAppFrame frameView:appView];
     return;
-
-	CGRect tblAppFrame = [self.table convertRect:self.table.bounds toView:appView];
-	CGRect tblAndKbdIntersection = CGRectIntersection(kbdAppFrame, tblAppFrame);
-	if(!CGRectIsNull(tblAndKbdIntersection)) {
-		CGRect newTblAppFrame, slice;
-		CGRectDivide(tblAppFrame, &slice, &newTblAppFrame, CGRectGetHeight(tblAndKbdIntersection), CGRectMaxYEdge);
-		CGRect newTblFrame = [appView convertRect:newTblAppFrame toView:self.table.superview];
-
-        [self changeTableFrame:newTblFrame];
-	}
 }
 
 - (void)kbdDidShow {
