@@ -63,11 +63,15 @@ const NSString *RequestStatusCode = @"__RequestStatusCode__";
 
 - (id)request:(NSURLRequest*)request error:(NSError**)error {
 	NSHTTPURLResponse *response = nil;
+#ifdef DEBUG_LOG
 	NSLog(@"Requesting %@", [request URL]);
+#endif
 	NSData *data = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:error];
 	if(data) {
 		NSUInteger statusCode = [response statusCode];
+#ifdef DEBUG_LOG
 		NSLog(@"Status code: %d", statusCode);
+#endif
 		id result = data ? [self mapData:data error:error] : nil;
 		if(statusCode == 200) {
 			return result;

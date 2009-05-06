@@ -11,7 +11,7 @@
 @synthesize currentIndexPath;
 
 - (void)viewDidLoad {
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_updateData) name:UIKeyboardDidHideNotification object:nil];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadForm) name:UIKeyboardDidHideNotification object:nil];
 	[super viewDidLoad];
 }
 
@@ -165,14 +165,9 @@
 }
 
 
-- (void)_updateData {
+- (void)reloadForm {
 	[self enableButton:[self valid]];
 	[self.table reloadData];
-}
-
-
-- (void)reloadForm {
-    [self _updateData];
 }
 
 
@@ -460,7 +455,7 @@
 
 
 - (void)viewWillAppear:(BOOL)animated {
-	[self _updateData];
+	[self reloadForm];
 	[super viewWillAppear:animated];
 }
 
