@@ -38,9 +38,9 @@
 }
 
 
-- (FormFieldDescriptor*)borderedTextFieldWithTitle:(NSString*)title forProperty:(NSString*)keyPath ofObject:(id)object {
+- (FormFieldDescriptor*)emailFieldWithTitle:(NSString*)title forProperty:(NSString*)keyPath ofObject:(id)object {
     FormFieldDescriptor *desc = [self textFieldWithTitle:title forProperty:keyPath ofObject:object];
-    [desc.options setObject:[NSNumber numberWithInteger:UITextBorderStyleRoundedRect] forKey:@"value.borderStyle"];
+    [desc.options setObject:[NSNumber numberWithInteger:UIKeyboardTypeEmailAddress] forKey:@"value.keyboardType"];
     return desc;
 }
 
@@ -48,13 +48,6 @@
 - (FormFieldDescriptor*)secureFieldWithTitle:(NSString*)title forProperty:(NSString*)keyPath ofObject:(id)object {
 	FormFieldDescriptor *desc = [self textFieldWithTitle:title forProperty:keyPath ofObject:object];
     [desc.options setValue:[NSNumber numberWithBool:YES] forKey:@"value.secureTextEntry"];
-	return desc;
-}
-
-
-- (FormFieldDescriptor*)borderedSecureFieldWithTitle:(NSString*)title forProperty:(NSString*)keyPath ofObject:(id)object {
-	FormFieldDescriptor *desc = [self secureFieldWithTitle:title forProperty:keyPath ofObject:object];
-    [desc.options setObject:[NSNumber numberWithInteger:UITextBorderStyleRoundedRect] forKey:@"value.borderStyle"];
 	return desc;
 }
 

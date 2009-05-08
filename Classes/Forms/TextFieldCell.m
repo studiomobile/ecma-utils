@@ -34,6 +34,9 @@
 	self.value.text = [self.fieldDescriptor.value description];
 	self.value.secureTextEntry = [[self.fieldDescriptor.options objectForKey:@"value.secureTextEntry"] boolValue];
     
+    NSNumber *autocapitalizationTypeNumber = [self.fieldDescriptor.options objectForKey:@"value.autocapitalizationType"];
+    self.value.autocapitalizationType = autocapitalizationTypeNumber ? [autocapitalizationTypeNumber integerValue] : UITextAutocapitalizationTypeNone;
+    
     NSNumber *keyboardNumber = [self.fieldDescriptor.options objectForKey:@"value.keyboardType"];
     UIKeyboardType keyboardType = keyboardNumber ? [keyboardNumber integerValue] : UIKeyboardTypeDefault;
     self.value.keyboardType = keyboardType;
