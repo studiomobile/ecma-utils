@@ -206,7 +206,7 @@
 
 
 - (StaticFormCell*)disclosingCellWithDescriptor:(FormFieldDescriptor*)desc {
-	StaticFormCell *cell = (StaticFormCell*)[self formCellWithClass:[StaticFormCell class] reuseIdentifier:@"TextCell" descriptor:desc];; 
+	StaticFormCell *cell = (StaticFormCell*)[self formCellWithClass:[StaticFormCell class] reuseIdentifier:@"DisclosingCell" descriptor:desc];; 
     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
 	return cell;
 }
@@ -281,7 +281,7 @@
 }
 
 
-- (void)didSelectCustomCellAtIndexPath:(NSIndexPath*)indexPath {
+- (void)didSelectCustomCellForDescriptor:(FormFieldDescriptor*)desc atIndexPath:(NSIndexPath*)indexPath {
 }
 
 
@@ -416,7 +416,7 @@
         TextFieldCell *cell = (TextFieldCell*)[self.table cellForRowAtIndexPath:indexPath];
         [cell edit];
 	} else if(desc.type == FORM_FIELD_DESCRIPTOR_CUSTOM) {
-		[self didSelectCustomCellAtIndexPath:indexPath];
+		[self didSelectCustomCellForDescriptor:desc atIndexPath:indexPath];
 	} else if (desc.type == FORM_FIELD_DESCRIPTOR_COLLECTION) {
 		NSString *title = [self selectControllerTitleForDescriptor:desc indexPath:indexPath];
         NSArray *collection = [self collectionForDescriptor:desc atIndexPath:indexPath];

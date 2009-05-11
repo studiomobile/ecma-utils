@@ -56,6 +56,14 @@
 }
 
 
+- (void)afterInsert {
+}
+
+
+- (void)afterUpdate {
+}
+
+
 - (void)afterSave {
 }
 

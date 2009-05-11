@@ -22,6 +22,8 @@
 - (void)beforeSave;
 - (void)beforeInsert;
 - (void)beforeUpdate;
+- (void)afterInsert;
+- (void)afterUpdate;
 - (void)afterSave;
 
 - (void)bindToParam:(NSUInteger)i inStatement:(sqlite3_stmt*)statement;

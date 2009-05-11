@@ -258,6 +258,7 @@ static NSMutableDictionary *databases = nil;
     o.pk = [self executeNumber:@"select last_insert_rowid()"];
     free(args);
  
+    [o afterInsert];
     [o afterSave];
 }
 
@@ -286,6 +287,7 @@ static NSMutableDictionary *databases = nil;
     LOG2(@"Update result: %d", stepResult);
     sqlite3_finalize(stmt);
     free(args);
+    [o afterUpdate];
     [o afterSave];
 }
 
