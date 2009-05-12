@@ -9,6 +9,7 @@
     return [[UILabel alloc] initWithFrame:CGRectZero];
 }
 
+
 - (id)initWithFrame:(CGRect)frame reuseIdentifier:(NSString *)reuseIdentifier {
     if (self = [super initWithFrame:frame reuseIdentifier:reuseIdentifier]) {
 		title = [self createTitleLabel];
@@ -22,17 +23,21 @@
     return self;
 }
 
+
 - (void)onFieldDescriptorUpdate {
     [super onFieldDescriptorUpdate];
     
 	self.title.text = self.fieldDescriptor.title;
 }
 
+
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
 }
 
+
 - (void)layoutControls:(CGRect)controlsRect {
 }
+
 
 - (void)layoutSubviews {
 	[super layoutSubviews];
@@ -41,13 +46,12 @@
 	
 	CGRect titleRect;
 	CGRect controlsRect = bounds;
-//	CGRectDivide(bounds, &titleRect, &controlsRect, self.xMargin, CGRectMinXEdge);
 	CGRectDivide(controlsRect, &titleRect, &controlsRect, titleWidth, CGRectMinXEdge);
 	
 	title.frame = titleRect;
-//    self.contentView.backgroundColor = [UIColor greenColor];
     [self layoutControls:controlsRect];
 }
+
 
 - (void)dealloc {
 	[title release];	
