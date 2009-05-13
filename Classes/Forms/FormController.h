@@ -9,8 +9,10 @@
     UIColor *superviewBackground;
 }
 @property (nonatomic, retain) UITableView *table;
+@property (readonly) BOOL keyboardShown;
 
 - (void)hideKeyboard;
+- (void)changeTableFrame:(CGRect)newFrame;
 - (void)restoreTableFrame:(BOOL)animated;
 - (void)adjustTableRelativeToFrame:(CGRect)frame frameView:(UIView*)view;
 

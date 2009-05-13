@@ -4,6 +4,8 @@
 
 @implementation FormController
 
+@synthesize keyboardShown;
+
 - (id)init {
 	if (self = [super init]) {
 	}
