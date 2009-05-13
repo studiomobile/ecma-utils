@@ -6,7 +6,7 @@
 	NSUInteger count = [self count];
 	for(int n = count - 1; n >= 0; n--)
 	{
-		[self exchangeObjectAtIndex:n withObjectAtIndex:(arc4random() % count)];
+		[self exchangeObjectAtIndex:n withObjectAtIndex:n + (arc4random() % (count - n))];
 	}
 }
 

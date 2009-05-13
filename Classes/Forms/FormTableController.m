@@ -112,6 +112,11 @@
 }
 
 
+- (NSInteger)numberOfButtons {
+	return 0;
+}
+
+
 - (FormFieldDescriptor*)descriptorForField:(NSIndexPath*)indexPath {
 	return nil;
 }
@@ -131,12 +136,12 @@
 }
 
 
-- (NSString*)buttonTitle {
+- (NSString*)buttonTitle:(NSInteger)buttonNumber {
 	return nil;
 }
 
 
-- (IBAction)buttonPressed {
+- (IBAction)buttonPressed:(NSInteger)buttonNumber {
 }
 
 
@@ -151,10 +156,7 @@
 
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-	NSInteger sections = [self numberOfDataSections];
-	
-	if ([self buttonTitle].length > 0 && [self valid]) { sections++; }
-    return sections;
+	return [self numberOfDataSections] + [self numberOfButtons];
 }
 
 
@@ -241,8 +243,13 @@
 }
 
 
+- (NSInteger)buttonNumberByIndexPath:(NSIndexPath*)indexPath {
+    return indexPath.section - [self numberOfDataSections];
+}
+
+
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-	if (indexPath.section == [self numberOfDataSections]) {
+	if (indexPath.section >= [self numberOfDataSections]) {
 		static NSString *CellIdentifier = @"ButtonCell";
 		UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
 		if (cell == nil) {
@@ -250,7 +257,7 @@
 			cell.textAlignment = UITextAlignmentCenter;
 			cell.selectionStyle = UITableViewCellSelectionStyleGray;
 		}
-		cell.text = [self buttonTitle];
+		cell.text = [self buttonTitle:[self buttonNumberByIndexPath:indexPath]];
 		return cell;
 	}
 	
@@ -396,8 +403,8 @@
 
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-	if (indexPath.section == [self numberOfDataSections]) {
-		[self buttonPressed];
+	if (indexPath.section >= [self numberOfDataSections]) {
+		[self buttonPressed:[self buttonNumberByIndexPath:indexPath]];
 		return;
 	}
 	

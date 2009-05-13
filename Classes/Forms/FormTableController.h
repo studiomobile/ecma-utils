@@ -21,8 +21,8 @@
 @property (readonly) FormCell *currentCell;
 
 - (void)enableButton:(BOOL)enable;
-- (NSString*)buttonTitle;
-- (IBAction)buttonPressed;
+- (NSString*)buttonTitle:(NSInteger)buttonNumber;
+- (IBAction)buttonPressed:(NSInteger)buttonNumber;
 - (void)reloadForm;
 - (void)hideDatePicker;
 - (void)hideControls;
