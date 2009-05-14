@@ -29,6 +29,7 @@
 - (id)copyWithZone:(NSZone*)zone {
 	UIBlockingAsyncObject *copy = [super copyWithZone:zone];
 	copy.blockViews = self.blockViews;
+	copy.indicatorDelay = self.indicatorDelay;
 	return copy;
 }
 
