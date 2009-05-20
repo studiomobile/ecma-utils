@@ -1,3 +1,42 @@
+/*
+ 
+ WisdomReader(tm) eBook Software
+ 
+ Version: 1.0
+ 
+ Copyright (c) 2009 Tree of Life Publishing Inc. All Rights Reserved.
+ 
+ Any redistribution, modification, or reproduction of part or all of the
+ software or contents in any form is strictly prohibited without written
+ permission by Tree of Life Publishing, Inc.
+ 
+ Do not make illegal copies of this software.
+ 
+ Contact:
+ Tree of Life Publishing, Inc.
+ 548 Market St. # 60253
+ San Francisco, CA 94104
+ www.WisdomTitles.com
+ 
+ IN NO EVENT SHALL TREE OF LIFE PUBLISHING, INC. BE LIABLE TO ANY PARTY FOR
+ DIRECT, INDIRECT, SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES, INCLUDING
+ LOST PROFITS, ARISING OUT OF THE USE OF THIS SOFTWARE AND ITS DOCUMENTATION,
+ EVEN IF TREE OF LIFE PUBLISHING, INC. HAS BEEN ADVISED OF THE POSSIBILITY OF
+ SUCH DAMAGE.
+ 
+ TREE OF LIFE PUBLISHING, INC. SPECIFICALLY DISCLAIMS ANY WARRANTIES, INCLUDING,
+ BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+ PARTICULAR PURPOSE. THE SOFTWARE AND ACCOMPANYING DOCUMENTATION, IF ANY,
+ PROVIDED HEREUNDER IS PROVIDED "AS IS". TREE OF LIFE PUBLISHING, INC. HAS NO
+ OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, OR
+ MODIFICATIONS.
+ 
+ */
+
+
+
+
+
 #import <AudioToolbox/AudioToolbox.h>
 #import <math.h>
 
@@ -13,6 +52,7 @@
 - (void)notifyPropertyChange:(AudioQueuePropertyID)propertyID;
 - (OSStatus)setupPlayback;
 - (void)notifyIsRinningPropertyChange;
+- (OSStatus)stop:(BOOL)immediately;
 
 @property(readwrite, nonatomic) AudioPlayerState state;
 
@@ -82,7 +122,7 @@ static void propertyListenerCallback (void *inUserData,
 }
 
 
-- (OSStatus)cleanUp {
+- (void)cleanUp {
     self.state = kAudioPlayerStateStopped;
     if(packetDescriptions) {
         free(packetDescriptions);
@@ -92,7 +132,7 @@ static void propertyListenerCallback (void *inUserData,
                                       kAudioQueueProperty_IsRunning,
                                       propertyListenerCallback,
                                       self);
-    return [super cleanUp];
+    [super cleanUp];
 }
 
 
@@ -120,7 +160,7 @@ static void propertyListenerCallback (void *inUserData,
 
 
 - (UInt32)fillAndEnqueueBuffer:(AudioQueueBufferRef)buffer {
-    UInt32 numBytes;
+    UInt32 numBytes = 0;
     UInt32 numPackets = numPacketsToRead;
     OSStatus status;
     status = AudioFileReadPackets (audioFileID,
@@ -129,28 +169,31 @@ static void propertyListenerCallback (void *inUserData,
                                    packetDescriptions,
                                    startingPacketNumber,
                                    &numPackets, 
-                                   buffer->mAudioData);
+                                   buffer->mAudioData);    
+    NSLog(@"AudioPlayer: read %d packets with status %d", numPackets, status);
+    if (status == noErr) {
+        startingPacketNumber += numPackets;
+    }
     if (numPackets > 0) {
         buffer->mAudioDataByteSize = numBytes;
         status = AudioQueueEnqueueBuffer (queue,
                                           buffer,
                                           numPackets,
                                           packetDescriptions);
-        if (status == noErr) {
-            startingPacketNumber += numPackets;
-        }
+
     }
-    if(status != noErr) {
+    if (status != noErr) {
         NSLog(@"Playback failed: %d", status);
     }
     return numPackets;
 }
 
 - (void)playbackCallback:(AudioQueueBufferRef)buffer {
+    NSLog(@"AudioPlayer: buffer received");
     if (!changingFrameOffset) {
         UInt32 packetsRead = [self fillAndEnqueueBuffer:buffer];
         if (packetsRead == 0) {
-            [self stop];
+            [self stop:NO];
         }
     }
 }
@@ -221,7 +264,7 @@ static void propertyListenerCallback (void *inUserData,
     CHECK_STATUS;
 
     int bufferIndex;
-    for (bufferIndex = 0; bufferIndex < kNumberAudioDataBuffers; ++bufferIndex) {
+    for (bufferIndex = 0; bufferIndex < kNumberOfPlayingAudioDataBuffers; ++bufferIndex) {
         AudioQueueBufferRef buffer;
         status = AudioQueueAllocateBuffer (queue,
                                            bufferByteSize,
@@ -240,7 +283,7 @@ static void propertyListenerCallback (void *inUserData,
 
 
 - (UInt32)fillQueueFromFile {
-    for (int i = 0; i < kNumberAudioDataBuffers; ++i) {
+    for (int i = 0; i < kNumberOfPlayingAudioDataBuffers; ++i) {
         if (buffers[i] != NULL) {
             UInt32 packetsRead = [self fillAndEnqueueBuffer:buffers[i]];
             if (packetsRead == 0) {
@@ -248,7 +291,7 @@ static void propertyListenerCallback (void *inUserData,
             }
         }
     }
-    return kNumberAudioDataBuffers;
+    return kNumberOfPlayingAudioDataBuffers;
 }
 
 - (OSStatus)startPlayback {
@@ -278,10 +321,14 @@ static void propertyListenerCallback (void *inUserData,
 
 
 - (OSStatus)stop {
+    return [self stop:YES];
+}
+
+- (OSStatus)stop:(BOOL)immediately {
     OSStatus status = noErr;
     startingPacketNumber = 0;
     playbackStartPacket = 0;
-    status = AudioQueueStop(queue, TRUE);
+    status = AudioQueueStop(queue, immediately);
     if(status == noErr) {
         self.state = kAudioPlayerStateStopped;
     }

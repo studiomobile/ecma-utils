@@ -1,11 +1,55 @@
+/*
+ 
+ WisdomReader(tm) eBook Software
+ 
+ Version: 1.0
+ 
+ Copyright (c) 2009 Tree of Life Publishing Inc. All Rights Reserved.
+ 
+ Any redistribution, modification, or reproduction of part or all of the
+ software or contents in any form is strictly prohibited without written
+ permission by Tree of Life Publishing, Inc.
+ 
+ Do not make illegal copies of this software.
+ 
+ Contact:
+ Tree of Life Publishing, Inc.
+ 548 Market St. # 60253
+ San Francisco, CA 94104
+ www.WisdomTitles.com
+ 
+ IN NO EVENT SHALL TREE OF LIFE PUBLISHING, INC. BE LIABLE TO ANY PARTY FOR
+ DIRECT, INDIRECT, SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES, INCLUDING
+ LOST PROFITS, ARISING OUT OF THE USE OF THIS SOFTWARE AND ITS DOCUMENTATION,
+ EVEN IF TREE OF LIFE PUBLISHING, INC. HAS BEEN ADVISED OF THE POSSIBILITY OF
+ SUCH DAMAGE.
+ 
+ TREE OF LIFE PUBLISHING, INC. SPECIFICALLY DISCLAIMS ANY WARRANTIES, INCLUDING,
+ BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+ PARTICULAR PURPOSE. THE SOFTWARE AND ACCOMPANYING DOCUMENTATION, IF ANY,
+ PROVIDED HEREUNDER IS PROVIDED "AS IS". TREE OF LIFE PUBLISHING, INC. HAS NO
+ OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, OR
+ MODIFICATIONS.
+ 
+ */
+
+
+
+
+
 #include <AudioToolbox/AudioToolbox.h>
 #import "AudioRecorder.h"
 #import "AudioSession.h"
+
+#define kAudioConverterPropertyMaximumOutputPacketSize        'xops'
 
 @interface AudioRecorder ()
 
 - (void)recordBuffer:(AudioQueueBufferRef)inBuffer withPackets:(const AudioStreamPacketDescription *)inPacketDescr :(UInt32)inNumPackets;
 - (void)notifyPropertyChange:(AudioQueuePropertyID)propertyID;
+- (void)notifyRecordingStarted;
+- (void)notifyRecordingPaused;
+- (void)closeFileAndNotifyDelegate;
 - (OSStatus)setupRecording;
 
 @end
@@ -35,34 +79,67 @@ static void propertyListenerCallback (void *inUserData,
 @synthesize state;
 
 - (void)notifyPropertyChange:(AudioQueuePropertyID)propertyID {
+    NSLog(@"Is running: %d", self.isRunning);
     if(propertyID == kAudioQueueProperty_IsRunning) {
-        if(!self.isRunning) {
-            if([delegate respondsToSelector:@selector(recordingFinished:)]) {
-                [delegate recordingFinished:self];
+        if (!self.isRunning) {
+            if (state == kAudioRecorderStateStopping) {
+                [self closeFileAndNotifyDelegate];
+                [self autorelease];
+                [delegate autorelease];
+            } else {
+                [self notifyRecordingPaused];
             }
         } else {
-            if([delegate respondsToSelector:@selector(recordingStarted:)]) {
-                [delegate recordingStarted:self];
-            }
+            [self notifyRecordingStarted];
         }
-    }
-	
+    }	
 }
 
+
+- (void)notifyRecordingStarted {
+    if([delegate respondsToSelector:@selector(recordingStarted:)]) {
+        [delegate recordingStarted:self];
+    }
+}
+
+
+- (void)notifyRecordingPaused {
+    if([delegate respondsToSelector:@selector(recordingStopped:)]) {
+        [delegate recordingStopped:self];
+    }
+}
+
+
+- (void)closeFileAndNotifyDelegate {
+    [self writeMagicCookie];
+    AudioFileClose(audioFileID);
+    NSLog(@"AudioRecorder: audio file closed");
+    audioFileID = 0;
+    state = kAudioRecorderStateStopped;
+    if ([delegate respondsToSelector:@selector(recordingFinished:)]) {
+        [delegate recordingFinished:self];
+    }
+}
+
+
 - (void)recordBuffer:(AudioQueueBufferRef)inBuffer withPackets:(const AudioStreamPacketDescription*)inPacketDesc :(UInt32)inNumPackets {
+    NSLog(@"AudioRecorder: buffer received");
     if (inNumPackets > 0) {
-        AudioFileWritePackets (audioFileID,
-                               FALSE,
-                               inBuffer->mAudioDataByteSize,
-                               inPacketDesc,
-                               startingPacketNumber,
-                               &inNumPackets,
-                               inBuffer->mAudioData);
-        startingPacketNumber += inNumPackets;		
+        OSStatus status = AudioFileWritePackets (audioFileID,
+                                                 FALSE,
+                                                 inBuffer->mAudioDataByteSize,
+                                                 inPacketDesc,
+                                                 startingPacketNumber,
+                                                 &inNumPackets,
+                                                 inBuffer->mAudioData);
+        if (status != noErr) {
+            NSLog(@"AudioRecorder error: %d", status);
+        } else {
+            startingPacketNumber += inNumPackets;
+            NSLog(@"AudioRecorder: buffer written");
+        }
     }
-    if (self.isRunning) {
-        AudioQueueEnqueueBuffer (queue, inBuffer, 0, NULL);
-    }
+    AudioQueueEnqueueBuffer (queue, inBuffer, 0, NULL);
 }
 
 
@@ -72,7 +149,6 @@ static void propertyListenerCallback (void *inUserData,
         delegate = nil;
         OSStatus status = [self setupRecording];
         if(status != noErr) {
-            NSLog(@"Failed to create recorder: %d", status);
             [self autorelease];
             self = nil;
         }
@@ -82,47 +158,83 @@ static void propertyListenerCallback (void *inUserData,
     return self;
 }
 
+
 - (void)dealloc {
+    NSLog(@"AudioRecorder: dealloc");
     NSNotificationCenter *c = [NSNotificationCenter defaultCenter];
     [c removeObserver:self];
-    [self stop];
     [super dealloc];
 }
 
+
+#define RETURN_IF_CLOSED if(state == kAudioRecorderStateStopped || state == kAudioRecorderStateStopping) return noErr
 - (OSStatus)record {
+    RETURN_IF_CLOSED;
+    NSLog(@"AudioRecorder: record");
     OSStatus status = noErr;
-    if (state == kAudioRecorderStateStopped) {
-        for (int i = 0; i < kNumberAudioDataBuffers; ++i) {
-            AudioQueueEnqueueBuffer(queue, buffers[i], 0, NULL);
+    if (state == kAudioRecorderStateNotStarted) {
+        for (int i = 0; i < kNumberOfRecordingAudioDataBuffers; ++i) {
+            status = AudioQueueEnqueueBuffer(queue, buffers[i], 0, NULL);
+            if (status != noErr) {
+                NSLog(@"Debug: AudioQueueEnqueueBuffer failed with status %d", status);
+            }
         }
-        status = AudioQueueStart (queue, NULL);
-        if (status == noErr) {
-            state = kAudioRecorderStateRecording;
-        }
+    }
+    status = AudioQueueStart (queue, NULL);
+    if (status == noErr) {
+        state = kAudioRecorderStateRecording;
+    } else {
+        NSLog(@"AudioRecorder error: %d", status);
+    }
+    return status;
+}
+
+
+- (OSStatus)pause {
+    RETURN_IF_CLOSED;
+    OSStatus status;
+    NSLog(@"AudioRecorder: pause");
+    AudioQueueFlush(queue);
+    status = AudioQueuePause(queue);
+    if (status == noErr) {
+        state = kAudioRecorderStatePaused;
+    } else {
+        NSLog(@"AudioRecorder error: %d", status);
     }
     return status;
 }
 
 
 - (OSStatus)stop {
-    OSStatus status = AudioQueueStop(queue, YES);
-    if (status == noErr) {
-        state = kAudioRecorderStateStopped;
+    RETURN_IF_CLOSED;
+    OSStatus status = noErr;
+    if (audioFileID) {
+        NSLog(@"AudioRecorder: close");
+        if (state == kAudioRecorderStatePaused) {
+            [self closeFileAndNotifyDelegate];
+        } else {
+            state = kAudioRecorderStateStopping;
+            [self retain];
+            [delegate retain];
+            AudioQueueStop(queue, NO);
+        }
     }
     return status;
 }
 
+
 #undef CHECK_STATUS
 #define CHECK_STATUS if (status != noErr) { NSLog(@"__FILE__ __LINE__, error: %d", status); return status; }
 - (OSStatus) setupRecording {
+    state = kAudioRecorderStateNotStarted;
     OSStatus status = noErr;
     startingPacketNumber = 0;
-	
+
     status = AudioQueueNewInput (&audioFormat,
                                  recordingCallback,
                                  self,
-                                 NULL,
-                                 NULL,
+                                 CFRunLoopGetCurrent(),
+                                 kCFRunLoopCommonModes,
                                  0,
                                  &queue);
     CHECK_STATUS;
@@ -150,32 +262,21 @@ static void propertyListenerCallback (void *inUserData,
         NSLog(@"__FILE__ __LINE__ writeMagicCookie: %d", magicCookieStatus);
     }
 
-    int bufferByteSize = 65536;
+    UInt32 bufferByteSize = 4*1024;
     int bufferIndex;
-    for (bufferIndex = 0; bufferIndex < kNumberAudioDataBuffers; ++bufferIndex) {
+    for (bufferIndex = 0; bufferIndex < kNumberOfRecordingAudioDataBuffers; ++bufferIndex) {
         AudioQueueBufferRef buffer;
         OSStatus s = AudioQueueAllocateBuffer(queue, bufferByteSize, &buffer);
         if (s == noErr) {
             buffers[bufferIndex] = buffer;
         }
     }
-    state = kAudioRecorderStateStopped;
     return noErr;
 }
 
 
-- (void)close {
-    if (audioFileID) {
-        AudioQueueFlush(queue);
-        [self stop];
-        [self writeMagicCookie];
-        AudioFileClose(audioFileID);
-        audioFileID = 0;
-    }
-}
-
 - (void)cleanUp {
-    [self close];
+    [self stop];
     AudioQueueRemovePropertyListener(queue,
                                      kAudioQueueProperty_IsRunning,
                                      propertyListenerCallback,
@@ -183,6 +284,7 @@ static void propertyListenerCallback (void *inUserData,
     [super cleanUp];
 
 }
+
 
 - (BOOL)isRunning {
     return kAudioRecorderStateRecording == state;
