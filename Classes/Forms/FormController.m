@@ -2,6 +2,30 @@
 #import "NSObject+Utils.h"
 #import "UIApplication+Utils.h"
 
+@interface FormController (Private)
+
+@property (retain) UITextField *focusedTextField;
+
+@end
+
+@implementation FormController (Private)
+
+- (UITextField*)focusedTextField {
+    return focusedTextField;
+}
+
+
+- (void)setFocusedTextField:(UITextField*)fTF {
+    if(fTF != focusedTextField) {
+        [focusedTextField release];
+        focusedTextField = [fTF retain];
+    }
+}
+
+
+@end
+
+
 @implementation FormController
 
 @synthesize keyboardShown;
@@ -12,15 +36,25 @@
 	return self;
 }
 
+
 - (id)initWithNibName:(NSString *)nibName bundle:(NSBundle *)nibBundle {
 	if(self = [super initWithNibName:nibName bundle:nibBundle]) {
 	}
 	return self;
 }
 
+
+- (void)dealloc {
+    [focusedTextField release];
+    
+    [super dealloc];
+}
+
+
 - (void)awakeFromNib {
 	[super awakeFromNib];
 }
+
 
 - (void)viewWillAppear:(BOOL)animated {
 	[super viewWillAppear:animated];
@@ -35,6 +69,7 @@
 	[notifications addObserver:self selector:@selector(editingFinished:) name:UITextFieldTextDidEndEditingNotification object:nil];	
 }
 
+
 - (void)viewWillDisappear:(BOOL)animated {
 	[super viewWillDisappear:animated];
 
@@ -46,6 +81,7 @@
 	[notifications removeObserver:self name:UITextFieldTextDidBeginEditingNotification object:nil];
 	[notifications removeObserver:self name:UITextFieldTextDidEndEditingNotification object:nil];
 }
+
 
 - (void)changeTableFrame:(CGRect)newFrame {
 	if(tableViewResized) {
@@ -61,6 +97,7 @@
 	[UIView commitAnimations];
 }
 
+
 - (void)adjustTableRelativeToFrame:(CGRect)frame frameView:(UIView*)view {
 	CGRect tableFrameInView = [self.table convertRect:self.table.bounds toView:view];
 	CGRect intersection = CGRectIntersection(frame, tableFrameInView);
@@ -73,12 +110,14 @@
 	}
 }
 
+
 - (void)restoreTableFrame:(BOOL)animated {
 	if(tableViewResized) {
 		tableViewResized = NO;        
 		self.table.frame = oldTblViewFrame;        
 	}
 }
+
 
 - (void)kbdWillShow:(NSNotification*)notification {
 	if(tableViewResized) { //if you want to understand why this if statement see comments in kbdWillHide
@@ -107,11 +146,13 @@
     return;
 }
 
+
 - (void)kbdDidShow {
 	keyboardShown = TRUE;
     //superviewBackground = [self.table.superview.backgroundColor retain];
     //self.table.superview.backgroundColor = self.table.backgroundColor;
 }
+
 
 - (void)kbdWillHide:(NSNotification*)notification {
 	//Do not use this method to resize tableView.
@@ -123,33 +164,38 @@
 	//(averbin)
 }
 
+
 - (void)kbdDidHide {
 	keyboardShown = FALSE;
 }
 
+
 - (void)textFieldSelected {
 }
 
+
 - (void)editingStarted:(NSNotification*)notification {
-	focusedTextField = (UITextField*)[notification object];
+	self.focusedTextField = (UITextField*)[notification object];
     [self scrollToFocusedTextField:YES];
 
     [self textFieldSelected];
 }
 
+
 - (void)editingFinished:(NSNotification*)notification {
     [self hideKeyboard];
-	focusedTextField = nil;
 }
+
 
 - (void)scrollToField:(NSIndexPath*)indexPath animated:(BOOL)animated {
     [self.table scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionMiddle animated:YES];		
 }
 
+
 - (NSIndexPath*)indexPathOfSelectedTextField {
-    if(!focusedTextField) return nil;
+    if(!self.focusedTextField) return nil;
     
-    UIView *cell = focusedTextField;
+    UIView *cell = self.focusedTextField;
     do {
         cell = cell.superview;
     } while(![cell isKindOfClass:[UITableViewCell class]] && cell != nil);
@@ -157,35 +203,41 @@
     return [self.table indexPathForCell:(UITableViewCell*)cell];
 }
 
+
 - (void)scrollToFocusedTextField:(BOOL)animated  {
-	if(focusedTextField) {
+	if(self.focusedTextField) {
 		[self scrollToField:[self indexPathOfSelectedTextField] animated:animated];		
 	}
 }
 
+
 - (void)hideKeyboard {
-	if(keyboardShown && focusedTextField) {
+	if(keyboardShown && self.focusedTextField) {
         [self restoreTableFrame:YES];
-		[focusedTextField resignFirstResponder];
+		[self.focusedTextField performSelectorOnMainThread:@selector(resignFirstResponder) 
+                                                withObject:nil 
+                                             waitUntilDone:NO];
+        
+        self.focusedTextField = nil;
 	}
 }
 
+
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
-	if([self validateTextInput:textField]) {
-		[self hideKeyboard];
-		return YES;
-	}
-	return NO;
+	return [self validateTextInput:textField];
 }
+
 
 - (BOOL)validateTextInput:(UITextField*)textField {
 	return YES;
 }
 
+
 - (UITableView*)table {
 	[NSException raise:@"InvalidStateException" format:@"!!!!Override table method!!!!"];
     return nil;
 }
+
 
 - (void)setTable:(UITableView*)tv {
 }
