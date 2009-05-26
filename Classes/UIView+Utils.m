@@ -17,7 +17,7 @@
 }
 
 -(NSString*) hierarchyString{
-	return [[[self addHierarchyTo: [NSMutableString string] prefix: @""] copy]autorelease];
+	return [[[self addHierarchyTo: [NSMutableString string] prefix: @""] copy] autorelease];
 }
 
 @end

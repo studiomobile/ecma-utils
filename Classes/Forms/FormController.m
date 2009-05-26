@@ -214,11 +214,11 @@
 - (void)hideKeyboard {
 	if(keyboardShown && self.focusedTextField) {
         [self restoreTableFrame:YES];
-		[self.focusedTextField performSelectorOnMainThread:@selector(resignFirstResponder) 
-                                                withObject:nil 
-                                             waitUntilDone:NO];
-        
+
+        UITextField *field = [self.focusedTextField retain];
         self.focusedTextField = nil;
+		[field resignFirstResponder];
+        [field release];
 	}
 }
 

@@ -39,3 +39,10 @@ CGRect CGRectCenterToPoint(CGRect original, CGPoint newCenter){
 CGRect CGRectCenterToRect(CGRect original, CGRect otherRect){
 	return CGRectCenterToPoint(original, CGRectCenter(otherRect));	 
 }
+
+
+CGFloat CGPointDistanceToPoint(CGPoint point1, CGPoint point2) {
+    CGFloat xDiff = point1.x - point2.x;
+    CGFloat yDiff = point1.y - point2.y;
+    return sqrt(xDiff*xDiff + yDiff*yDiff);
+}
