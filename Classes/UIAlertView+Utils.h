@@ -2,7 +2,8 @@
 
 @interface UIAlertView (Utils)
 
-+(void)showAlertViewWithMessage: (NSString*)message;
-+(void)showAlertViewWithTitle: (NSString*)title message: (NSString*)message;
++ (void)showAlertViewWithMessage:(NSString*)message;
++ (void)showAlertViewWithTitle:(NSString*)title message:(NSString*)message;
++ (void)showAlertViewWithTitle:(NSString*)title;
 
 @end
