@@ -16,8 +16,6 @@
         title.font = [UIFont boldSystemFontOfSize:16];
         title.backgroundColor = [UIColor clearColor];
 		[self.contentView addSubview:title];
-        
-        titleWidth = 100;
     }
     
     return self;
@@ -27,7 +25,19 @@
 - (void)onFieldDescriptorUpdate {
     [super onFieldDescriptorUpdate];
     
+    NSNumber *titleWidthNumber = [self.fieldDescriptor.options objectForKey:@"title.width"];
+    titleWidth = titleWidthNumber ? [titleWidthNumber floatValue] : 100.0;
+    
+    UIColor *titleColor = [self.fieldDescriptor.options objectForKey:@"title.textColor"];
+    self.title.textColor = titleColor ? titleColor : [UIColor blackColor];
+    
 	self.title.text = self.fieldDescriptor.title;
+
+    NSNumber *titleFloatingWidthNumber = [self.fieldDescriptor.options objectForKey:@"title.floatingWidth"];
+    if(titleFloatingWidthNumber && [titleFloatingWidthNumber boolValue]) {
+        CGSize titleSize = [self.title.text sizeWithFont:self.title.font constrainedToSize:self.contentView.bounds.size];
+        titleWidth = titleSize.width + 5;
+    }
 }
 
 

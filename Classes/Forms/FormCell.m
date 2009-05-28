@@ -6,6 +6,7 @@
 	return fieldDescriptor;
 }
 
+
 - (id)initWithFrame:(CGRect)frame reuseIdentifier:(NSString *)reuseIdentifier {
     if(self = [super initWithFrame:frame reuseIdentifier:reuseIdentifier]) {
         restoreData = [[NSMutableDictionary alloc] init];
@@ -14,21 +15,14 @@
     return self;
 }
 
+
 - (void)onFieldDescriptorUpdate {
-//    for(NSString *key in restoreData) {
-//        NSObject *value = [restoreData valueForKey:key];
-//        NSLog(@"restoring '%@' to '%@'", key, value);
-//        [self setValue:value forKeyPath:key];
-//    }
-//    
-//    [restoreData removeAllObjects];
-//    
-//    NSMutableDictionary *options = fieldDescriptor.options;
-//    for(NSString *key in [options allKeys]) {
-//        [restoreData setValue:[self valueForKeyPath:key] forKey:key];
-//        [self setValue:[options valueForKey:key] forKeyPath:key];
-//    }
+    NSNumber *accessoryTypeNumber = [self.fieldDescriptor.options objectForKey:@"accessoryType"];
+    self.accessoryType = accessoryTypeNumber ? [accessoryTypeNumber integerValue] : UITableViewCellAccessoryNone;
+
+    self.accessoryView = [self.fieldDescriptor.options objectForKey:@"accessoryView"];
 }
+
 
 - (void)setFieldDescriptor:(FormFieldDescriptor*)desc {
 	if(desc != self.fieldDescriptor) {
@@ -38,6 +32,7 @@
 
 	[self onFieldDescriptorUpdate];
 }
+
 
 - (void)dealloc {
     [restoreData release];
