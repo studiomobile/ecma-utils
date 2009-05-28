@@ -3,7 +3,7 @@
 @implementation UIAlertView (Utils)
 
 +(UIAlertView*)createAlertViewWithTitle: (NSString*)title message: (NSString*)message{
-	UIAlertView* alert = [[UIAlertView alloc]initWithTitle:title message:message delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+	UIAlertView* alert = [[UIAlertView alloc]initWithTitle:title message:message delegate:nil cancelButtonTitle:@"Dismiss" otherButtonTitles:nil];
 	return alert;
 }
 

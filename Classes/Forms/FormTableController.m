@@ -402,6 +402,11 @@
 }
 
 
+- (void)pushViewController:(UIViewController*)controller {
+    [self.navigationController pushViewController:controller animated:[self pushControllersAnimated]];    
+}
+
+
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 	if (indexPath.section >= [self numberOfDataSections]) {
 		[self buttonPressed:[self buttonNumberByIndexPath:indexPath]];
@@ -428,16 +433,16 @@
 		NSString *title = [self selectControllerTitleForDescriptor:desc indexPath:indexPath];
         NSArray *collection = [self collectionForDescriptor:desc atIndexPath:indexPath];
 		UIViewController *selection = [self selectionControllerForIndexPath:indexPath title:title descriptor:(FormFieldDescriptor*)desc collection:collection];
-		[self.navigationController pushViewController:selection animated:[self pushControllersAnimated]];
+		[self pushViewController:selection];
 	} else if(desc.type == FORM_FIELD_DESCRIPTOR_TEXT_AREA) {
 		NSString *title = [self textEditControllerTitleForDescriptor:desc indexPath:indexPath];
 		UIViewController *textEdit = [self textEditControllerForIndexPath:indexPath title:title descriptor:desc];
-		[self.navigationController pushViewController:textEdit animated:[self pushControllersAnimated]];
+		[self pushViewController:textEdit];
 	} else if(desc.type == FORM_FIELD_DESCRIPTOR_AGREEMENT) {
 		NSString *title = [self agreementControllerTitleForDescriptor:desc indexPath:indexPath];
         id data = [self agreementDataForDescriptor:desc atIndexPath:indexPath];
 		UIViewController *agreementController = [self agreementControllerForIndexPath:indexPath title:title descriptor:(FormFieldDescriptor*)desc data:data];
-		[self.navigationController pushViewController:agreementController animated:[self pushControllersAnimated]];
+		[self pushViewController:agreementController];
 	} else if(desc.type == FORM_FIELD_DESCRIPTOR_DATETIME) {
         [self showDatePickerForDescriptor:desc];
 	}
