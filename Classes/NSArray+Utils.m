@@ -37,6 +37,21 @@
 
 @end
 
+@implementation NSArray (Utils)
+
+-(id)detect: (FNFilter)fnFitler{
+	for (id each in self){
+		if(fnFitler(each)){
+			return each;
+		}
+	}
+			
+	return nil;
+}
+
+@end
+
+
 
 
 

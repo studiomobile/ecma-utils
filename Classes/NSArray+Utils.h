@@ -9,6 +9,16 @@
 
 - (NSArray*)filterUsingSelector:(SEL)selector target:(id)target;
 
+
 @end
+
+
+@interface NSArray (Utils)
+
+typedef BOOL (*FNFilter)(id);
+-(id)detect: (FNFilter)fnFitler;
+
+@end
+
 
 
