@@ -1,5 +1,5 @@
 #import "AgreementController.h"
-#import "NSString+Utils.h"
+#import "NSString+Web.h"
 
 @implementation AgreementController
 
