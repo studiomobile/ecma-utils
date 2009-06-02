@@ -1,3 +1,5 @@
+#import <Foundation/Foundation.h>
+
 @interface NSDate(Utils) 
 
 - (BOOL)isAfter:(NSDate*)other;

@@ -1,3 +1,5 @@
+#import "NSDate+Utils.h"
+
 @implementation NSDate(Utils)
 
 - (BOOL)isAfter:(NSDate*)other {
