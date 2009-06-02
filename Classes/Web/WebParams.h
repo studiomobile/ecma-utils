@@ -1,3 +1,5 @@
+#import <Foundation/Foundation.h>
+
 @interface WebParams : NSObject {
 	NSMutableDictionary *params;
 	BOOL multipart;

@@ -12,13 +12,6 @@
 - (BOOL)caseInsensitiveEndsWith:(NSString*)suffix;
 - (BOOL)endsWith:(NSString*)suffix;
 
-- (NSURL*)toUrl;
-- (NSURL*)toFileUrl;
-- (NSString*)urlEncode:(NSString*)additionalCharacters;
-- (NSString*)urlEncode;
-- (NSString*)urlDecode;
-- (NSString*)urlDecode:(NSString*)additionalCharacters;
-
-+ (NSString *)formattedInt:(int)value;
++ (NSString*)formattedInt:(int)value;
 
 @end

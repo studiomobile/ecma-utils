@@ -1,4 +1,6 @@
+#import <UIKit/UIKit.h>
 #import "WebParams.h"
+#import "NSString+Web.h"
 
 @implementation WebParams
 
@@ -37,9 +39,9 @@
 		NSObject *value = [params objectForKey:key];
 		if ([value isKindOfClass:[NSData class]]) continue;
 		[queryString appendString:@"&"];
-		[queryString appendString:[[key description] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+		[queryString appendString:[[key description] urlEncode:@"&="]];
 		[queryString appendString:@"="];
-		[queryString appendString:[[value description] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+		[queryString appendString:[[value description] urlEncode:@"&="]];
 	}
 	[queryString replaceCharactersInRange:NSMakeRange(0, 1) withString:@"?"];
 	return [queryString description];

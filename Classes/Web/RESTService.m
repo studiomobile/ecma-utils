@@ -1,7 +1,7 @@
 #import "RESTService.h"
 #import "POXMapping.h"
 #import "NSObject+Utils.h"
-#import "NSString+Utils.h"
+#import "NSString+Web.h"
 
 const NSString *WebServiceErrorKey = @"__WebServiceError__";
 const NSString *RequestStatusCode = @"__RequestStatusCode__";
@@ -9,21 +9,20 @@ const NSString *RequestStatusCode = @"__RequestStatusCode__";
 @implementation RESTService
 
 @synthesize baseUrl;
-@synthesize additionalUrlEncodechars;
 
 - (id)initWithBaseUrl:(NSString*)url mapper:(id<RESTServiceDataMapper>)m {
 	checkNotNil(url, @"nil url");
-
-	if (self = [super init]) {
-		baseUrl = [url retain];
-        mapper = [m retain];
-	}
+    if (![super init]) return nil;
+    baseUrl = [url retain];
+    mapper = [m retain];
 	return self;
 }
+
 
 - (id)initWithBaseUrl:(NSString*)url {
     return [self initWithBaseUrl:url mapper:nil];
 }
+
 
 - (void)dealloc {
     [mapper release];
@@ -31,35 +30,24 @@ const NSString *RequestStatusCode = @"__RequestStatusCode__";
 	[super dealloc];
 }
 
-- (NSMutableURLRequest*)queryString:(NSString*)localPath :(NSDictionary*)params {
-	NSMutableString *queryString = [NSMutableString stringWithCapacity:100];
-	[queryString appendString:baseUrl];
-	[queryString appendString:localPath];
-	BOOL first = YES;
-	for(NSString *key in params) {
-		if(first) {
-			[queryString appendString:@"?"];
-		} else {
-			[queryString appendString:@"&"];
-		}
-        if(self.additionalUrlEncodechars) {
-            [queryString appendString:[key urlEncode:self.additionalUrlEncodechars]];
-            [queryString appendString:@"="];
-            [queryString appendString:[[params objectForKey:key] urlEncode:self.additionalUrlEncodechars]];
-        } else {
-            [queryString appendString:[key urlEncode]];
-            [queryString appendString:@"="];
-            [queryString appendString:[[params objectForKey:key] urlEncode]];
-        }
-		first = NO;
-	}
-	return [NSMutableURLRequest requestWithURL:[NSURL URLWithString:queryString]];
+
+- (NSMutableURLRequest*)requestForPath:(NSString*)localPath withParams:(WebParams*)params {
+    NSString *queryString = params.queryString;
+	NSMutableString *url = [NSMutableString stringWithCapacity:baseUrl.length + localPath.length + queryString.length];
+	[url appendString:baseUrl];
+	[url appendString:localPath];
+    if (queryString) {
+        [url appendString:queryString];
+    }
+	return [NSMutableURLRequest requestWithURL:[NSURL URLWithString:url]];
 }
+
 
 - (id)mapData:(NSData*)data error:(NSError**)error{
     if(!mapper) return data;
     return [mapper map:data];
 }
+
 
 - (id)request:(NSURLRequest*)request error:(NSError**)error {
 	NSHTTPURLResponse *response = nil;
@@ -97,18 +85,20 @@ const NSString *RequestStatusCode = @"__RequestStatusCode__";
 	return nil;
 }
 
-- (id)get:(NSString*)localPath withParams:(NSDictionary*)params error:(NSError**)error{
+
+- (id)get:(NSString*)localPath withParams:(WebParams*)params error:(NSError**)error{
 	checkNotNil(localPath, @"localPath cannot be nil");
 	
-	NSMutableURLRequest *request = [self queryString:localPath :params];
+	NSMutableURLRequest *request = [self requestForPath:localPath withParams:params];
 	[request setHTTPMethod:@"GET"];
 	return [self request:request error:error];
 }
 
+
 - (id)post:(NSData*)data to:(NSString*)localPath headers:(NSDictionary*)headers error:(NSError**)error {
     checkNotNil(localPath, @"localPath cannot be nil");
     checkNotNil(data, @"data cannot be nil");
-    NSMutableURLRequest *request = [self queryString:localPath :nil];
+    NSMutableURLRequest *request = [self requestForPath:localPath withParams:nil];
     for (NSString *header in headers) {
         NSString *val = [headers objectForKey:header];
         [request addValue:val forHTTPHeaderField:header];
@@ -119,6 +109,7 @@ const NSString *RequestStatusCode = @"__RequestStatusCode__";
 
     return [self request:request error:error];    
 }
+
 
 - (id)post:(NSData*)data to:(NSString*)localPath error:(NSError**)error {
     NSDictionary *headers = [NSDictionary dictionaryWithObjectsAndKeys:@"text/xml", @"Content-Type", nil];
