@@ -4,12 +4,7 @@
 #define DECODEOBJECT(obj) obj = [[decoder decodeObjectForKey:@#obj] retain]
 #define DECODEOBJECTWITHCODER(obj, decoder) obj = [[decoder decodeObjectForKey:@#obj] retain]
 
-#define DECODEMUTABLEARRAYWITHDECODER(obj, deocder)   \
-do {                                                  \
-  NSArray *tmp =  [decoder decodeObjectForKey:@#obj]; \
-  obj = [[NSMutableArray alloc] initWithArray:tmp];   \
-} while(FALSE);                                       \
- 
+#define DECODEMUTABLEARRAYWITHDECODER(obj, decoder) obj = [[NSMutableArray alloc] initWithArray:[decoder decodeObjectForKey:@#obj]]
 #define DECODEMUTABLEARRAY(obj) DECODEMUTABLEARRAYWITHDECODER(obj, decoder)
 
 #define ENCODEINT(i) [coder encodeInt:i forKey:@#i]
