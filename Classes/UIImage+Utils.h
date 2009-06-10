@@ -5,5 +5,6 @@
 + (UIImage*) imageFromURL: (NSString*) urlString;
 - (UIImage*)scaleToSize:(CGSize)size;
 - (UIImage*)fitToSize:(CGSize)size;
+- (UIImage*)cropToRect:(CGRect)rect;
 
 @end
