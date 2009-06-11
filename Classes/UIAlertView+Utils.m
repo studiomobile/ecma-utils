@@ -6,7 +6,7 @@
 	return [[UIAlertView alloc] initWithTitle:title 
                                       message:message 
                                      delegate:nil 
-                            cancelButtonTitle:@"Dismiss" 
+                            cancelButtonTitle:@"OK" 
                             otherButtonTitles:nil];
 }
 

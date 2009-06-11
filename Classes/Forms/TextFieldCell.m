@@ -2,7 +2,6 @@
 
 @implementation TextFieldCell
 
-@synthesize title;
 @synthesize value;
 
 - (UILabel*)createTitleLabel {

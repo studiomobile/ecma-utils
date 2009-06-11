@@ -1,5 +1,4 @@
 #import "RESTService.h"
-#import "POXMapping.h"
 #import "NSObject+Utils.h"
 #import "NSString+Web.h"
 

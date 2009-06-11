@@ -3,7 +3,6 @@
 
 @implementation StaticFormCell
 
-@synthesize title;
 @synthesize value;
 
 - (id)initWithFrame:(CGRect)frame reuseIdentifier:(NSString *)reuseIdentifier {
