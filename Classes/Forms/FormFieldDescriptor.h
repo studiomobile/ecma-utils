@@ -1,5 +1,18 @@
 #import <UIKit/UIKit.h>
 
+/*	used options:
+		
+		collection
+		collectionInvocation
+		customInvocation
+		
+		formatter.dateFormat
+		datePicker.datePickerMode
+		value.secureTextEntry
+		value.keyboardType
+		value.secureTextEntry
+*/
+
 typedef enum FormFieldDescriptorType {
     FORM_FIELD_DESCRIPTOR_TEXT_FIELD,
     FORM_FIELD_DESCRIPTOR_TEXT_AREA,
@@ -14,7 +27,7 @@ typedef enum FormFieldDescriptorType {
     FormFieldDescriptorType type;
 
     NSMutableDictionary *options;
-    
+   
 	NSString *title;
 	id dataSource;
 	NSString *keyPath;
@@ -27,4 +40,5 @@ typedef enum FormFieldDescriptorType {
 @property (readwrite, assign) id value;
 
 @property (readonly) NSMutableDictionary *options;
+
 @end

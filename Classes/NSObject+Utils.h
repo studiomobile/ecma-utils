@@ -19,5 +19,11 @@ void checkArgument(BOOL result, NSString *message);
 
 @end
 
+@interface NSObject (Invocation)
+
++ (NSInvocation*)invocationForClassMethod:(SEL)selector;
+- (NSInvocation*)invocationForMethod:(SEL)selector;
+
+@end
 
 typedef NSObject DebugCheck;

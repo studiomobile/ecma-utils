@@ -311,7 +311,7 @@
     SelectionController *selection = [[[SelectionController alloc] initWithTitle:title] autorelease];
     selection.dataSource = desc.dataSource;
     selection.keyPath = desc.keyPath;
-    selection.collection = collection;
+    selection.collection = collection;	
     return selection;
 }
 
@@ -407,6 +407,21 @@
 }
 
 
+- (NSArray*)getCollectionForDescriptor:(FormFieldDescriptor *)desc atIndexPath:(NSIndexPath *)indexPath{
+	NSArray *collection = [desc.options valueForKey:@"collection"];
+	if(collection) return collection;
+	
+	NSInvocation *invocation = [desc.options valueForKey:@"collectionInvocation"];
+	if(invocation){
+		[invocation invoke];
+		[invocation getReturnValue:&collection];
+		if(collection) return collection;
+	}
+		
+	return [self collectionForDescriptor:desc atIndexPath:indexPath];
+}
+
+
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 	if (indexPath.section >= [self numberOfDataSections]) {
 		[self buttonPressed:[self buttonNumberByIndexPath:indexPath]];
@@ -428,10 +443,12 @@
         TextFieldCell *cell = (TextFieldCell*)[self.table cellForRowAtIndexPath:indexPath];
         [cell edit];
 	} else if(desc.type == FORM_FIELD_DESCRIPTOR_CUSTOM) {
-		[self didSelectCustomCellForDescriptor:desc atIndexPath:indexPath];
+		NSInvocation *invocation = [desc.options valueForKey:@"customInvocation"];
+		if(invocation) [invocation invoke];
+		else [self didSelectCustomCellForDescriptor:desc atIndexPath:indexPath];
 	} else if (desc.type == FORM_FIELD_DESCRIPTOR_COLLECTION) {
 		NSString *title = [self selectControllerTitleForDescriptor:desc indexPath:indexPath];
-        NSArray *collection = [self collectionForDescriptor:desc atIndexPath:indexPath];
+        NSArray *collection = [self getCollectionForDescriptor:desc atIndexPath:indexPath];
 		UIViewController *selection = [self selectionControllerForIndexPath:indexPath title:title descriptor:(FormFieldDescriptor*)desc collection:collection];
 		[self pushViewController:selection];
 	} else if(desc.type == FORM_FIELD_DESCRIPTOR_TEXT_AREA) {
@@ -451,7 +468,6 @@
         [self scrollToField:indexPath animated:YES];
     }
 }
-
 
 
 - (void)textFieldSelected {
