@@ -6,5 +6,6 @@
 - (UIImage*)scaleToSize:(CGSize)size;
 - (UIImage*)fitToSize:(CGSize)size;
 - (UIImage*)cropToRect:(CGRect)rect;
+- (UIImage*)flipHorizontal;
 
 @end

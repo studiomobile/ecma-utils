@@ -11,10 +11,10 @@
 			transform = CGAffineTransformMakeRotation(M_PI);
 			break;
 		case UIInterfaceOrientationLandscapeLeft:
-			transform = CGAffineTransformMakeRotation(-M_PI/2.0);
+			transform = CGAffineTransformMakeRotation(-M_PI_2);
 			break;
 		case UIInterfaceOrientationLandscapeRight:
-			transform = CGAffineTransformMakeRotation(M_PI/2.0);
+			transform = CGAffineTransformMakeRotation(M_PI_2);
 			break;
 	}
 	if (animated) {

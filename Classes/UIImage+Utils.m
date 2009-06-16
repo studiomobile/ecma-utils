@@ -1,6 +1,18 @@
 #import "UIImage+Utils.h"
 #import "CGGeometry+Utils.h"
 
+CGContextRef BeginBitmapContextWithSize(CGSize size) {
+	UIGraphicsBeginImageContext(size);
+	return UIGraphicsGetCurrentContext();
+}
+
+
+UIImage* EndBitmapContext() {
+	UIImage* result = UIGraphicsGetImageFromCurrentImageContext();
+	UIGraphicsEndImageContext();
+	return result;
+}
+
 
 @implementation UIImage  (Utils)
 
@@ -13,19 +25,13 @@
 
 
 - (UIImage*)scaleToSize:(CGSize)size {
-	UIGraphicsBeginImageContext(size);
-	
-	CGContextRef context = UIGraphicsGetCurrentContext();
+	CGContextRef context = BeginBitmapContextWithSize(size);
 	CGContextTranslateCTM(context, 0.0, size.height);
 	CGContextScaleCTM(context, 1.0, -1.0);
 	
 	CGContextDrawImage(context, CGRectMake(0.0f, 0.0f, size.width, size.height), self.CGImage);
 	
-	UIImage* scaledImage = UIGraphicsGetImageFromCurrentImageContext();
-	
-	UIGraphicsEndImageContext();
-	
-	return scaledImage;
+	return EndBitmapContext();
 }
 
 
@@ -36,8 +42,7 @@
 
 
 - (UIImage*)cropToRect:(CGRect)rect {
-    UIGraphicsBeginImageContext(rect.size);
-    CGContextRef context = UIGraphicsGetCurrentContext();
+	CGContextRef context = BeginBitmapContextWithSize(rect.size);
     
  	CGContextTranslateCTM(context, 0.0, rect.size.height);
 	CGContextScaleCTM(context, 1.0, -1.0);
@@ -51,11 +56,19 @@
     
     CGContextDrawImage(context, drawRect, self.CGImage);
     
-    UIImage *cropped = UIGraphicsGetImageFromCurrentImageContext();
-    
-    UIGraphicsEndImageContext();
-    
-    return cropped;
+    return EndBitmapContext();
 }
+
+
+- (UIImage*)flipHorizontal {
+	CGContextRef context = BeginBitmapContextWithSize(self.size);
+    CGContextTranslateCTM(context, self.size.width, self.size.height);
+    CGContextScaleCTM(context, -1.0, -1.0);
+    
+    CGContextDrawImage(context, CGRectMake(0, 0, self.size.width, self.size.height), self.CGImage);
+
+    return EndBitmapContext();
+}
+
 
 @end
