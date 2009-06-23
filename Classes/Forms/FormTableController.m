@@ -48,6 +48,7 @@
 - (FormFieldDescriptor*)secureFieldWithTitle:(NSString*)title forProperty:(NSString*)keyPath ofObject:(id)object {
 	FormFieldDescriptor *desc = [self textFieldWithTitle:title forProperty:keyPath ofObject:object];
     [desc.options setValue:[NSNumber numberWithBool:YES] forKey:@"value.secureTextEntry"];
+    [desc.options setValue:[NSNumber numberWithInteger:UITextAutocorrectionTypeNo] forKey:@"value.autocorrectionType"];
 	return desc;
 }
 
