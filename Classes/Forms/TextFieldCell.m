@@ -36,7 +36,7 @@
     NSNumber *autocapitalizationTypeNumber = [self.fieldDescriptor.options objectForKey:@"value.autocapitalizationType"];
     self.value.autocapitalizationType = autocapitalizationTypeNumber ? [autocapitalizationTypeNumber integerValue] : UITextAutocapitalizationTypeNone;
     
-    NSNumber *autocorrectionTypeNumber = [self.fieldDescriptor.options objectForKey:@"value.autoccorrectionType"];
+    NSNumber *autocorrectionTypeNumber = [self.fieldDescriptor.options objectForKey:@"value.autocorrectionType"];
     self.value.autocorrectionType = autocorrectionTypeNumber ? [autocorrectionTypeNumber integerValue] : UITextAutocorrectionTypeDefault;
     
     NSNumber *keyboardNumber = [self.fieldDescriptor.options objectForKey:@"value.keyboardType"];
