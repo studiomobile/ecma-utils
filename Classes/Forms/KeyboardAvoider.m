@@ -3,6 +3,8 @@
 
 @implementation KeyboardAvoider
 
+@synthesize placeFocusedControlOverKeyboard;
+
 -(void)privateInit{
 	NSNotificationCenter *notifications = [NSNotificationCenter defaultCenter];
 	[notifications addObserver:self selector:@selector(kbdWillShow:) name:UIKeyboardWillShowNotification object:nil];
@@ -48,9 +50,17 @@
 	CGRect scrollRectAbsolute = [self.superview convertRect:self.frame toView:main];
 	float freeAreaTop = CGRectGetMinY(scrollRectAbsolute);
 	float freeAreaBottom = CGRectGetMinY(keyboardFrame);
-	float freeAreaCenter = (freeAreaTop + freeAreaBottom)/2;
 	CGRect fieldRectAbsolute = [[UIApplication mainView] convertRect: focusedTextField.bounds fromView: focusedTextField];
-	float delta = freeAreaCenter - CGRectGetMidY(fieldRectAbsolute);
+	
+	float pointToScrollTo;	
+	if(placeFocusedControlOverKeyboard){
+		float fieldHeight = CGRectGetHeight(fieldRectAbsolute);
+		pointToScrollTo = freeAreaBottom - 5 - fieldHeight/2;
+	}else{
+		pointToScrollTo = (freeAreaTop + freeAreaBottom)/2;	
+	}	
+	
+	float delta = pointToScrollTo - CGRectGetMidY(fieldRectAbsolute);
 	float offset = self.contentOffset.y - delta;		
 	
 	[self setContentOffset: CGPointMake(0, offset) animated:YES];
@@ -65,17 +75,8 @@
 	CGPoint kbdCenter;
 	[kbdEndCenterValue getValue:&kbdCenter];
 	
-	CGRect statusBarFrame = [[UIApplication sharedApplication] statusBarFrame];
-	if(![UIApplication sharedApplication].statusBarHidden) {
-		if(UIInterfaceOrientationIsPortrait([UIApplication sharedApplication].statusBarOrientation)){
-			kbdCenter = CGPointMake(kbdCenter.x, kbdCenter.y - CGRectGetHeight(statusBarFrame));
-		} else {
-			kbdCenter = CGPointMake(kbdCenter.x, kbdCenter.y - CGRectGetWidth(statusBarFrame));
-		}
-	}
-	
-	CGRect kbdAppFrame = CGRectOffset(kbdBounds, kbdCenter.x - kbdBounds.size.width/2, kbdCenter.y - kbdBounds.size.height/2 );
-	
+	CGRect kbdAppFrame = CGRectOffset(kbdBounds, kbdCenter.x - kbdBounds.size.width/2, kbdCenter.y - kbdBounds.size.height/2);
+		
 	return kbdAppFrame;
 }
 
@@ -93,7 +94,7 @@
     keyboardFrame = [self extractKeyboardFrameFromNotification:notification]; 	
 }
 
-- (void)kbdWillHide:(NSNotification*)notification {
+- (void)kbdWillHide:(NSNotification*)notification {	
 }
 
 - (void)editingStarted:(NSNotification*)notification {

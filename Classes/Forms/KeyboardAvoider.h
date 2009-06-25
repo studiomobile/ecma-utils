@@ -3,6 +3,10 @@
 
 @interface KeyboardAvoider : UIScrollView {
 	CGRect keyboardFrame;
+	
+	BOOL placeFocusedControlOverKeyboard;
 }
+
+@property(assign) BOOL placeFocusedControlOverKeyboard;
 
 @end
