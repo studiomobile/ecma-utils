@@ -24,12 +24,12 @@
 
 
 - (FormFieldDescriptor*)fieldWithTitle:(NSString*)title forProperty:(NSString*)keyPath ofObject:(id)object type:(FormFieldDescriptorType)type {
-	FormFieldDescriptor *desc = [FormFieldDescriptor new];
+	FormFieldDescriptor *desc = [[FormFieldDescriptor new] autorelease];
 	desc.title = title;
 	desc.dataSource = object;
 	desc.keyPath = keyPath;
     desc.type = type;
-	return [desc autorelease];
+	return desc;
 }
 
 
