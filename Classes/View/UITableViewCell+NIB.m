@@ -2,18 +2,18 @@
 
 @implementation UITableViewCell (NIB)
 
-+ (id)loadCell {
-	NSArray* objects = [[NSBundle mainBundle] loadNibNamed:[self nibName] owner:self options:nil];
++ (id)loadCellOfType: (Class)tp fromNib: (NSString*)nibName withId: (NSString*)reuseId {
+	NSArray* objects = [[NSBundle mainBundle] loadNibNamed:nibName owner:self options:nil];
 	
 	for (id object in objects) {
-		if ([object isKindOfClass:self]) {
+		if ([object isKindOfClass:tp]) {
 			UITableViewCell *cell = object;
-			[cell setValue:[self cellID] forKey:@"_reuseIdentifier"];	
+			[cell setValue:reuseId forKey:@"_reuseIdentifier"];	
 			return cell;
 		}
 	}
 
-	[NSException raise:@"WrongNibFormat" format:@"Nib for '%@' must contain one TableViewCell, and its class must be '%@'", [self nibName], [self class]];	
+	[NSException raise:@"WrongNibFormat" format:@"Nib for '%@' must contain one TableViewCell, and its class must be '%@'", nibName, tp];	
 	
 	return nil;
 }
@@ -24,10 +24,14 @@
 
 + (NSString*)nibName { return [self description]; }
 
++ (id)dequeOrCreateInTable:(UITableView*)tableView ofType: (Class)tp fromNib: (NSString*)nibName withId: (NSString*)reuseId {
+    UITableViewCell* cell = [tableView dequeueReusableCellWithIdentifier:reuseId];
+	return cell ? cell : [self loadCellOfType:tp fromNib:nibName withId:reuseId];
+}
+
 
 + (id)dequeOrCreateInTable:(UITableView*)tableView {
-    UITableViewCell* cell = [tableView dequeueReusableCellWithIdentifier:[self cellID]];
-	return cell ? cell : [self loadCell];
+	return [self dequeOrCreateInTable:tableView ofType:self fromNib:[self nibName] withId: [self cellID]];
 }
 
 @end

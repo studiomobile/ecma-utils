@@ -43,7 +43,9 @@
 		[queryString appendString:@"="];
 		[queryString appendString:[[value description] urlEncode:@"&="]];
 	}
-	[queryString replaceCharactersInRange:NSMakeRange(0, 1) withString:@"?"];
+	if(queryString.length){
+		[queryString replaceCharactersInRange:NSMakeRange(0, 1) withString:@"?"];	
+	}	
 	return [queryString description];
 }
 
