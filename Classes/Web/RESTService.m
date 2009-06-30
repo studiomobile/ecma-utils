@@ -60,7 +60,7 @@ const NSString *RequestStatusCode = @"__RequestStatusCode__";
 		NSLog(@"Status code: %d", statusCode);
 #endif
 		id result = data ? [self mapData:data error:error] : nil;
-		if(statusCode == 200) {
+		if(statusCode < 400) {
 			return result;
 		} else {
 			if(result) {
