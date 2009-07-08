@@ -12,6 +12,19 @@
     }
 }
 
+
+- (UIBarButtonItem*)toolbarSpace {
+    return [[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace 
+                                                          target:nil 
+                                                          action:nil] autorelease];
+}
+
+
+- (void)updateLabel {
+    labelItem.title = self.date ? [labelDateFormatter stringFromDate:self.date] : @"";
+}
+
+
 - (void)reconfigureWithDescriptor:(FormFieldDescriptor*)desc {
     NSNumber *modeNumber = [desc.options objectForKey:@"datePicker.datePickerMode"];
     datePicker.datePickerMode = modeNumber ? [modeNumber integerValue] : UIDatePickerModeDateAndTime;
@@ -32,20 +45,30 @@
     
     NSMutableArray *items = [NSMutableArray array];
 
-    if([desc.options objectForKey:@"allowsClear"]) {
+    NSNumber *allowsClearNumber = [desc.options objectForKey:@"allowsClear"];
+    if([allowsClearNumber boolValue]) {
         UIBarButtonItem *clearButton = [[[UIBarButtonItem alloc] initWithTitle:@"Clear" 
                                                                          style:buttonsStyle 
                                                                         target:self 
                                                                         action:@selector(datePickerClear)] autorelease];
         
         [items addObject:clearButton];
+
+        [items addObject:[self toolbarSpace]];
     }
     
-    UIBarButtonItem *space = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace 
-                                                                            target:nil 
-                                                                            action:nil] autorelease];
+    [labelDateFormatter release];
+    labelDateFormatter = [NSDateFormatter new];
+    [labelDateFormatter setDateFormat:[desc.options objectForKey:@"labelDateFormat"]];
     
-    [items addObject:space];
+    labelItem = [[[UIBarButtonItem alloc] initWithTitle:@"" 
+                                                  style:UIBarButtonItemStylePlain
+                                                 target:nil 
+                                                 action:nil] autorelease];
+    [items addObject:labelItem];
+    [self updateLabel];
+    
+    [items addObject:[self toolbarSpace]];
     
     UIBarButtonItem *doneButton = [[[UIBarButtonItem alloc] initWithTitle:@"Done" 
                                                                     style:buttonsStyle 
@@ -59,8 +82,10 @@
 
 - (void)changeDate:(NSDate*)d {
     [self setDate:d];
+    [self updateLabel];
     [delegate formDatePickerViewDateChanged:self];
 }
+
 
 - (void)datePickerValueChanged {
     [self changeDate:datePicker.date];
@@ -102,6 +127,7 @@
 - (void)dealloc {
     [datePicker release];
     [toolbar release];
+    [labelDateFormatter release];
     
     [super dealloc];
 }

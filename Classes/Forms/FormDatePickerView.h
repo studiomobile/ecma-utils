@@ -13,6 +13,9 @@
     id<FormDatePickerViewDelegate> delegate;
     UIToolbar *toolbar;
     UIDatePicker *datePicker;
+    UIBarButtonItem *labelItem;
+    
+    NSDateFormatter *labelDateFormatter;
     
     NSDate *date;
 }
