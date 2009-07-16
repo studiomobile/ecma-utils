@@ -10,7 +10,9 @@
 
 @interface NSError(Utils)
 
-+(NSError*) errorWithDomain: (NSString*)domain code: (NSInteger) code description: (NSString*) description;
++ (NSError *)errorWithDomain:(NSString*)domain code:(NSInteger)code description:(NSString*)description;
++ (NSError *)errorWithValue:(id)value forKey:(NSString *)keyName;
++ (NSError *)errorWithValue:(id)value forKey:(NSString *)keyName fromError:(NSError *)error;
 
 - (void)display;
 - (void)display:(NSString*)actionDescription;

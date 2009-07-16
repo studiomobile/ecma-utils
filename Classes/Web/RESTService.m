@@ -1,6 +1,7 @@
 #import "RESTService.h"
 #import "NSObject+Utils.h"
 #import "NSString+Web.h"
+#import "NSData+Base64.h"
 
 const NSString *WebServiceErrorKey = @"__WebServiceError__";
 const NSString *RequestStatusCode = @"__RequestStatusCode__";
@@ -8,6 +9,9 @@ const NSString *RequestStatusCode = @"__RequestStatusCode__";
 @implementation RESTService
 
 @synthesize baseUrl;
+@synthesize login;
+@synthesize password;
+
 
 - (id)initWithBaseUrl:(NSString*)url mapper:(id<RESTServiceDataMapper>)m {
 	checkNotNil(url, @"nil url");
@@ -38,7 +42,13 @@ const NSString *RequestStatusCode = @"__RequestStatusCode__";
     if (queryString) {
         [url appendString:queryString];
     }
-	return [NSMutableURLRequest requestWithURL:[NSURL URLWithString:url]];
+	NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:url]];
+	if (login.length > 0 && password.length > 0) {
+		NSString *authString = [[[NSString stringWithFormat:@"%@:%@", login, password] dataUsingEncoding:NSUTF8StringEncoding] base64EncodedString];
+		authString = [NSString stringWithFormat: @"Basic %@", authString];
+		[request setValue:authString forHTTPHeaderField:@"Authorization"];
+	}
+	return request;
 }
 
 
@@ -94,7 +104,20 @@ const NSString *RequestStatusCode = @"__RequestStatusCode__";
 }
 
 
-- (id)post:(NSData*)data to:(NSString*)localPath headers:(NSDictionary*)headers error:(NSError**)error {
+- (id)get:(NSString*)localPath withParams:(WebParams*)params headers:(NSDictionary*)headers error:(NSError**)error{
+	checkNotNil(localPath, @"localPath cannot be nil");
+	
+	NSMutableURLRequest *request = [self requestForPath:localPath withParams:params];
+    for (NSString *header in headers) {
+        NSString *val = [headers objectForKey:header];
+        [request addValue:val forHTTPHeaderField:header];
+    }
+	[request setHTTPMethod:@"GET"];
+	return [self request:request error:error];
+}
+
+
+- (id)send:(NSData*)data to:(NSString*)localPath method:(NSString*)method contentType:(NSString*)contentType headers:(NSDictionary*)headers error:(NSError**)error {
     checkNotNil(localPath, @"localPath cannot be nil");
     checkNotNil(data, @"data cannot be nil");
     NSMutableURLRequest *request = [self requestForPath:localPath withParams:nil];
@@ -102,17 +125,37 @@ const NSString *RequestStatusCode = @"__RequestStatusCode__";
         NSString *val = [headers objectForKey:header];
         [request addValue:val forHTTPHeaderField:header];
     }
+	if (contentType) {
+		[request addValue:contentType forHTTPHeaderField:@"Content-Type"];
+	}
     [request addValue:[NSString stringWithFormat:@"%d", [data length]] forHTTPHeaderField:@"Content-Length"];
-    [request setHTTPMethod:@"POST"];
+    [request setHTTPMethod:method];
     [request setHTTPBody:data];
-
+	
     return [self request:request error:error];    
 }
 
 
-- (id)post:(NSData*)data to:(NSString*)localPath error:(NSError**)error {
-    NSDictionary *headers = [NSDictionary dictionaryWithObjectsAndKeys:@"text/xml", @"Content-Type", nil];
-    return [self post:data to:localPath headers:headers error:error];
+- (id)post:(NSData*)data contentType:(NSString*)contentType to:(NSString*)localPath headers:(NSDictionary*)headers error:(NSError**)error {
+	return [self send:data to:localPath method:@"POST" contentType:contentType headers:headers error:error];
 }
+
+
+- (id)post:(NSData*)data contentType:(NSString*)contentType to:(NSString*)localPath error:(NSError**)error {
+    NSDictionary *headers = [NSDictionary dictionaryWithObjectsAndKeys:@"text/xml", @"Accept", nil];
+	return [self post:data contentType:contentType to:localPath headers:headers error:error];
+}
+
+
+- (id)put:(NSData*)data contentType:(NSString*)contentType to:(NSString*)localPath headers:(NSDictionary*)headers error:(NSError**)error {
+	return [self send:data to:localPath method:@"PUT" contentType:contentType headers:headers error:error];
+}
+
+
+- (id)put:(NSData*)data contentType:(NSString*)contentType to:(NSString*)localPath error:(NSError**)error {
+    NSDictionary *headers = [NSDictionary dictionaryWithObjectsAndKeys:@"text/xml", @"Accept", nil];
+	return [self put:data contentType:contentType to:localPath headers:headers error:error];
+}
+
 
 @end
