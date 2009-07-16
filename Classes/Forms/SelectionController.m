@@ -1,3 +1,5 @@
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+
 #import "SelectionController.h"
 
 @implementation SelectionController

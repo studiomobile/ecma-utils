@@ -347,8 +347,6 @@ typedef enum eTypeCode_tag{
 @implementation SoapCustomEntity
 
 @synthesize type;
-@dynamic name;
-@dynamic namespace;
 
 +(SoapCustomEntity*)soapCustomEntityNamed: (NSString*)name namespace: (NSString*)namespace{
 	return [[[[self class]alloc] initWithName: name namespace: namespace]autorelease];

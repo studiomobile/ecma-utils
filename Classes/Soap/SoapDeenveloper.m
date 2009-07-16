@@ -162,7 +162,6 @@
 @implementation SoapDeenveloper
 
 @synthesize contextStack;
-@dynamic nodeContext;
 
 +(SoapDeenveloper*) soapDeenveloperWithXmlString: (NSString*)xmlString{
 	return [[[[self class]alloc]initWithXmlString:xmlString]autorelease];

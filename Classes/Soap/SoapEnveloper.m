@@ -35,7 +35,6 @@ typedef enum eSAS_tag {
 
 
 @implementation SoapEnveloper
-@dynamic message;
 
 +(SoapEnveloper*)soapEnveloper{
 	return [[[self class]new]autorelease];
