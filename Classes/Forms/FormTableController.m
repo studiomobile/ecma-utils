@@ -39,6 +39,17 @@
 	return [self fieldWithTitle:title forProperty:keyPath ofObject:object type:FORM_FIELD_DESCRIPTOR_TEXT_FIELD];
 }
 
+- (FormFieldDescriptor*)numTextFieldWithTitle:(NSString *)title forProperty:(NSString *)keyPath ofObject:(id)object {
+	FormFieldDescriptor *desc = [self textFieldWithTitle:title forProperty:keyPath ofObject:object];
+	[desc.options setObject:[NSNumber numberWithInteger:UIKeyboardTypeNumbersAndPunctuation] forKey:@"value.keyboardType"];
+    return desc;
+}
+
+- (FormFieldDescriptor*)sentenceCapitalizationTextFieldWithTitle:(NSString *)title forProperty:(NSString *)keyPath ofObject:(id)object {
+	FormFieldDescriptor *desc = [self textFieldWithTitle:title forProperty:keyPath ofObject:object];
+	[desc.options setObject:[NSNumber numberWithInteger:UITextAutocapitalizationTypeSentences] forKey:@"value.autocapitalizationType"];
+	return desc;
+}
 
 - (FormFieldDescriptor*)emailFieldWithTitle:(NSString*)title forProperty:(NSString*)keyPath ofObject:(id)object {
     FormFieldDescriptor *desc = [self textFieldWithTitle:title forProperty:keyPath ofObject:object];

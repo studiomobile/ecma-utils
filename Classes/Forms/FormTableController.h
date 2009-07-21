@@ -33,6 +33,8 @@
 - (FormFieldDescriptor*)descriptorForField:(NSIndexPath*)indexPath;
 
 - (FormFieldDescriptor*)textFieldWithTitle:(NSString*)title forProperty:(NSString*)keyPath ofObject:(id)object;
+- (FormFieldDescriptor*)numTextFieldWithTitle:(NSString *)title forProperty:(NSString *)keyPath ofObject:(id)object;
+- (FormFieldDescriptor*)sentenceCapitalizationTextFieldWithTitle:(NSString *)title forProperty:(NSString *)keyPath ofObject:(id)object;
 - (FormFieldDescriptor*)emailFieldWithTitle:(NSString*)title forProperty:(NSString*)keyPath ofObject:(id)object;
 - (FormFieldDescriptor*)secureFieldWithTitle:(NSString*)title forProperty:(NSString*)keyPath ofObject:(id)object;
 - (FormFieldDescriptor*)textEditFieldWithTitle:(NSString*)title forProperty:(NSString*)keyPath ofObject:(id)object;
