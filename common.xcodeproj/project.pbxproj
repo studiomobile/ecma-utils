@@ -71,6 +71,8 @@
 		79BD32090E9935AF0039C25A /* NSString+Utils.m in Sources */ = {isa = PBXBuildFile; fileRef = 79BD32080E9935AF0039C25A /* NSString+Utils.m */; };
 		8B6CFB550F8E39CB00E85F08 /* UIView+Rotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 8B6CFB530F8E39CB00E85F08 /* UIView+Rotation.m */; };
 		8B6CFB560F8E39CB00E85F08 /* UIView+Rotation.h in Headers */ = {isa = PBXBuildFile; fileRef = 8B6CFB540F8E39CB00E85F08 /* UIView+Rotation.h */; };
+		B4130A6D101740FF006EFD10 /* NSObject+Invocation.h in Headers */ = {isa = PBXBuildFile; fileRef = B4130A6B101740FF006EFD10 /* NSObject+Invocation.h */; };
+		B4130A6E101740FF006EFD10 /* NSObject+Invocation.m in Sources */ = {isa = PBXBuildFile; fileRef = B4130A6C101740FF006EFD10 /* NSObject+Invocation.m */; };
 		B45054D70FD5194B00A10092 /* WebParams.h in Headers */ = {isa = PBXBuildFile; fileRef = B45054D50FD5194B00A10092 /* WebParams.h */; };
 		B45054D80FD5194B00A10092 /* WebParams.m in Sources */ = {isa = PBXBuildFile; fileRef = B45054D60FD5194B00A10092 /* WebParams.m */; };
 		B45054DB0FD5196200A10092 /* NSString+Web.h in Headers */ = {isa = PBXBuildFile; fileRef = B45054D90FD5196200A10092 /* NSString+Web.h */; };
@@ -168,6 +170,8 @@
 		8B6CFB530F8E39CB00E85F08 /* UIView+Rotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+Rotation.m"; sourceTree = "<group>"; };
 		8B6CFB540F8E39CB00E85F08 /* UIView+Rotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+Rotation.h"; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		B4130A6B101740FF006EFD10 /* NSObject+Invocation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+Invocation.h"; sourceTree = "<group>"; };
+		B4130A6C101740FF006EFD10 /* NSObject+Invocation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+Invocation.m"; sourceTree = "<group>"; };
 		B45054D50FD5194B00A10092 /* WebParams.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WebParams.h; sourceTree = "<group>"; };
 		B45054D60FD5194B00A10092 /* WebParams.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WebParams.m; sourceTree = "<group>"; };
 		B45054D90FD5196200A10092 /* NSString+Web.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Web.h"; sourceTree = "<group>"; };
@@ -242,6 +246,8 @@
 				79BAE5C70EC1EA9E004760EA /* NSMutableArray+Utils.m */,
 				79BAE5C80EC1EA9E004760EA /* NSObject+Utils.h */,
 				79BAE5C90EC1EA9E004760EA /* NSObject+Utils.m */,
+				B4130A6B101740FF006EFD10 /* NSObject+Invocation.h */,
+				B4130A6C101740FF006EFD10 /* NSObject+Invocation.m */,
 				79BAE5CA0EC1EA9E004760EA /* UIApplication+Utils.h */,
 				79BAE5CB0EC1EA9E004760EA /* UIApplication+Utils.m */,
 				79427DDA0E9A13E600E8F7F9 /* NSString+Utils.h */,
@@ -447,6 +453,7 @@
 				B45054D70FD5194B00A10092 /* WebParams.h in Headers */,
 				B45054DB0FD5196200A10092 /* NSString+Web.h in Headers */,
 				B45054E50FD51A1200A10092 /* NSData+Base64.h in Headers */,
+				B4130A6D101740FF006EFD10 /* NSObject+Invocation.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -534,6 +541,7 @@
 				B45054D80FD5194B00A10092 /* WebParams.m in Sources */,
 				B45054DC0FD5196200A10092 /* NSString+Web.m in Sources */,
 				B45054E60FD51A1200A10092 /* NSData+Base64.m in Sources */,
+				B4130A6E101740FF006EFD10 /* NSObject+Invocation.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
