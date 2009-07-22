@@ -1,4 +1,5 @@
-#import <UIKit/UIKit.h>
+#import <Foundation/Foundation.h>
+#import "NSObject+Invocation.h"
 
 void checkNotNil(id value, NSString *message);
 void checkNotNull(void *value, NSString *message);
@@ -16,13 +17,6 @@ void checkArgument(BOOL result, NSString *message);
 @interface NSObject (Utils)
 
 -(NSArray*)arrayed;
-
-@end
-
-@interface NSObject (Invocation)
-
-+ (NSInvocation*)invocationForClassMethod:(SEL)selector;
-- (NSInvocation*)invocationForMethod:(SEL)selector;
 
 @end
 
