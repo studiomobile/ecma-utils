@@ -2,17 +2,13 @@
 
 @implementation UIAlertView (Utils)
 
-+ (UIAlertView*)createAlertViewWithTitle:(NSString*)title message:(NSString*)message {
-	return [[UIAlertView alloc] initWithTitle:title 
-                                      message:message 
-                                     delegate:nil 
-                            cancelButtonTitle:@"OK" 
-                            otherButtonTitles:nil];
-}
-
 
 + (void)showAlertViewWithTitle:(NSString*)title message:(NSString*)message {
-	[[[self createAlertViewWithTitle: title message: message] autorelease] show];
+    [[[[UIAlertView alloc] initWithTitle:title
+                                 message:message
+                                delegate:nil
+                       cancelButtonTitle:@"OK"
+                       otherButtonTitles:nil] autorelease] show];
 }
 
 
@@ -24,5 +20,15 @@
 + (void)showAlertViewWithTitle:(NSString*)title {
 	[self showAlertViewWithTitle:title message:nil];
 }
+
+
++ (void)showYesNoAlertViewWithTitle:(NSString*)title message:(NSString*)message delegate:(id)delegate {
+    [[[[UIAlertView alloc] initWithTitle:title
+                                 message:message
+                                delegate:delegate
+                       cancelButtonTitle:@"No"
+                       otherButtonTitles:@"Yes", nil] autorelease] show];
+}
+
 
 @end
