@@ -1,26 +1,38 @@
-#define ENCODEOBJECT(obj) [coder encodeObject:obj forKey:@#obj]
+// Object
 #define ENCODEOBJECTWITHCODER(obj, coder) [coder encodeObject:obj forKey:@#obj]
+#define ENCODEOBJECT(obj) ENCODEOBJECTWITHCODER(obj, coder)
 
-#define DECODEOBJECT(obj) obj = [[decoder decodeObjectForKey:@#obj] retain]
 #define DECODEOBJECTWITHCODER(obj, decoder) obj = [[decoder decodeObjectForKey:@#obj] retain]
+#define DECODEOBJECT(obj) DECODEOBJECTWITHCODER(obj, decoder)
 
+// NSMutableArray
 #define DECODEMUTABLEARRAYWITHDECODER(obj, decoder) obj = [[NSMutableArray alloc] initWithArray:[decoder decodeObjectForKey:@#obj]]
 #define DECODEMUTABLEARRAY(obj) DECODEMUTABLEARRAYWITHDECODER(obj, decoder)
 
-#define ENCODEINT(i) [coder encodeInt:i forKey:@#i]
+// int
 #define ENCODEINTWITHCODER(i, coder) [coder encodeInt:i forKey:@#i]
+#define ENCODEINT(i) ENCODEINTWITHCODER(i, coder)
 
-#define DECODEINT(i) i = [decoder decodeIntForKey:@#i]
 #define DECODEINTWITHCODER(i, decoder) i = [decoder decodeIntForKey:@#i]
+#define DECODEINT(i) DECODEINTWITHCODER(i, decoder)
 
-#define ENCODEBOOL(i) [coder encodeBool:i forKey:@#i]
-#define ENCODEBOOLWITHCODER(i, coder) [coder encodeBool:i forKey:@#i]
+// BOOL
+#define ENCODEBOOLWITHCODER(b, coder) [coder encodeBool:b forKey:@#b]
+#define ENCODEBOOL(b) ENCODEBOOLWITHCODER(b, coder)
 
-#define DECODEBOOL(i) i = [decoder decodeBoolForKey:@#i]
-#define DECODEBOOLWITHCODER(i, decoder) i = [decoder decodeBoolForKey:@#i]
+#define DECODEBOOLWITHCODER(b, decoder) b = [decoder decodeBoolForKey:@#b]
+#define DECODEBOOL(b) DECODEBOOLWITHCODER(b, decoder)
 
-#define ENCODEFLOAT(i) [coder encodeFloat:i forKey:@#i]
-#define ENCODEFLOATWITHCODER(i, coder) [coder encodeFloat:i forKey:@#i]
+// float
+#define ENCODEFLOATWITHCODER(f, coder) [coder encodeFloat:f forKey:@#f]
+#define ENCODEFLOAT(f) ENCODEFLOATWITHCODER(f, coder)
 
-#define DECODEFLOAT(i) i = [decoder decodeFloatForKey:@#i]
-#define DECODEFLOATWITHCODER(i, decoder) i = [decoder decodeFloatForKey:@#i]
+#define DECODEFLOATWITHCODER(f, decoder) f = [decoder decodeFloatForKey:@#f]
+#define DECODEFLOAT(f) DECODEFLOATWITHCODER(f, decoder)
+
+// double
+#define ENCODEDOUBLEWITHCODER(d, coder) [coder encodeDouble:d forKey:@#d]
+#define ENCODEDOUBLE(d) ENCODEDOUBLEWITHCODER(d, coder)
+
+#define DECODEDOUBLEWITHCODER(d, decoder) d = [decoder decodeDoubleForKey:@#d]
+#define DECODEDOUBLE(d) DECODEDOUBLEWITHCODER(d, decoder)
