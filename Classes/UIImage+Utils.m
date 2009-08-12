@@ -24,10 +24,10 @@ static CGRect swapWidthAndHeight(CGRect rect) {
 
 @implementation UIImage  (Utils)
 
-+ (UIImage*)imageFromURL:(NSString*)urlString{
++ (UIImage*)imageFromURL:(NSString*)urlString {
 	NSURL *url = [NSURL URLWithString:urlString];
 	NSData *data = [NSData dataWithContentsOfURL:url];
-	UIImage *img = [[[UIImage alloc] initWithData:data]autorelease];
+	UIImage *img = [[[UIImage alloc] initWithData:data] autorelease];
 	return img;
 }
 
@@ -81,7 +81,6 @@ static CGRect swapWidthAndHeight(CGRect rect) {
 
 - (UIImage*)rotateToOrientation:(UIImageOrientation)orient {
     CGRect bnds = CGRectZero;
-    CGContextRef context = nil;
     CGImageRef imag = self.CGImage;
     CGRect rect = CGRectZero;
     CGAffineTransform tran = CGAffineTransformIdentity;
@@ -93,9 +92,7 @@ static CGRect swapWidthAndHeight(CGRect rect) {
 
     switch (orient) {
         case UIImageOrientationUp:
-            // would get you an exact copy of the original
-            assert(false);
-            return nil;
+            return self;
 
         case UIImageOrientationUpMirrored:
             tran = CGAffineTransformMakeTranslation(rect.size.width, 0.0);
@@ -103,8 +100,7 @@ static CGRect swapWidthAndHeight(CGRect rect) {
             break;
 
         case UIImageOrientationDown:
-            tran = CGAffineTransformMakeTranslation(rect.size.width,
-                                                    rect.size.height);
+            tran = CGAffineTransformMakeTranslation(rect.size.width, rect.size.height);
             tran = CGAffineTransformRotate(tran, M_PI);
             break;
 
@@ -121,8 +117,7 @@ static CGRect swapWidthAndHeight(CGRect rect) {
 
         case UIImageOrientationLeftMirrored:
             bnds = swapWidthAndHeight(bnds);
-            tran = CGAffineTransformMakeTranslation(rect.size.height,
-                                                    rect.size.width);
+            tran = CGAffineTransformMakeTranslation(rect.size.height, rect.size.width);
             tran = CGAffineTransformScale(tran, -1.0, 1.0);
             tran = CGAffineTransformRotate(tran, 3.0 * M_PI / 2.0);
             break;
@@ -145,7 +140,7 @@ static CGRect swapWidthAndHeight(CGRect rect) {
             return nil;
     }
 
-    context = BeginBitmapContextWithSize(bnds.size);
+    CGContextRef context = BeginBitmapContextWithSize(bnds.size);
 
     switch (orient) {
         case UIImageOrientationLeft:
