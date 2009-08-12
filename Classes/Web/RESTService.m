@@ -11,9 +11,10 @@ const NSString *RequestStatusCode = @"__RequestStatusCode__";
 @synthesize baseUrl;
 @synthesize login;
 @synthesize password;
+@synthesize timeOutInterval;
 
 
-- (id)initWithBaseUrl:(NSString*)url mapper:(id<RESTServiceDataMapper>)m {
+- (id)initWithBaseUrl:(NSString*)url mapper:(NSObject<RESTServiceDataMapper>*)m {
 	checkNotNil(url, @"nil url");
     if (![super init]) return nil;
     baseUrl = [url retain];
@@ -43,6 +44,9 @@ const NSString *RequestStatusCode = @"__RequestStatusCode__";
         [url appendString:queryString];
     }
 	NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:url]];
+    if (timeOutInterval > 0) {
+        [request setTimeoutInterval:timeOutInterval];
+    }
 	if (login.length > 0 && password.length > 0) {
 		NSString *authString = [[[NSString stringWithFormat:@"%@:%@", login, password] dataUsingEncoding:NSUTF8StringEncoding] base64EncodedString];
 		authString = [NSString stringWithFormat: @"Basic %@", authString];

@@ -4,7 +4,7 @@
 extern const NSString *WebServiceErrorKey;
 extern const NSString *RequestStatusCode;
 
-@protocol RESTServiceDataMapper <NSObject>
+@protocol RESTServiceDataMapper
 
 - (id)map:(NSData*)data;
 
@@ -14,14 +14,16 @@ extern const NSString *RequestStatusCode;
 	NSString *baseUrl;
 	NSString *login;
 	NSString *password;
-    id<RESTServiceDataMapper> mapper;
+    NSTimeInterval timeOutInterval;
+    NSObject<RESTServiceDataMapper> *mapper;
 }
 @property (readonly, nonatomic) NSString *baseUrl;
 @property (retain) NSString *login;
 @property (retain) NSString *password;
+@property (assign) NSTimeInterval timeOutInterval;
 
 - (id)initWithBaseUrl:(NSString*)url;
-- (id)initWithBaseUrl:(NSString*)url mapper:(id<RESTServiceDataMapper>)m;
+- (id)initWithBaseUrl:(NSString*)url mapper:(NSObject<RESTServiceDataMapper>*)m;
 - (id)put:(NSData*)data contentType:(NSString*)contentType to:(NSString*)localPath error:(NSError**)error;
 - (id)put:(NSData*)data contentType:(NSString*)contentType to:(NSString*)localPath headers:(NSDictionary*)headers error:(NSError**)error;
 - (id)post:(NSData*)data contentType:(NSString*)contentType to:(NSString*)localPath error:(NSError**)error;
