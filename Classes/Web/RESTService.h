@@ -14,13 +14,13 @@ extern const NSString *RequestStatusCode;
 	NSString *baseUrl;
 	NSString *login;
 	NSString *password;
-    NSTimeInterval timeOutInterval;
+    NSTimeInterval timeoutInterval;
     NSObject<RESTServiceDataMapper> *mapper;
 }
 @property (readonly, nonatomic) NSString *baseUrl;
 @property (retain) NSString *login;
 @property (retain) NSString *password;
-@property (assign) NSTimeInterval timeOutInterval;
+@property (assign) NSTimeInterval timeoutInterval;
 
 - (id)initWithBaseUrl:(NSString*)url;
 - (id)initWithBaseUrl:(NSString*)url mapper:(NSObject<RESTServiceDataMapper>*)m;
