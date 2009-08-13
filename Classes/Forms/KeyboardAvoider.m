@@ -25,7 +25,6 @@
     return self;
 }
 
-
 - (void)dealloc {
 	NSNotificationCenter *notifications = [NSNotificationCenter defaultCenter];
 	[notifications removeObserver:self name:UIKeyboardWillShowNotification object:nil];
@@ -37,8 +36,8 @@
 
 #pragma mark private
 
--(void)resetScroll{
-	[self setContentOffset:CGPointZero animated: YES];	
+- (void)resetScroll {
+	[self setContentOffset:CGPointZero animated: YES];
 }
 
 -(void)scrollToField: (UIView*)focusedTextField{
@@ -56,7 +55,7 @@
 	if(placeFocusedControlOverKeyboard){
 		float fieldHeight = CGRectGetHeight(fieldRectAbsolute);
 		pointToScrollTo = freeAreaBottom - 5 - fieldHeight/2;
-	}else{
+	} else {
 		pointToScrollTo = (freeAreaTop + freeAreaBottom)/2;	
 	}	
 	
@@ -83,8 +82,7 @@
 - (void) cancelCurrentAnimations {
 	id animator = objc_getClass("UIAnimator");
 	id sharedAnimator = [animator performSelector: @selector(sharedAnimator)];
-	[sharedAnimator performSelector: @selector(removeAnimationsForTarget:) withObject: self];
-	
+	[sharedAnimator performSelector: @selector(removeAnimationsForTarget:) withObject: self];	
 }
 
 #pragma mark keyboard & text fields notification handlers

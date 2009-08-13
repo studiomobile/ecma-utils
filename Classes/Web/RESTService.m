@@ -102,8 +102,7 @@ const NSString *RequestStatusCode = @"__RequestStatusCode__";
 - (id)get:(NSString*)localPath withParams:(WebParams*)params error:(NSError**)error{
 	checkNotNil(localPath, @"localPath cannot be nil");
 	
-	NSMutableURLRequest *request = [self requestForPath:localPath withParams:params]
-	;
+	NSMutableURLRequest *request = [self requestForPath:localPath withParams:params];
 	[request setHTTPMethod:@"GET"];
 	return [self request:request error:error];
 }

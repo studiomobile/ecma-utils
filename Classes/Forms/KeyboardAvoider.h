@@ -9,4 +9,7 @@
 
 @property(assign) BOOL placeFocusedControlOverKeyboard;
 
+- (void)resetScroll;
+- (void)scrollToField:(UIView*)focusedTextField;
+
 @end
