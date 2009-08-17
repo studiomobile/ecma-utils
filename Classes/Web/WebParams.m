@@ -10,24 +10,27 @@
 
 
 - (id)init {
-	if (self = [super init]) {
-		params = [NSMutableDictionary new];
-	}
+    if (![super init]) return nil;
+    params = [NSMutableDictionary new];
 	return self;
 }
 
 
 - (id)initWithDictionary:(NSDictionary*)dictionary {
-	if (self = [super init]) {
-		params = [[NSMutableDictionary alloc] initWithDictionary:dictionary];
-	}
+	if (![super init]) return nil;
+    params = [[NSMutableDictionary alloc] initWithDictionary:dictionary];
 	return self;
+}
+
+
+- (BOOL)isFileUpload:(id)param {
+    return [param isKindOfClass:[NSData class]] || [param isKindOfClass:[FileUpload class]];
 }
 
 
 - (void)addParam:(id)param forKey:(id)key {
 	if (param) {
-		multipart |= [param isKindOfClass:[NSData class]];
+		multipart |= [self isFileUpload:param];
 		[params setObject:param forKey:key];
 	}
 }
@@ -35,18 +38,18 @@
 
 - (NSString*)queryString {
 	NSMutableString *queryString = [NSMutableString string];
-	for(NSString *key in params) {
+	for (NSString *key in params) {
 		NSObject *value = [params objectForKey:key];
-		if ([value isKindOfClass:[NSData class]]) continue;
+		if ([self isFileUpload:value]) continue;
 		[queryString appendString:@"&"];
 		[queryString appendString:[[key description] urlEncode:@"&="]];
 		[queryString appendString:@"="];
 		[queryString appendString:[[value description] urlEncode:@"&="]];
 	}
-	if(queryString.length){
+	if (queryString.length) {
 		[queryString replaceCharactersInRange:NSMakeRange(0, 1) withString:@"?"];
 	}
-	return [queryString description];
+	return [[queryString copy] autorelease];
 }
 
 
@@ -65,14 +68,16 @@
 	
     [postData appendData:[[NSString stringWithFormat:@"--%@\r\n", self.boundary] dataUsingEncoding:NSUTF8StringEncoding]];
     
-	for(NSString *key in params) {
+	for (NSString *key in params) {
 		NSObject *value = [params objectForKey:key];
-		if ([value isKindOfClass:[NSData class]]) {
-			[postData appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"%@\"; filename=\"%@\"\r\n\r\n", key, key] dataUsingEncoding:NSUTF8StringEncoding]];
-			[postData appendData:(NSData*)value];
+		if ([self isFileUpload:value]) {
+            NSString *filename = [value respondsToSelector:@selector(filename)] ? [(id)value fileName] : key;
+            NSData *data = [value respondsToSelector:@selector(data)] ? [(id)value data] : (NSData*)value;
+			[postData appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"%@\"; filename=\"%@\"\r\n\r\n", key, filename] dataUsingEncoding:NSUTF8StringEncoding]];
+			[postData appendData:data];
 		} else {
 			[postData appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"%@\"\r\n\r\n", key] dataUsingEncoding:NSUTF8StringEncoding]];
-			[postData appendData:[[(NSString*)value description] dataUsingEncoding:NSUTF8StringEncoding]];
+			[postData appendData:[[value description] dataUsingEncoding:NSUTF8StringEncoding]];
 		}
 	}
 
@@ -86,7 +91,6 @@
 	if (multipart) {
 		return self.multipartPostData;
 	}
-
 	NSMutableString *queryString = [NSMutableString stringWithString:self.queryString];
 	[queryString replaceCharactersInRange:NSMakeRange(0, 1) withString:@""];
 	return [queryString dataUsingEncoding:NSUTF8StringEncoding];

@@ -1,4 +1,4 @@
-#import <Foundation/Foundation.h>
+#import "FileUpload.h"
 
 @interface WebParams : NSObject {
 	NSMutableDictionary *params;
