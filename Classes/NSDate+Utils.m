@@ -22,6 +22,10 @@
 	return [self timeIntervalSinceDate:date]/3600;
 }
 
+-(CGFloat)daysSinceDate: (NSDate*)date{
+	return [self hoursSinceDate:date]/24;
+}
+
 - (NSDate*)dayStart {
 	NSCalendar *calendar = [NSCalendar currentCalendar];
 	NSDateComponents *components = [calendar components:(NSYearCalendarUnit | NSMonthCalendarUnit | NSDayCalendarUnit) fromDate:self];

@@ -4,6 +4,7 @@
 
 @interface SoapRequest : NSObject {
 	NSString* url;
+	NSString* action;
 	SoapCustomEntity* header;
 	id<SoapEntityProto> body;
 	id responseType;
@@ -14,6 +15,7 @@
 }
 
 @property(retain) NSString* url;
+@property(retain) NSString* action;
 @property(retain) SoapCustomEntity* header;
 @property(retain) id<SoapEntityProto> body;
 @property(retain) id responseType;

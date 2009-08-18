@@ -524,7 +524,9 @@ typedef enum eTypeCode_tag{
 	
 	for(CustomFieldDescriptor* d in type.fields){
 		id value = [d decodeValueWithDecoder:aDecoder];
-		[valueByKey setObject:value forKey:d.name];		
+		if(value){
+			[valueByKey setObject:value forKey:d.name];			
+		}		
 	}	
 	
 	return self;

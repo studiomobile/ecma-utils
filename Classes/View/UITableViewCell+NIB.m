@@ -34,4 +34,8 @@
 	return [self dequeOrCreateInTable:tableView ofType:self fromNib:[self nibName] withId: [self cellID]];
 }
 
++ (id)loadFromNib{
+	return [self loadCellOfType:self fromNib:[self nibName] withId:[self cellID]];
+}
+
 @end

@@ -12,6 +12,7 @@
 
 @synthesize header;
 @synthesize url;
+@synthesize action;
 @synthesize body;
 @synthesize responseType;
 @synthesize responseIsMany;
@@ -21,6 +22,7 @@
 
 - (void)dealloc {
 	[url release];
+	[action release];
 	[header release];
 	[(NSObject*)body release];
 	[responseType release];
@@ -47,7 +49,7 @@
 }
 
 
-- (BOOL)execute {
+- (BOOL)execute {	
 	self.error = nil;
 	self.result = nil;
 	
@@ -63,9 +65,11 @@
 	NSLog(@"SOAP REQUEST:\n%@", xmlString);
 	NSData *requestData = [xmlString dataUsingEncoding: NSUTF8StringEncoding];
 	
-	NSError *err = nil;
-	NSData *responseData = [service post:requestData contentType:@"application/soap+xml; charset=utf-8" to:@"" error:&err];
-	if (err) {
+	NSError* err = nil;
+	NSString* actionString = action ? [NSString stringWithFormat: @"; action=\"%@\"", action] : @"";
+	NSString* contentTypeString = [NSString stringWithFormat:@"application/soap+xml; charset=utf-8%@", actionString];
+	NSData* responseData = [service post:requestData contentType: contentTypeString to:@"" error: &err];
+	if(err){
 		self.error = err;
 		return NO;
 	}

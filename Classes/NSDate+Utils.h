@@ -7,6 +7,7 @@
 - (CGFloat)minutesSinceDate:(NSDate*)date;
 - (NSDate*)addMinutes:(CGFloat)minutes;
 - (CGFloat)hoursSinceDate:(NSDate*)date;
+- (CGFloat)daysSinceDate:(NSDate*)date;
 - (NSDate*)dayStart;
 
 @end
