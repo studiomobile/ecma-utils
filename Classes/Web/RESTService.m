@@ -44,7 +44,9 @@ const NSString *RequestStatusCode = @"__RequestStatusCode__";
         [url appendString:queryString];
     }
 	NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:url]];
-    if (timeoutInterval > 0) {
+    [request setHTTPShouldHandleCookies:NO];
+	
+	if (timeoutInterval > 0) {
         [request setTimeoutInterval:timeoutInterval];
     }
 	if (login.length > 0 && password.length > 0) {
