@@ -3,6 +3,8 @@
 
 @implementation UIWebView(Utils)
 
+- (BOOL)loaded { return !self.loading && self.request; }
+
 - (void)loadLocalHTMLString:(NSString*)htmlString {
 	NSURL *baseURL = [NSURL fileURLWithPath:[[NSBundle mainBundle] bundlePath]];
 	[self loadHTMLString:htmlString baseURL:baseURL];
