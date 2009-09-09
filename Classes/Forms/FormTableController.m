@@ -262,17 +262,22 @@
 }
 
 
+- (UITableViewCell*)buttonByNumber:(NSInteger)buttonNumber {
+    static NSString *CellIdentifier = @"ButtonCell";
+    UITableViewCell *cell = [self.table dequeueReusableCellWithIdentifier:CellIdentifier];
+    if (cell == nil) {
+        cell = [[[UITableViewCell alloc] initWithFrame:CGRectZero reuseIdentifier:CellIdentifier] autorelease];
+        cell.textAlignment = UITextAlignmentCenter;
+        cell.selectionStyle = UITableViewCellSelectionStyleGray;
+    }
+    cell.text = [self buttonTitle:buttonNumber];
+    return cell;
+}
+
+
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
 	if (indexPath.section >= [self numberOfDataSections]) {
-		static NSString *CellIdentifier = @"ButtonCell";
-		UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-		if (cell == nil) {
-			cell = [[[UITableViewCell alloc] initWithFrame:CGRectZero reuseIdentifier:CellIdentifier] autorelease];
-			cell.textAlignment = UITextAlignmentCenter;
-			cell.selectionStyle = UITableViewCellSelectionStyleGray;
-		}
-		cell.text = [self buttonTitle:[self buttonNumberByIndexPath:indexPath]];
-		return cell;
+        return [self buttonByNumber:[self buttonNumberByIndexPath:indexPath]];
 	}
 	
 	FormFieldDescriptor *desc = [self descriptorForField:indexPath];

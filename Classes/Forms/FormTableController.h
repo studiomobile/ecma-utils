@@ -22,6 +22,7 @@
 
 - (void)enableButton:(BOOL)enable;
 - (NSString*)buttonTitle:(NSInteger)buttonNumber;
+- (UITableViewCell*)buttonByNumber:(NSInteger)buttonNumber;
 - (IBAction)buttonPressed:(NSInteger)buttonNumber;
 - (void)reloadForm;
 - (void)hideDatePicker;
