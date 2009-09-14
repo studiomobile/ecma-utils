@@ -13,7 +13,6 @@ const NSString *RequestStatusCode = @"__RequestStatusCode__";
 @synthesize password;
 @synthesize timeoutInterval;
 
-
 - (id)initWithBaseUrl:(NSString*)url mapper:(NSObject<RESTServiceDataMapper>*)m {
 	checkNotNil(url, @"nil url");
     if (![super init]) return nil;
@@ -26,7 +25,6 @@ const NSString *RequestStatusCode = @"__RequestStatusCode__";
 - (id)initWithBaseUrl:(NSString*)url {
     return [self initWithBaseUrl:url mapper:nil];
 }
-
 
 - (void)dealloc {
     [mapper release];
@@ -122,6 +120,14 @@ const NSString *RequestStatusCode = @"__RequestStatusCode__";
 	return [self request:request error:error];
 }
 
+- (id)del:(NSString*)localPath withParams:(WebParams*)params error:(NSError**)error{
+	checkNotNil(localPath, @"localPath cannot be nil");
+	
+	NSMutableURLRequest *request = [self requestForPath:localPath withParams:params];
+	[request setHTTPMethod:@"DELETE"];
+	return [self request:request error:error];
+}
+
 
 - (id)send:(NSData*)data to:(NSString*)localPath method:(NSString*)method contentType:(NSString*)contentType headers:(NSDictionary*)headers error:(NSError**)error {
     checkNotNil(localPath, @"localPath cannot be nil");
@@ -141,27 +147,24 @@ const NSString *RequestStatusCode = @"__RequestStatusCode__";
     return [self request:request error:error];    
 }
 
-
 - (id)post:(NSData*)data contentType:(NSString*)contentType to:(NSString*)localPath headers:(NSDictionary*)headers error:(NSError**)error {
 	return [self send:data to:localPath method:@"POST" contentType:contentType headers:headers error:error];
 }
-
 
 - (id)post:(NSData*)data contentType:(NSString*)contentType to:(NSString*)localPath error:(NSError**)error {
     NSDictionary *headers = [NSDictionary dictionaryWithObjectsAndKeys:@"text/xml", @"Accept", nil];
 	return [self post:data contentType:contentType to:localPath headers:headers error:error];
 }
 
-
 - (id)put:(NSData*)data contentType:(NSString*)contentType to:(NSString*)localPath headers:(NSDictionary*)headers error:(NSError**)error {
 	return [self send:data to:localPath method:@"PUT" contentType:contentType headers:headers error:error];
 }
-
 
 - (id)put:(NSData*)data contentType:(NSString*)contentType to:(NSString*)localPath error:(NSError**)error {
     NSDictionary *headers = [NSDictionary dictionaryWithObjectsAndKeys:@"text/xml", @"Accept", nil];
 	return [self put:data contentType:contentType to:localPath headers:headers error:error];
 }
+
 
 
 @end

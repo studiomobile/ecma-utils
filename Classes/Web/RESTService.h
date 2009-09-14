@@ -24,12 +24,16 @@ extern const NSString *RequestStatusCode;
 
 - (id)initWithBaseUrl:(NSString*)url;
 - (id)initWithBaseUrl:(NSString*)url mapper:(NSObject<RESTServiceDataMapper>*)m;
+
 - (id)put:(NSData*)data contentType:(NSString*)contentType to:(NSString*)localPath error:(NSError**)error;
 - (id)put:(NSData*)data contentType:(NSString*)contentType to:(NSString*)localPath headers:(NSDictionary*)headers error:(NSError**)error;
+
 - (id)post:(NSData*)data contentType:(NSString*)contentType to:(NSString*)localPath error:(NSError**)error;
 - (id)post:(NSData*)data contentType:(NSString*)contentType to:(NSString*)localPath headers:(NSDictionary*)headers error:(NSError**)error;
+
 - (id)get:(NSString*)localPath withParams:(WebParams*)params headers:(NSDictionary*)headers error:(NSError**)error;
 - (id)get:(NSString*)localPath withParams:(WebParams*)params error:(NSError**)error;
-                                
+
+- (id)del:(NSString*)localPath withParams:(WebParams*)params error:(NSError**)error;                                
 
 @end
