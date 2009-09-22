@@ -68,21 +68,19 @@ static const NSDictionary *primitives() {
 
 @implementation POXMapping
 
+@synthesize result;
+
 - (id)init {
-	if (self = [super init]) {
-		result = nil;
-		top = push_new(NULL);
-		top->elementType = kPOXElementRoot;
-	}
+	if (![super init]) return nil;
+    result = nil;
+    top = push_new(NULL);
+    top->elementType = kPOXElementRoot;
 	return self;
 }
 
-- (SelfDescribing *)result {
-	return result;
-}
 
 - (void)dealloc {
-	while(top != NULL) {
+	while (top != NULL) {
 		top = pop(top);
 	}
 	[result release];

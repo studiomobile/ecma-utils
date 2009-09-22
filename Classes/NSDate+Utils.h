@@ -4,10 +4,10 @@
 
 - (BOOL)isAfter:(NSDate*)other;
 - (BOOL)isBefore:(NSDate*)other;
-- (CGFloat)minutesSinceDate:(NSDate*)date;
-- (NSDate*)addMinutes:(CGFloat)minutes;
-- (CGFloat)hoursSinceDate:(NSDate*)date;
-- (CGFloat)daysSinceDate:(NSDate*)date;
+- (NSTimeInterval)minutesSinceDate:(NSDate*)date;
+- (NSDate*)addMinutes:(NSTimeInterval)minutes;
+- (NSTimeInterval)hoursSinceDate:(NSDate*)date;
+- (NSTimeInterval)daysSinceDate:(NSDate*)date;
 - (NSDate*)dayStart;
 
 @end

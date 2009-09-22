@@ -10,19 +10,19 @@
 	return [self compare:other] == NSOrderedAscending;
 }
 
-- (CGFloat)minutesSinceDate:(NSDate*)date {
+- (NSTimeInterval)minutesSinceDate:(NSDate*)date {
 	return [self timeIntervalSinceDate:date]/60;
 }
 
-- (NSDate*)addMinutes:(CGFloat)minutes {
+- (NSDate*)addMinutes:(NSTimeInterval)minutes {
 	return [self addTimeInterval:60*minutes];
 }
 
-- (CGFloat)hoursSinceDate:(NSDate*)date {
+- (NSTimeInterval)hoursSinceDate:(NSDate*)date {
 	return [self timeIntervalSinceDate:date]/3600;
 }
 
--(CGFloat)daysSinceDate: (NSDate*)date{
+- (NSTimeInterval)daysSinceDate: (NSDate*)date{
 	return [self hoursSinceDate:date]/24;
 }
 

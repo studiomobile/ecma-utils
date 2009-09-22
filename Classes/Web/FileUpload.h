@@ -1,3 +1,5 @@
+@class UIImage;
+
 @interface FileUpload : NSObject {
 	NSData *data;
 	NSString *fileName;
