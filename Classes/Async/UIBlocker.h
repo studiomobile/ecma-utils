@@ -2,17 +2,18 @@
 
 @interface UIBlocker : NSObject<UIBlockingView>{
 	UIActivityIndicatorView* indicator;
-	BOOL isForeignIndicator;
-	
-	NSMutableArray* viewsToBlock;
+	UIActivityIndicatorView* myIndicator;
+	NSMutableArray* views;
 	NSMutableDictionary* viewStates;
+    BOOL showGlobalIndicator;
+    BOOL blockInteraction;
 }
+@property (retain) UIActivityIndicatorView* indicator;
+@property (copy) NSArray* views;
+@property (assign) BOOL showGlobalIndicator;
+@property (assign) BOOL blockInteraction;
 
-@property(retain) UIActivityIndicatorView* indicator;
-@property(copy) NSArray* views;
-@property(retain) UIView* view;
-
-+(UIBlocker*)blocker;
-+(UIBlocker*)blockerForView: (UIView*)view;
++ (UIBlocker*)blocker;
++ (UIBlocker*)blockerForView:(UIView*)view;
 
 @end
