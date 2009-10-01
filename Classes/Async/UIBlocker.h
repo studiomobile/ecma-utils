@@ -3,7 +3,7 @@
 @interface UIBlocker : NSObject<UIBlockingView>{
 	UIActivityIndicatorView* indicator;
 	UIActivityIndicatorView* myIndicator;
-	NSMutableArray* views;
+	NSArray* views;
 	NSMutableDictionary* viewStates;
     BOOL showGlobalIndicator;
     BOOL blockInteraction;
