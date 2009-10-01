@@ -112,7 +112,7 @@
 
 
 - (void)tag:(NSString*)name cdata:(NSString*)content attributes:(NSDictionary*)attributes {
-    [self tag:name content:[NSString stringWithFormat:@"<![CDATA[%@]]>", content] attributes:attributes escape:NO];
+    [self tag:name content:[NSString stringWithFormat:@"<![CDATA[%@]]>", (content ? content : @"")] attributes:attributes escape:NO];
 }
 
 

@@ -4,11 +4,13 @@
 
 
 + (void)showAlertViewWithTitle:(NSString*)title message:(NSString*)message {
-    [[[[UIAlertView alloc] initWithTitle:title
-                                 message:message
-                                delegate:nil
-                       cancelButtonTitle:@"OK"
-                       otherButtonTitles:nil] autorelease] show];
+    UIAlertView *alert = [[[UIAlertView alloc] initWithTitle:title
+                                                     message:message
+                                                    delegate:nil
+                                           cancelButtonTitle:@"OK"
+                                           otherButtonTitles:nil] autorelease];
+    
+    [alert performSelectorOnMainThread:@selector(show) withObject:nil waitUntilDone:NO];
 }
 
 
