@@ -71,7 +71,7 @@
 
 - (void)dealloc {
 	value.delegate = nil;
-	[value release];
+	[value autorelease];
     [super dealloc];
 }
 
