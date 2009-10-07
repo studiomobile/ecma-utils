@@ -4,7 +4,7 @@
 
 
 + (void)showAlertViewErrorMessage:(NSString*)message {
-    [self showAlertViewWithTitle:NSLocalizedString(@"Error") message:message];
+    [self showAlertViewWithTitle:NSLocalizedString(@"Error", nil) message:message];
 }
 
 
@@ -12,14 +12,14 @@
     UIAlertView *alert = [[[UIAlertView alloc] initWithTitle:title
                                                      message:message
                                                     delegate:nil
-                                           cancelButtonTitle:NSLocalizedString(@"OK")
+                                           cancelButtonTitle:NSLocalizedString(@"OK", nil)
                                            otherButtonTitles:nil] autorelease];
     
     [alert performSelectorOnMainThread:@selector(show) withObject:nil waitUntilDone:NO];
 }
 
 
-+ (void)showAlertViewWithMessage:(NSString*)message{
++ (void)showAlertViewWithMessage:(NSString*)message {
 	[self showAlertViewWithTitle:nil message:message];
 }
 
@@ -33,8 +33,8 @@
     [[[[UIAlertView alloc] initWithTitle:title
                                  message:message
                                 delegate:delegate
-                       cancelButtonTitle:NSLocalizedString(@"No")
-                       otherButtonTitles:NSLocalizedString(@"Yes"), nil] autorelease] show];
+                       cancelButtonTitle:NSLocalizedString(@"No", nil)
+                       otherButtonTitles:NSLocalizedString(@"Yes", nil), nil] autorelease] show];
 }
 
 
