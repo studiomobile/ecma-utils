@@ -3,11 +3,16 @@
 @implementation UIAlertView (Utils)
 
 
++ (void)showAlertViewErrorMessage:(NSString*)message {
+    [self showAlertViewWithTitle:NSLocalizedString(@"Error") message:message];
+}
+
+
 + (void)showAlertViewWithTitle:(NSString*)title message:(NSString*)message {
     UIAlertView *alert = [[[UIAlertView alloc] initWithTitle:title
                                                      message:message
                                                     delegate:nil
-                                           cancelButtonTitle:@"OK"
+                                           cancelButtonTitle:NSLocalizedString(@"OK")
                                            otherButtonTitles:nil] autorelease];
     
     [alert performSelectorOnMainThread:@selector(show) withObject:nil waitUntilDone:NO];
@@ -28,8 +33,8 @@
     [[[[UIAlertView alloc] initWithTitle:title
                                  message:message
                                 delegate:delegate
-                       cancelButtonTitle:@"No"
-                       otherButtonTitles:@"Yes", nil] autorelease] show];
+                       cancelButtonTitle:NSLocalizedString(@"No")
+                       otherButtonTitles:NSLocalizedString(@"Yes"), nil] autorelease] show];
 }
 
 
