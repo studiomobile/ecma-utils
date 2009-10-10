@@ -81,9 +81,6 @@
 
 - (void)invokeInvocation:(NSInvocation*)invocation fromThread:(NSThread*)clientThread {
 	[invocation setTarget:target];
-	if(![invocation argumentsRetained]) {
-		[invocation retainArguments];
-	}
 
 	id result = nil;
 	@try {
@@ -133,7 +130,9 @@
 
 
 - (void)forwardInvocation:(NSInvocation*)invocation {
-	[invocation retainArguments];
+	if(![invocation argumentsRetained]) {
+		[invocation retainArguments];
+	}
 	[opQ addOperation:[[[AsyncOperation alloc] initWithAsyncObject:async invocation:invocation] autorelease]];
 }
 
