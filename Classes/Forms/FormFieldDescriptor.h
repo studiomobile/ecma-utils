@@ -18,6 +18,7 @@ typedef enum FormFieldDescriptorType {
     FORM_FIELD_DESCRIPTOR_TEXT_AREA,
     FORM_FIELD_DESCRIPTOR_COLLECTION,
     FORM_FIELD_DESCRIPTOR_SWITCH,
+    FORM_FIELD_DESCRIPTOR_SEGMENTED,
     FORM_FIELD_DESCRIPTOR_AGREEMENT,
     FORM_FIELD_DESCRIPTOR_DATETIME,
     FORM_FIELD_DESCRIPTOR_CUSTOM
@@ -40,5 +41,7 @@ typedef enum FormFieldDescriptorType {
 @property (readwrite, assign) id value;
 
 @property (readonly) NSMutableDictionary *options;
+
+- (NSArray*)getCollection;
 
 @end

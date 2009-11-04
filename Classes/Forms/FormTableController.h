@@ -1,5 +1,6 @@
 #import <UIKit/UIKit.h>
 #import "FormFieldDescriptor.h"
+#import "SegmentedControlCell.h"
 
 #import "FormController.h"
 
@@ -30,8 +31,9 @@
 
 
 
-
 - (FormFieldDescriptor*)descriptorForField:(NSIndexPath*)indexPath;
+
+- (FormFieldDescriptor*)fieldWithTitle:(NSString*)title forProperty:(NSString*)keyPath ofObject:(id)object type:(FormFieldDescriptorType)type;
 
 - (FormFieldDescriptor*)textFieldWithTitle:(NSString*)title forProperty:(NSString*)keyPath ofObject:(id)object;
 - (FormFieldDescriptor*)numTextFieldWithTitle:(NSString *)title forProperty:(NSString *)keyPath ofObject:(id)object;
@@ -41,6 +43,7 @@
 - (FormFieldDescriptor*)textEditFieldWithTitle:(NSString*)title forProperty:(NSString*)keyPath ofObject:(id)object;
 - (FormFieldDescriptor*)collectionFieldWithTitle:(NSString*)title forProperty:(NSString*)keyPath ofObject:(id)object;
 - (FormFieldDescriptor*)switchFieldWithTitle:(NSString*)title forProperty:(NSString*)keyPath ofObject:(id)object;
+- (FormFieldDescriptor*)segmentedControlFieldWithTitle:(NSString*)title forProperty:(NSString*)keyPath ofObject:(id)object;
 - (FormFieldDescriptor*)agreementFieldWithTitle:(NSString*)title forProperty:(NSString*)keyPath ofObject:(id)object;
 - (FormFieldDescriptor*)dateTimeFieldWithTitle:(NSString*)title forProperty:(NSString*)keyPath ofObject:(id)object;
 - (FormFieldDescriptor*)dateFieldWithTitle:(NSString*)title forProperty:(NSString*)keyPath ofObject:(id)object;
@@ -53,6 +56,7 @@
 - (StaticFormCell*)disclosingCellWithDescriptor:(FormFieldDescriptor*)desc;
 - (TextFieldCell*)textFieldCellWithDescriptor:(FormFieldDescriptor*)desc;
 - (SwitchCell*)switchFieldCellWithDescriptor:(FormFieldDescriptor*)desc;
+- (SegmentedControlCell*)segmentedFieldCellWithDescriptor:(FormFieldDescriptor*)desc;
 - (AgreementCell*)agreementFieldCellWithDescriptor:(FormFieldDescriptor*)desc;
 - (DateTimeCell*)dateTimeFieldCellWithDescriptor:(FormFieldDescriptor*)desc;
 

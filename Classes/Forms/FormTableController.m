@@ -81,6 +81,11 @@
 }
 
 
+- (FormFieldDescriptor*)segmentedControlFieldWithTitle:(NSString*)title forProperty:(NSString*)keyPath ofObject:(id)object {
+	return [self fieldWithTitle:title forProperty:keyPath ofObject:object type:FORM_FIELD_DESCRIPTOR_SEGMENTED];
+}
+
+
 - (FormFieldDescriptor*)agreementFieldWithTitle:(NSString*)title forProperty:(NSString*)keyPath ofObject:(id)object {
 	return [self fieldWithTitle:title forProperty:keyPath ofObject:object type:FORM_FIELD_DESCRIPTOR_AGREEMENT];
 }
@@ -222,7 +227,7 @@
 
 
 - (StaticFormCell*)disclosingCellWithDescriptor:(FormFieldDescriptor*)desc {
-	StaticFormCell *cell = (StaticFormCell*)[self formCellWithClass:[StaticFormCell class] reuseIdentifier:@"DisclosingCell" descriptor:desc];; 
+	StaticFormCell *cell = (StaticFormCell*)[self formCellWithClass:[StaticFormCell class] reuseIdentifier:@"DisclosingCell" descriptor:desc]; 
     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
 	return cell;
 }
@@ -237,6 +242,11 @@
 - (SwitchCell*)switchFieldCellWithDescriptor:(FormFieldDescriptor*)desc {
 	SwitchCell *cell = (SwitchCell*)[self formCellWithClass:[SwitchCell class] reuseIdentifier:@"SwitchCell" descriptor:desc];
 	return cell;
+}
+
+
+- (SegmentedControlCell*)segmentedFieldCellWithDescriptor:(FormFieldDescriptor*)desc {
+	return (SegmentedControlCell*)[self formCellWithClass:[SegmentedControlCell class] reuseIdentifier:@"SegmentedControlCell" descriptor:desc];
 }
 
 
@@ -288,6 +298,9 @@
             break;
         case FORM_FIELD_DESCRIPTOR_SWITCH:
             return [self switchFieldCellWithDescriptor:desc];
+            break;
+        case FORM_FIELD_DESCRIPTOR_SEGMENTED:
+            return [self segmentedFieldCellWithDescriptor:desc];
             break;
         case FORM_FIELD_DESCRIPTOR_AGREEMENT:
             return [self agreementFieldCellWithDescriptor:desc];
@@ -427,16 +440,11 @@
 
 
 - (NSArray*)getCollectionForDescriptor:(FormFieldDescriptor *)desc atIndexPath:(NSIndexPath *)indexPath{
-	NSArray *collection = [desc.options valueForKey:@"collection"];
-	if(collection) return collection;
+	NSArray *collection = [desc getCollection];
+	if(collection) {
+        return collection;
+    }
 	
-	NSInvocation *invocation = [desc.options valueForKey:@"collectionInvocation"];
-	if(invocation){
-		[invocation invoke];
-		[invocation getReturnValue:&collection];
-		if(collection) return collection;
-	}
-		
 	return [self collectionForDescriptor:desc atIndexPath:indexPath];
 }
 

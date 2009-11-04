@@ -20,6 +20,9 @@
     NSNumber *accessoryTypeNumber = [self.fieldDescriptor.options objectForKey:@"accessoryType"];
     self.accessoryType = accessoryTypeNumber ? [accessoryTypeNumber integerValue] : UITableViewCellAccessoryNone;
 
+    NSNumber *selectionStyleNumber = [self.fieldDescriptor.options objectForKey:@"selectionStyle"];
+    self.selectionStyle = selectionStyleNumber ? [selectionStyleNumber integerValue] : UITableViewCellSelectionStyleBlue;
+
     self.accessoryView = [self.fieldDescriptor.options objectForKey:@"accessoryView"];
 }
 

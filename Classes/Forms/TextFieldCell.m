@@ -46,6 +46,8 @@
     NSNumber *borderStyleNumber = [self.fieldDescriptor.options objectForKey:@"value.borderStyle"];
     UIKeyboardType borderStyle = borderStyleNumber ? [borderStyleNumber integerValue] : UITextBorderStyleNone;
     self.value.borderStyle = borderStyle;
+    
+    self.value.placeholder = [self.fieldDescriptor.options objectForKey:@"value.placeholder"];
 }
 
 - (void)textFieldDidEndEditing:(UITextField *)textField {

@@ -56,7 +56,7 @@
 	
 	CGRect titleRect;
 	CGRect controlsRect = bounds;
-	CGRectDivide(controlsRect, &titleRect, &controlsRect, titleWidth, CGRectMinXEdge);
+	CGRectDivide(controlsRect, &titleRect, &controlsRect, fmax(0, fmin(titleWidth, controlsRect.size.width)), CGRectMinXEdge);
 	
 	title.frame = titleRect;
     [self layoutControls:controlsRect];
