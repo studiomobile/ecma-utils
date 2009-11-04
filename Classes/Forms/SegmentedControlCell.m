@@ -12,11 +12,12 @@
     return [self.fieldDescriptor getCollection];
 }
 
+
 - (void)onFieldDescriptorUpdate {
     [super onFieldDescriptorUpdate];
 
     [items release];
-    items = [self getItems];
+    items = [[self getItems] retain];
 
     [segmentedControl removeFromSuperview];
     [segmentedControl release];
