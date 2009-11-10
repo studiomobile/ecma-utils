@@ -3,8 +3,8 @@
 #import "NSString+Web.h"
 #import "NSData+Base64.h"
 
-const NSString *WebServiceErrorKey = @"__WebServiceError__";
-const NSString *RequestStatusCode = @"__RequestStatusCode__";
+NSString *const WebServiceErrorKey = @"__WebServiceError__";
+NSString *const RequestStatusCode = @"__RequestStatusCode__";
 
 @implementation RESTService
 
