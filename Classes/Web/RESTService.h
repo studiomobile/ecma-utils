@@ -16,11 +16,13 @@ extern NSString *const RequestStatusCode;
 	NSString *password;
     NSTimeInterval timeoutInterval;
     NSObject<RESTServiceDataMapper> *mapper;
+    BOOL enableCookies;
 }
 @property (readonly, nonatomic) NSString *baseUrl;
 @property (retain) NSString *login;
 @property (retain) NSString *password;
 @property (assign) NSTimeInterval timeoutInterval;
+@property (assign) BOOL enableCookies;
 
 - (id)initWithBaseUrl:(NSString*)url;
 - (id)initWithBaseUrl:(NSString*)url mapper:(NSObject<RESTServiceDataMapper>*)m;

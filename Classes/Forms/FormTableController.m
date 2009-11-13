@@ -53,6 +53,8 @@
 
 - (FormFieldDescriptor*)emailFieldWithTitle:(NSString*)title forProperty:(NSString*)keyPath ofObject:(id)object {
     FormFieldDescriptor *desc = [self textFieldWithTitle:title forProperty:keyPath ofObject:object];
+    [desc.options setValue:[NSNumber numberWithInteger:UITextAutocorrectionTypeNo] forKey:@"value.autocorrectionType"];
+	[desc.options setObject:[NSNumber numberWithInteger:UITextAutocapitalizationTypeNone] forKey:@"value.autocapitalizationType"];
     [desc.options setObject:[NSNumber numberWithInteger:UIKeyboardTypeEmailAddress] forKey:@"value.keyboardType"];
     return desc;
 }

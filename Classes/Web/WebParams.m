@@ -9,17 +9,15 @@
 }
 
 
-- (id)init {
-    if (![super init]) return nil;
-    params = [NSMutableDictionary new];
-	return self;
-}
-
-
 - (id)initWithDictionary:(NSDictionary*)dictionary {
 	if (![super init]) return nil;
     params = [[NSMutableDictionary alloc] initWithDictionary:dictionary];
 	return self;
+}
+
+
+- (id)init {
+    return [self initWithDictionary:[NSDictionary dictionary]];
 }
 
 

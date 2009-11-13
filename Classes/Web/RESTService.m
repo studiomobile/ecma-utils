@@ -12,6 +12,7 @@ NSString *const RequestStatusCode = @"__RequestStatusCode__";
 @synthesize login;
 @synthesize password;
 @synthesize timeoutInterval;
+@synthesize enableCookies;
 
 - (id)initWithBaseUrl:(NSString*)url mapper:(NSObject<RESTServiceDataMapper>*)m {
 	checkNotNil(url, @"nil url");
@@ -42,7 +43,7 @@ NSString *const RequestStatusCode = @"__RequestStatusCode__";
         [url appendString:queryString];
     }
 	NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:url]];
-    [request setHTTPShouldHandleCookies:NO];
+    [request setHTTPShouldHandleCookies:enableCookies];
 	
 	if (timeoutInterval > 0) {
         [request setTimeoutInterval:timeoutInterval];
@@ -83,6 +84,7 @@ NSString *const RequestStatusCode = @"__RequestStatusCode__";
 										   [NSNumber numberWithInt:statusCode], RequestStatusCode, 
 										   nil];
 				*error = [NSError errorWithDomain:@"WebServerError" code:1 userInfo:errorInfo];
+                NSLog(@"Result: %@", [[NSString alloc] initWithData:result encoding:NSUTF8StringEncoding]);
 			} else {
 				NSLog(@"Failed to map server error to provided erro class");
 				NSDictionary *errorInfo = [NSDictionary dictionaryWithObjectsAndKeys:
