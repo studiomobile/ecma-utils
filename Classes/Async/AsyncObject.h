@@ -1,6 +1,7 @@
 #import <UIKit/UIKit.h>
 
 @interface AsyncObject : NSObject<NSCopying> {
+    NSOperationQueue *opQ;
 	id target;
 	id delegate;
 	id observer;

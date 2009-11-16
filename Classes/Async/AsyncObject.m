@@ -6,7 +6,7 @@
 	NSOperationQueue *opQ;
 }
 
-- (id)initWithAsyncObject:(AsyncObject*)async;
+- (id)initWithAsyncObject:(AsyncObject*)async operationQueue:(NSOperationQueue*)opQ;
 
 @end
 
@@ -17,7 +17,7 @@
 	NSThread *clientThread;
 }
 
-- (id)initWithAsyncObject:(AsyncObject*)async invocation:(NSInvocation*)invocation;
+- (id)initWithAsyncObject:(AsyncObject*)async invocation:(NSInvocation*)invocation clientThread:(NSThread*)thread;
 
 @end
 
@@ -49,9 +49,9 @@
 
 
 - (id)initWithTarget:(id)_target {
-	if(self = [super init]) {
-		target = [_target retain];
-	}
+    if (![super init]) return nil;
+    target = [_target retain];
+    opQ = [NSOperationQueue new];
 	return self;
 }
 
@@ -72,7 +72,7 @@
 
 
 - (id)createAsyncProxy {
-	return [[AsyncProxy alloc] initWithAsyncObject:self];
+	return [[AsyncProxy alloc] initWithAsyncObject:self operationQueue:opQ];
 }
 
 
@@ -109,6 +109,7 @@
 
 
 - (void)dealloc {
+    [opQ release];
 	[target release];
 	[observer release];
 	[super dealloc];
@@ -120,12 +121,11 @@
 @implementation AsyncProxy
 
 
-- (id)initWithAsyncObject:(AsyncObject*)_async {
-	if (self = [super init]) {
-		async = [_async copy];
-		opQ = [NSOperationQueue new];
-	}
-	return self;
+- (id)initWithAsyncObject:(AsyncObject*)_async operationQueue:(NSOperationQueue*)_opQ {
+    if (![super init]) return nil;
+    async = [_async retain];
+    opQ = [_opQ retain];
+    return self;
 }
 
 
@@ -133,7 +133,7 @@
 	if(![invocation argumentsRetained]) {
 		[invocation retainArguments];
 	}
-	[opQ addOperation:[[[AsyncOperation alloc] initWithAsyncObject:async invocation:invocation] autorelease]];
+	[opQ addOperation:[[[AsyncOperation alloc] initWithAsyncObject:async invocation:invocation clientThread:[NSThread currentThread]] autorelease]];
 }
 
 
@@ -148,30 +148,32 @@
 	[super dealloc];
 }
 
-
 @end
 
-
+//============================
 @implementation AsyncOperation
 
-- (id)initWithAsyncObject:(AsyncObject*)_async invocation:(NSInvocation*)_invocation {
+- (id)initWithAsyncObject:(AsyncObject*)_async invocation:(NSInvocation*)_invocation clientThread:(NSThread*)thread {
 	if (self = [super init]) {
 		async = [_async copy];
 		invocation = [_invocation retain];
-		clientThread = [NSThread currentThread];
+		clientThread = [thread retain];
 	}
 	return self;
 }
 
 
 - (void)main {
-	[async invokeInvocation:invocation fromThread:clientThread];
+    if (![self isCancelled]) {
+        [async invokeInvocation:invocation fromThread:clientThread];
+    }
 }
 
 
 - (void)dealloc {
 	[async release];
 	[invocation release];
+    [clientThread release];
 	[super dealloc];
 }
 
