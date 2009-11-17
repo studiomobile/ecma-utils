@@ -1,4 +1,5 @@
 #import "TextFieldCell.h"
+#import "NSString+Utils.h"
 
 @implementation TextFieldCell
 
@@ -7,6 +8,7 @@
 - (UILabel*)createTitleLabel {
     return [[ForwardingLabel alloc] initWithFrame:CGRectZero];
 }
+
 
 - (id)initWithFrame:(CGRect)frame reuseIdentifier:(NSString *)reuseIdentifier {
     if (self = [super initWithFrame:frame reuseIdentifier:reuseIdentifier]) {
@@ -23,14 +25,17 @@
     return self;
 }
 
+
 - (void)edit {
     [self.value becomeFirstResponder];
 }
+
 
 - (void)onFieldDescriptorUpdate {
     [super onFieldDescriptorUpdate];
     
 	self.value.text = [self.fieldDescriptor.value description];
+
 	self.value.secureTextEntry = [[self.fieldDescriptor.options objectForKey:@"value.secureTextEntry"] boolValue];
     
     NSNumber *autocapitalizationTypeNumber = [self.fieldDescriptor.options objectForKey:@"value.autocapitalizationType"];
@@ -48,17 +53,23 @@
     self.value.borderStyle = borderStyle;
     
     self.value.placeholder = [self.fieldDescriptor.options objectForKey:@"value.placeholder"];
+    
+    NSNumber *textAlignmentNumber = [self.fieldDescriptor.options objectForKey:@"value.textAlignment"];
+    self.value.textAlignment = textAlignmentNumber ? [textAlignmentNumber integerValue] : UITextAlignmentLeft;
 }
+
 
 - (void)textFieldDidEndEditing:(UITextField *)textField {
 	self.fieldDescriptor.value = value.text;
 }
+
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
 	self.fieldDescriptor.value = value.text;
 	[value resignFirstResponder];
     return YES;
 }
+
 
 - (void)layoutControls:(CGRect)controlsRect {
     // TODO cleanup
@@ -70,6 +81,7 @@
     CGFloat fieldHeight = self.value.font.pointSize + 10;
 	value.frame = CGRectMake(controlsRect.origin.x, controlsRect.origin.y + (controlsRect.size.height - fieldHeight)/2, controlsRect.size.width, fieldHeight);
 }
+
 
 - (void)dealloc {
 	value.delegate = nil;

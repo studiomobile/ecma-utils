@@ -24,6 +24,9 @@
     self.selectionStyle = selectionStyleNumber ? [selectionStyleNumber integerValue] : UITableViewCellSelectionStyleBlue;
 
     self.accessoryView = [self.fieldDescriptor.options objectForKey:@"accessoryView"];
+    
+    UIColor *userBackgroundColor = [self.fieldDescriptor.options objectForKey:@"backgroundColor"];
+    self.backgroundColor = userBackgroundColor ? userBackgroundColor : [UIColor whiteColor];
 }
 
 
