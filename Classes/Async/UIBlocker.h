@@ -5,15 +5,16 @@
 	UIActivityIndicatorView* myIndicator;
 	NSArray* views;
 	NSMutableDictionary* viewStates;
-    BOOL showGlobalIndicator;
+    BOOL dontShowIndicator;
     BOOL blockInteraction;
 }
 @property (retain) UIActivityIndicatorView* indicator;
 @property (copy) NSArray* views;
-@property (assign) BOOL showGlobalIndicator;
 @property (assign) BOOL blockInteraction;
 
 + (UIBlocker*)blocker;
 + (UIBlocker*)blockerForView:(UIView*)view;
+
+-(void) dontShowIndicator;
 
 @end

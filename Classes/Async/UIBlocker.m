@@ -5,7 +5,6 @@
 
 @synthesize views;
 @synthesize indicator;
-@synthesize showGlobalIndicator;
 @synthesize blockInteraction;
 
 
@@ -18,6 +17,10 @@
 	UIBlocker *blocker = [self blocker];
 	blocker.views = [NSArray arrayWithObject:view];
 	return blocker;
+}
+
+-(void)dontShowIndicator{
+	dontShowIndicator = YES;
 }
 
 
@@ -65,7 +68,7 @@
 
 - (void)showIndicator {
     UIActivityIndicatorView *activeIndicator = self.indicator;
-    if (!activeIndicator && showGlobalIndicator) {
+    if (!(activeIndicator || dontShowIndicator)) {
         if (!myIndicator) {
             myIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle: UIActivityIndicatorViewStyleWhiteLarge];
             myIndicator.hidesWhenStopped = YES;
