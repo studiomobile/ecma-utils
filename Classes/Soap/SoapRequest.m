@@ -19,6 +19,7 @@
 @synthesize pathToResult;
 @synthesize	result; 
 @synthesize	error; 
+@synthesize enableCookies;
 
 - (void)dealloc {
 	[url release];
@@ -54,7 +55,8 @@
 	self.result = nil;
 	
 	RESTService *service = [[[RESTService alloc] initWithBaseUrl:url] autorelease];
-
+	service.enableCookies = enableCookies;
+	
 	SoapEnveloper *enveloper = [SoapEnveloper soapEnveloper];
 	if (header) {
 		[enveloper encodeHeaderObject:header];

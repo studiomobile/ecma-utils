@@ -12,6 +12,7 @@
 	NSArray* pathToResult;
 	id result;
 	NSError* error;
+	BOOL enableCookies;
 }
 
 @property(retain) NSString* url;
@@ -23,6 +24,7 @@
 @property(retain) NSArray* pathToResult;
 @property(retain, readonly)	id result; 
 @property(retain, readonly)	NSError* error; 
+@property(assign) BOOL enableCookies;
 
 -(BOOL)execute;
 
