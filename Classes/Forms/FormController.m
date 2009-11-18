@@ -2,6 +2,8 @@
 #import "NSObject+Utils.h"
 #import "UIApplication+Utils.h"
 
+#define KEYBOARD_MARGIN 10
+
 @interface FormController (Private)
 
 @property (retain) UITextField *focusedTextField;
@@ -123,6 +125,7 @@
 	if(tableViewResized) { //if you want to understand why this if statement see comments in kbdWillHide
 		return;
 	}
+    
 	NSDictionary *userInfo = notification.userInfo;
 	NSValue *kbdBoundsValue = [userInfo objectForKey:UIKeyboardBoundsUserInfoKey];
 	CGRect kbdBounds;
@@ -130,19 +133,11 @@
 	NSValue *kbdEndCenterValue = [userInfo objectForKey:UIKeyboardCenterEndUserInfoKey];
 	CGPoint kbdCenter;
 	[kbdEndCenterValue getValue:&kbdCenter];
-	CGRect statusBarFrame = [[UIApplication sharedApplication] statusBarFrame];
-	if(![UIApplication sharedApplication].statusBarHidden) {
-		if(UIInterfaceOrientationIsPortrait([UIApplication sharedApplication].statusBarOrientation)){
-			kbdCenter = CGPointMake(kbdCenter.x, kbdCenter.y - CGRectGetHeight(statusBarFrame));
-		} else {
-			kbdCenter = CGPointMake(kbdCenter.x, kbdCenter.y - CGRectGetWidth(statusBarFrame));
-		}
-	}
-	
-	UIView *appView = [UIApplication mainView];	
-	CGRect kbdAppFrame = CGRectOffset(kbdBounds, kbdCenter.x - kbdBounds.size.width/2, kbdCenter.y - kbdBounds.size.height/2 );
+    
+	CGRect kbdAppFrame = CGRectOffset(kbdBounds, kbdCenter.x - kbdBounds.size.width/2, kbdCenter.y - kbdBounds.size.height/2);
+    CGRect restrictedFrame = CGRectMake(kbdAppFrame.origin.x, kbdAppFrame.origin.y - KEYBOARD_MARGIN, kbdAppFrame.size.width, kbdAppFrame.size.height + KEYBOARD_MARGIN);
 
-    [self adjustTableRelativeToFrame:kbdAppFrame frameView:appView];
+    [self adjustTableRelativeToFrame:restrictedFrame frameView:[UIApplication mainView]];
     return;
 }
 
