@@ -36,7 +36,9 @@
 -(void) addManyStringsForKey: (NSString*)key;
 -(void) addManyDatesForKey: (NSString*)key;
 -(void) addManyObjectsOfType: (id)type;
--(void) addManyObjectsOfType: (id)type forKey: (NSString*)key;	
+-(void) addManyObjectsOfType: (id)type forKey: (NSString*)key;
+
+-(BOOL) hasField: (NSString*)fieldName;
 
 @end
 

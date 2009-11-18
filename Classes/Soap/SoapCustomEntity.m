@@ -202,6 +202,10 @@ typedef enum eTypeCode_tag{
 	return nil;
 }
 
+-(BOOL) hasField: (NSString*)fieldName{
+	return [self fieldForKey: fieldName] != nil;
+}
+
 #pragma mark configuring
 
 -(CustomFieldDescriptor*)addFieldNamed: (NSString*)_name typeCode: (eTypeCode)tc{
@@ -552,9 +556,12 @@ typedef enum eTypeCode_tag{
 -(id)objectForPath: (NSArray*)path{
 	SoapCustomEntity* last = self;
 	for(NSString* key in path){
+		if(![last.type hasField: key]){
+			@throw [NSError errorWithDomain:@"RuntimeError" code:3 description:[NSString stringWithFormat:@"No object for key '%@' found in %@", key, [[last class] soapName] ]];
+		}
 		last = [last objectForKey:key];
-		if(!last){
-			@throw [NSError errorWithDomain:@"RuntimeError" code:3 description:[NSString stringWithFormat:@"No object for key '%@' found", key]];
+		if(!last){			
+			return nil;
 		}		
 	}
 	
