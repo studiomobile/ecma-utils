@@ -3,6 +3,8 @@
 
 @interface UIView(utils)
 
--(NSString*) hierarchyString;
+- (NSString*)hierarchyString;
+
+- (void)dumpHierarchy;
 
 @end
