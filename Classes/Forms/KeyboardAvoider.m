@@ -79,16 +79,9 @@
 	return kbdAppFrame;
 }
 
-- (void) cancelCurrentAnimations {
-	id animator = objc_getClass("UIAnimator");
-	id sharedAnimator = [animator performSelector: @selector(sharedAnimator)];
-	[sharedAnimator performSelector: @selector(removeAnimationsForTarget:) withObject: self];	
-}
-
 #pragma mark keyboard & text fields notification handlers
 
 - (void)kbdWillShow:(NSNotification*)notification {
-	[self cancelCurrentAnimations];	
     keyboardFrame = [self extractKeyboardFrameFromNotification:notification]; 	
 }
 
