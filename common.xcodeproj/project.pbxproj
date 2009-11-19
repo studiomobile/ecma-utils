@@ -75,6 +75,8 @@
 		B4130A6E101740FF006EFD10 /* NSObject+Invocation.m in Sources */ = {isa = PBXBuildFile; fileRef = B4130A6C101740FF006EFD10 /* NSObject+Invocation.m */; };
 		B42A6205102058D2002C0329 /* NSData+MD5.h in Headers */ = {isa = PBXBuildFile; fileRef = B42A6203102058D2002C0329 /* NSData+MD5.h */; };
 		B42A6206102058D2002C0329 /* NSData+MD5.m in Sources */ = {isa = PBXBuildFile; fileRef = B42A6204102058D2002C0329 /* NSData+MD5.m */; };
+		B42CD2F510B5B3F0003E57F0 /* PagerController.h in Headers */ = {isa = PBXBuildFile; fileRef = B42CD2F310B5B3F0003E57F0 /* PagerController.h */; };
+		B42CD2F610B5B3F0003E57F0 /* PagerController.m in Sources */ = {isa = PBXBuildFile; fileRef = B42CD2F410B5B3F0003E57F0 /* PagerController.m */; };
 		B45054D70FD5194B00A10092 /* WebParams.h in Headers */ = {isa = PBXBuildFile; fileRef = B45054D50FD5194B00A10092 /* WebParams.h */; };
 		B45054D80FD5194B00A10092 /* WebParams.m in Sources */ = {isa = PBXBuildFile; fileRef = B45054D60FD5194B00A10092 /* WebParams.m */; };
 		B45054DB0FD5196200A10092 /* NSString+Web.h in Headers */ = {isa = PBXBuildFile; fileRef = B45054D90FD5196200A10092 /* NSString+Web.h */; };
@@ -176,6 +178,8 @@
 		B4130A6C101740FF006EFD10 /* NSObject+Invocation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+Invocation.m"; sourceTree = "<group>"; };
 		B42A6203102058D2002C0329 /* NSData+MD5.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+MD5.h"; sourceTree = "<group>"; };
 		B42A6204102058D2002C0329 /* NSData+MD5.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+MD5.m"; sourceTree = "<group>"; };
+		B42CD2F310B5B3F0003E57F0 /* PagerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PagerController.h; sourceTree = "<group>"; };
+		B42CD2F410B5B3F0003E57F0 /* PagerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PagerController.m; sourceTree = "<group>"; };
 		B45054D50FD5194B00A10092 /* WebParams.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WebParams.h; sourceTree = "<group>"; };
 		B45054D60FD5194B00A10092 /* WebParams.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WebParams.m; sourceTree = "<group>"; };
 		B45054D90FD5196200A10092 /* NSString+Web.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Web.h"; sourceTree = "<group>"; };
@@ -242,6 +246,8 @@
 				0956EB080F408BFC0096310E /* NSUserDefaults+Utils.m */,
 				0956EB090F408BFC0096310E /* RegexKitLite.h */,
 				0956EB0A0F408BFC0096310E /* RegexKitLite.m */,
+				B42CD2F310B5B3F0003E57F0 /* PagerController.h */,
+				B42CD2F410B5B3F0003E57F0 /* PagerController.m */,
 				79BAE5C20EC1EA9E004760EA /* NSArray+Utils.h */,
 				79BAE5C30EC1EA9E004760EA /* NSArray+Utils.m */,
 				79BAE5C40EC1EA9E004760EA /* NSError+Utils.h */,
@@ -461,6 +467,7 @@
 				B45054E50FD51A1200A10092 /* NSData+Base64.h in Headers */,
 				B4130A6D101740FF006EFD10 /* NSObject+Invocation.h in Headers */,
 				B42A6205102058D2002C0329 /* NSData+MD5.h in Headers */,
+				B42CD2F510B5B3F0003E57F0 /* PagerController.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -550,6 +557,7 @@
 				B45054E60FD51A1200A10092 /* NSData+Base64.m in Sources */,
 				B4130A6E101740FF006EFD10 /* NSObject+Invocation.m in Sources */,
 				B42A6206102058D2002C0329 /* NSData+MD5.m in Sources */,
+				B42CD2F610B5B3F0003E57F0 /* PagerController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
