@@ -2,7 +2,7 @@
 #import "NSObject+Utils.h"
 #import "UIApplication+Utils.h"
 
-#define KEYBOARD_MARGIN 10
+#define CONTROLS_MARGIN 10
 
 @interface FormController (Private)
 
@@ -101,6 +101,8 @@
 
 
 - (void)adjustTableRelativeToFrame:(CGRect)frame frameView:(UIView*)view {
+    frame = CGRectMake(frame.origin.x, frame.origin.y - CONTROLS_MARGIN, frame.size.width, frame.size.height + CONTROLS_MARGIN);
+
 	CGRect tableFrameInView = [self.table convertRect:self.table.bounds toView:view];
 	CGRect intersection = CGRectIntersection(frame, tableFrameInView);
 
@@ -135,9 +137,8 @@
 	[kbdEndCenterValue getValue:&kbdCenter];
     
 	CGRect kbdAppFrame = CGRectOffset(kbdBounds, kbdCenter.x - kbdBounds.size.width/2, kbdCenter.y - kbdBounds.size.height/2);
-    CGRect restrictedFrame = CGRectMake(kbdAppFrame.origin.x, kbdAppFrame.origin.y - KEYBOARD_MARGIN, kbdAppFrame.size.width, kbdAppFrame.size.height + KEYBOARD_MARGIN);
 
-    [self adjustTableRelativeToFrame:restrictedFrame frameView:[UIApplication mainView]];
+    [self adjustTableRelativeToFrame:kbdAppFrame frameView:[UIApplication mainView]];
     return;
 }
 

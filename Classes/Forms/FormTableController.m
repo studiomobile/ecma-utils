@@ -377,7 +377,6 @@
         datePickerView = [[[FormDatePickerView alloc] initWithWidth:self.view.bounds.size.width] autorelease];
         datePickerView.frame  = CGRectMake(0, self.view.bounds.size.height, datePickerView.frame.size.width, datePickerView.frame.size.height);
         datePickerView.delegate = self;
-        [self.table.superview addSubview:datePickerView];
     }
     
     return datePickerView;
@@ -391,8 +390,14 @@
     
     CGRect frame = self.datePickerView.frame;
     if(datePickerVisible) {
-        frame.origin.y -= frame.size.height;
-        [self adjustTableRelativeToFrame:frame frameView:self.view];
+        UIView *window = self.view.window;
+        
+        frame = CGRectMake(0, window.bounds.size.height - frame.size.height, frame.size.width, frame.size.height);
+        [window addSubview:datePickerView];
+        
+        CGRect intersectionFrame = CGRectIntersection(self.view.bounds, [self.view convertRect:frame fromView:window]);
+//        frame.origin.y -= frame.size.height;
+        [self adjustTableRelativeToFrame:intersectionFrame frameView:self.view];
     } else {
         [self restoreTableFrame:NO];
         frame.origin.y += frame.size.height;
