@@ -137,7 +137,7 @@
     for (NSUInteger i = minLoadedPage; i < min; i++) {
         [self _unloadPage:i];
     }
-    for (NSUInteger i = MIN(pages.count - 1, max); i < maxLoadedPage; i++) {
+    for (NSUInteger i = max; i < maxLoadedPage; i++) {
         [self _unloadPage:i];
     }
 
@@ -183,12 +183,14 @@
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
     if (!decelerate) {
         [self updateCurrentPage];
+        animating = NO;
     }
 }
 
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
     [self updateCurrentPage];
+    animating = NO;
 }
 
 
