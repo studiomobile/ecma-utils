@@ -40,8 +40,8 @@
 	[self setContentOffset:CGPointZero animated: YES];
 }
 
--(void)scrollToField: (UIView*)focusedTextField{
-	if(![focusedTextField isDescendantOfView:self])
+-(void)scrollToField: (UIView*)textField{
+	if(![textField isDescendantOfView:self])
 		return;
 	
 	UIView* main = [UIApplication mainView];
@@ -49,7 +49,7 @@
 	CGRect scrollRectAbsolute = [self.superview convertRect:self.frame toView:main];
 	float freeAreaTop = CGRectGetMinY(scrollRectAbsolute);
 	float freeAreaBottom = CGRectGetMinY(keyboardFrame);
-	CGRect fieldRectAbsolute = [[UIApplication mainView] convertRect: focusedTextField.bounds fromView: focusedTextField];
+	CGRect fieldRectAbsolute = [[UIApplication mainView] convertRect: textField.bounds fromView: textField];
 	
 	float pointToScrollTo;	
 	if(placeFocusedControlOverKeyboard){
@@ -89,12 +89,19 @@
 }
 
 - (void)editingStarted:(NSNotification*)notification {
-	UIView* focusedTextField = (UIView*)[notification object];
+	focusedTextField = (UIView*)[notification object];
 	[self scrollToField: focusedTextField];
 }
 
 - (void)editingFinished:(NSNotification*)notification {
-	[self resetScroll];
+	focusedTextField = nil;
+	[NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(checkResetScroll) userInfo:nil repeats:NO];
+}
+
+- (void)checkResetScroll {
+	if (!focusedTextField) {
+		[self resetScroll];
+	}
 }
 
 
