@@ -920,9 +920,16 @@ static NSString *RKLStringFromClassAndMethod(id object, SEL selector, NSString *
 
 - (NSRange)RKL_METHOD_PREPEND(rangeOfRegex):(NSString *)regex capture:(NSInteger)capture
 {
-  NSRange result = NSNotFoundRange, range = NSMaxiumRange;
-  performRegexOp(self, _cmd, (RKLRegexOp)RKLRangeOp, regex, 0,       capture, self, &range, NULL, NULL, (void **)((void *)&result));
-  return(result);
+    NSRange result = NSNotFoundRange, range = NSMaxiumRange;
+    performRegexOp(self, _cmd, (RKLRegexOp)RKLRangeOp, regex, 0,       capture, self, &range, NULL, NULL, (void **)((void *)&result));
+    return(result);
+}
+
+- (NSRange)RKL_METHOD_PREPEND(rangeOfRegex):(NSString *)regex inRange:(NSRange)range capture:(NSInteger)capture
+{
+    NSRange result = NSNotFoundRange;
+    performRegexOp(self, _cmd, (RKLRegexOp)RKLRangeOp, regex, 0,       capture, self, &range, NULL, NULL, (void **)((void *)&result));
+    return(result);
 }
 
 - (NSRange)RKL_METHOD_PREPEND(rangeOfRegex):(NSString *)regex inRange:(NSRange)range

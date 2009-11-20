@@ -155,6 +155,7 @@ extern NSString * const RKLICURegexRegexOptionsErrorKey;
 
 - (NSRange)RKL_METHOD_PREPEND(rangeOfRegex):(NSString *)regex;
 - (NSRange)RKL_METHOD_PREPEND(rangeOfRegex):(NSString *)regex capture:(NSInteger)capture;
+- (NSRange)RKL_METHOD_PREPEND(rangeOfRegex):(NSString *)regex inRange:(NSRange)range capture:(NSInteger)capture;
 - (NSRange)RKL_METHOD_PREPEND(rangeOfRegex):(NSString *)regex inRange:(NSRange)range;
 - (NSRange)RKL_METHOD_PREPEND(rangeOfRegex):(NSString *)regex options:(RKLRegexOptions)options inRange:(NSRange)range capture:(NSInteger)capture error:(NSError **)error;
 
