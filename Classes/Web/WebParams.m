@@ -40,9 +40,9 @@
 		NSObject *value = [params objectForKey:key];
 		if ([self isFileUpload:value]) continue;
 		[queryString appendString:@"&"];
-		[queryString appendString:[[key description] urlEncode:@"&="]];
+		[queryString appendString:[[key description] urlEncode:@"\"%;/?:@&=+$,[]#!'()*"]];
 		[queryString appendString:@"="];
-		[queryString appendString:[[value description] urlEncode:@"&="]];
+		[queryString appendString:[[value description] urlEncode:@"\"%;/?:@&=+$,[]#!'()*"]];
 	}
 	if (queryString.length) {
 		[queryString replaceCharactersInRange:NSMakeRange(0, 1) withString:@"?"];

@@ -36,6 +36,7 @@ extern NSString *const RequestStatusCode;
 - (id)get:(NSString*)localPath withParams:(WebParams*)params headers:(NSDictionary*)headers error:(NSError**)error;
 - (id)get:(NSString*)localPath withParams:(WebParams*)params error:(NSError**)error;
 
-- (id)del:(NSString*)localPath withParams:(WebParams*)params error:(NSError**)error;                                
+- (id)del:(NSString*)localPath withParams:(WebParams*)params error:(NSError**)error; 
+- (NSMutableURLRequest*)requestForPath:(NSString*)localPath withParams:(WebParams*)params;
 
 @end
