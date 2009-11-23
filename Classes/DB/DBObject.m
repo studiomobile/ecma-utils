@@ -27,6 +27,16 @@
 }
 
 
++ (NSString*)insertConflictClause {
+	return @"";
+}
+
+
+- (NSString*)insertConflictClause {
+	return [[self class] insertConflictClause];
+}
+
+
 - (id)init {
 	if(self = [super init]) {
 		pk = DBOBJECT_NO_ID;

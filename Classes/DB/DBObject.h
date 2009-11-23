@@ -18,6 +18,9 @@
 // this column will be mapped to pk property, default is @"pk"
 - (NSString*)pkColumn;
 
++ (NSString*)insertConflictClause; // e.g. "or replace"
+- (NSString*)insertConflictClause;
+
 - (void)afterLoad;
 - (void)beforeSave;
 - (void)beforeInsert;

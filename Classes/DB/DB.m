@@ -238,7 +238,9 @@ static NSMutableDictionary *databases = nil;
     
     NSMutableString *insertQuery = [NSMutableString string];
     id *args = malloc(sizeof(id)*[columns count]);
-    [insertQuery appendFormat:@"insert into %@ (", tableName];
+    NSString *conflictClause = [o insertConflictClause];
+    conflictClause = (conflictClause.length ? [@"" stringByAppendingString:conflictClause] : @"");
+    [insertQuery appendFormat:@"insert%@ into %@ (", conflictClause, tableName];
     for(int i = 0; i < [columns count] - 1; ++i) {
         NSString *propName = [columns objectAtIndex:i];
         [insertQuery appendFormat:@"%@,", propName];
