@@ -32,8 +32,11 @@
     NSNumber *minuteIntervalNumber = [desc.options objectForKey:@"datePicker.minuteInterval"];
     datePicker.minuteInterval = minuteIntervalNumber ? [minuteIntervalNumber integerValue] : 1;
 
-    datePicker.maximumDate = [desc.options objectForKey:@"datePicker.maximumDate"];
-    datePicker.minimumDate = [desc.options objectForKey:@"datePicker.minimumDate"];
+    NSDate *minDate = [desc.options objectForKey:@"datePicker.maximumDate"];
+    datePicker.minimumDate = minDate ? minDate : [NSDate distantPast];
+
+    NSDate *maxDate = [desc.options objectForKey:@"datePicker.maximumDate"];
+    datePicker.maximumDate = maxDate ? maxDate : [NSDate distantFuture];
 	
 	NSNumber *buttonsStyleNumber = [desc.options objectForKey:@"datePicker.buttonsStyle"];
     UIBarButtonItemStyle buttonsStyle = buttonsStyleNumber ? [buttonsStyleNumber integerValue] : UIBarButtonItemStyleBordered;
