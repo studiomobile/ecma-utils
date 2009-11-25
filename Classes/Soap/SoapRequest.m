@@ -2,6 +2,8 @@
 #import "SoapRequest.h"
 #import "RESTService.h"
 
+#import "Reachability+Utils.h"
+
 @interface SoapRequest ()
 @property (retain, readwrite) id result; 
 @property (retain, readwrite) NSError* error; 
@@ -53,6 +55,10 @@
 - (BOOL)execute {	
 	self.error = nil;
 	self.result = nil;
+	
+	if(self.error = [Reachability reachabilityError]){
+		return NO;
+	}
 	
 	RESTService *service = [[[RESTService alloc] initWithBaseUrl:url] autorelease];
 	service.enableCookies = enableCookies;
