@@ -32,7 +32,7 @@
     NSNumber *minuteIntervalNumber = [desc.options objectForKey:@"datePicker.minuteInterval"];
     datePicker.minuteInterval = minuteIntervalNumber ? [minuteIntervalNumber integerValue] : 1;
 
-    NSDate *minDate = [desc.options objectForKey:@"datePicker.maximumDate"];
+    NSDate *minDate = [desc.options objectForKey:@"datePicker.minimumDate"];
     datePicker.minimumDate = minDate ? minDate : [NSDate distantPast];
 
     NSDate *maxDate = [desc.options objectForKey:@"datePicker.maximumDate"];
