@@ -346,6 +346,9 @@
     selection.dataSource = desc.dataSource;
     selection.keyPath = desc.keyPath;
     selection.collection = collection;	
+    
+    NSNumber *selectionNumber = [desc.options objectForKey:@"singleClickSelection"];
+    selection.singleClickSelection = selectionNumber ? [selectionNumber boolValue] : YES;
     return selection;
 }
 
