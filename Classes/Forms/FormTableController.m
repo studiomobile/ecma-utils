@@ -396,7 +396,6 @@
         [window addSubview:datePickerView];
         
         CGRect intersectionFrame = CGRectIntersection(self.view.bounds, [self.view convertRect:frame fromView:window]);
-//        frame.origin.y -= frame.size.height;
         [self adjustTableRelativeToFrame:intersectionFrame frameView:self.view];
     } else {
         [self restoreTableFrame:NO];
