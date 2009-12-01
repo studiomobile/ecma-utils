@@ -56,6 +56,9 @@
 	self.error = nil;
 	self.result = nil;
 	
+	NSURL* _url = [[[NSURL alloc] initWithString: url] autorelease];
+	[Reachability setHostName:	_url.host];
+	
 	if(self.error = [Reachability reachabilityError]){
 		return NO;
 	}

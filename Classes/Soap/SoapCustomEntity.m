@@ -547,17 +547,19 @@ typedef enum eTypeCode_tag{
 	@throw [NSError errorWithDomain:@"RuntimeError" code:2 description:@"Should not call"];	
 }
 
-
 @end
 
 
 @implementation SoapCustomEntity (Utils)
 
 -(id)objectForPath: (NSArray*)path{
+	NSString* pathSoFar = self.name;
+	
 	SoapCustomEntity* last = self;
 	for(NSString* key in path){
+		pathSoFar = [NSString stringWithFormat: @"%@ -> %@", pathSoFar, key];
 		if(![last.type hasField: key]){
-			@throw [NSError errorWithDomain:@"RuntimeError" code:3 description:[NSString stringWithFormat:@"No object for key '%@' found in %@", key, [[last class] soapName] ]];
+			@throw [NSError errorWithDomain:@"RuntimeError" code:3 description:[NSString stringWithFormat:@"No object found for path %@", pathSoFar]];
 		}
 		last = [last objectForKey:key];
 		if(!last){			
