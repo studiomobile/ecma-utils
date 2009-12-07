@@ -17,7 +17,7 @@
         value.autocapitalizationType = UITextAutocapitalizationTypeNone;
         value.delegate = self;
         value.secureTextEntry = NO;
-//        value.textAlignment = UITextAlignmentRight;
+        value.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
 		[self.contentView addSubview:value];
 
         ((ForwardingLabel*)title).forwardee = value;
@@ -49,13 +49,15 @@
     self.value.keyboardType = keyboardType;
 
     NSNumber *borderStyleNumber = [self.fieldDescriptor.options objectForKey:@"value.borderStyle"];
-    UIKeyboardType borderStyle = borderStyleNumber ? [borderStyleNumber integerValue] : UITextBorderStyleNone;
-    self.value.borderStyle = borderStyle;
+    self.value.borderStyle = borderStyleNumber ? [borderStyleNumber integerValue] : UITextBorderStyleNone;
     
     self.value.placeholder = [self.fieldDescriptor.options objectForKey:@"value.placeholder"];
     
     NSNumber *textAlignmentNumber = [self.fieldDescriptor.options objectForKey:@"value.textAlignment"];
     self.value.textAlignment = textAlignmentNumber ? [textAlignmentNumber integerValue] : UITextAlignmentLeft;
+
+    NSNumber *clearButtonModeNumber = [self.fieldDescriptor.options objectForKey:@"value.clearButtonMode"];
+    self.value.clearButtonMode = clearButtonModeNumber ? [clearButtonModeNumber integerValue] : UITextFieldViewModeNever;
 }
 
 
@@ -72,12 +74,6 @@
 
 
 - (void)layoutControls:(CGRect)controlsRect {
-    // TODO cleanup
-    if(self.value.borderStyle == UITextBorderStyleNone) {
-    	controlsRect.origin.y += 6;
-    	controlsRect.size.height -= 6;
-    }
-    
     CGFloat fieldHeight = self.value.font.pointSize + 10;
 	value.frame = CGRectMake(controlsRect.origin.x, controlsRect.origin.y + (controlsRect.size.height - fieldHeight)/2, controlsRect.size.width, fieldHeight);
 }
