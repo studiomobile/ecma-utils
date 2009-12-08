@@ -25,7 +25,6 @@
 	return async;
 }
 
-
 - (id)copyWithZone:(NSZone*)zone {
 	UIBlockingAsyncObject *copy = [super copyWithZone:zone];
 	copy.blockViews = self.blockViews;
