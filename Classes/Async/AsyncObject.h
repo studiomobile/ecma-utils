@@ -1,11 +1,17 @@
 #import <UIKit/UIKit.h>
 
 @protocol AsyncInvocation
-
--(void)cancel;
-
+	-(void)cancel;
 @end
 
+@interface AsyncContext : NSObject{
+	NSOperationQueue* queue;
+}
+	@property(readonly) NSOperationQueue* queue;
+	+(AsyncContext*) asyncContext;
+	+(AsyncContext*) defaultContext;
+	+(AsyncContext*) contextNamed: (NSString*)name;
+@end
 
 @interface AsyncObject : NSObject<NSCopying> {
 	id target;
@@ -13,14 +19,15 @@
 	id observer;
 	SEL onSuccess;
 	SEL onError;
-	NSString *context;
+	NSString *contextName;
+	BOOL isCanceled;
 }
 @property (readonly) id target;
 @property (assign) id delegate;
 @property (retain) id observer;
 @property (assign) SEL onSuccess;
 @property (assign) SEL onError;
-@property (readwrite, nonatomic, retain) NSString *context;
+@property (readonly) AsyncContext* context;
 
 + (AsyncObject*)asyncObjectForTarget:(id)target delegate:(id)delegate;
 + (AsyncObject*)asyncObjectForTarget:(id)target observer:(id)observer;
@@ -30,8 +37,11 @@
 
 - (id)initWithTarget:(id)target;
 
+-(void)setContextNamed: (NSString*)name;
+
 - (id)asyncProxy;
 - (id)createAsyncProxy;
+- (id)onSuccess: (SEL)_onSuccess onError: (SEL)_onError;
 
 // This method is invoked asyncronously from background thread, don't call it directly
 - (void)invokeInvocation:(NSInvocation*)invocation fromThread:(NSThread*)clientThread;

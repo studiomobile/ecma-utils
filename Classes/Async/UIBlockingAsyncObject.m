@@ -25,6 +25,39 @@
 	return async;
 }
 
++ (UIBlockingAsyncObject*)uiBlockingAsyncObjectForTarget:(id)target delegate:(id)delegate blocker: (id<UIBlockingView>)blocker{
+	return [self uiBlockingAsyncObjectForTarget:target 
+									   delegate:delegate 
+									  onSuccess:nil
+										onError:nil
+									 blockViews:[NSArray arrayWithObject: blocker]];
+}
+
++ (UIBlockingAsyncObject*)uiBlockingAsyncObjectForTarget:(id)target observer:(id)observer blocker: (id<UIBlockingView>)blocker{
+	return [self uiBlockingAsyncObjectForTarget:target 
+									   observer:observer 
+									  onSuccess:nil
+										onError:nil
+									 blockViews:[NSArray arrayWithObject: blocker]];	
+}
+
+
+-(id<UIBlockingView>)blocker{
+	if(!blockViews || blockViews.count == 0) return nil;
+	return [blockViews objectAtIndex: 0];
+}
+
+
+-(void)setBlocker: (id<UIBlockingView>)blocker{
+	if(!blockViews) self.blockViews = [NSArray array];
+
+	if(![blockViews containsObject: blocker]){
+		self.blockViews = [self.blockViews arrayByAddingObject: blocker];
+	}
+}
+
+
+
 - (id)copyWithZone:(NSZone*)zone {
 	UIBlockingAsyncObject *copy = [super copyWithZone:zone];
 	copy.blockViews = self.blockViews;

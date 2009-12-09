@@ -1,36 +1,13 @@
 #import "AsyncObject.h"
 #import "NSInvocation+Utils.h"
 
-static const int MAX_CONCURRENT_OPERATION_COUNT = 10;
-
-
+//===================
 @interface AsyncInvocationImpl : NSObject<AsyncInvocation>{
 	NSOperation* op;
-}
-@end
-
-@implementation AsyncInvocationImpl
-- (id) initWithOperation: (NSOperation*)_op{
-	self = [super init];
-	if (self != nil) {
-		op = [_op retain];
-	}
-	return self;
+	AsyncObject* async;
 }
 
-+(AsyncInvocationImpl*)asyncInvocationWithOperation: (NSOperation*)op{
-	return [[[AsyncInvocationImpl alloc] initWithOperation: op] autorelease];
-}
-
-- (void) dealloc{
-	[op release];
-	[super dealloc];
-}
-
--(void)cancel{
-	[op cancel];
-}
-
++(AsyncInvocationImpl*)asyncInvocationWithOperation: (NSOperation*)op async: (AsyncObject*)async;
 
 @end
 
@@ -38,8 +15,6 @@ static const int MAX_CONCURRENT_OPERATION_COUNT = 10;
 @interface AsyncProxy : NSObject {
 	AsyncObject *async;
 }
-
-@property(retain) NSOperation* lastOperation;
 
 - (id)initWithAsyncObject:(AsyncObject*)async;
 
@@ -56,6 +31,16 @@ static const int MAX_CONCURRENT_OPERATION_COUNT = 10;
 
 @end
 
+//=======================
+@interface AsyncObject ()
+
+@property(retain, nonatomic) NSString* contextName;
+
+-(void)cancel;
+
+@end
+
+
 //=========================
 @implementation AsyncObject
 
@@ -64,7 +49,80 @@ static const int MAX_CONCURRENT_OPERATION_COUNT = 10;
 @synthesize observer;
 @synthesize onSuccess;
 @synthesize onError;
-@synthesize context;
+@synthesize contextName;
+
+
+#pragma mark private
+
+- (void)invocationCompletedWithResult:(id)result {}
+
+
+- (void)invokeInvocation:(NSInvocation*)invocation fromThread:(NSThread*)clientThread {
+	if(isCanceled) return;
+		
+	[invocation setTarget:target];
+	
+	id result = nil;
+	@try {
+		[invocation invoke];
+		[invocation getReturnValue:&result];
+	}
+	@catch (NSError * e) {
+		result = e;
+	}
+	@catch (NSException * e) {
+		NSMutableDictionary* dict = [NSMutableDictionary dictionaryWithDictionary:[e userInfo]];
+		[dict setObject:[e reason] forKey:NSLocalizedFailureReasonErrorKey];
+		NSError* err = [NSError errorWithDomain:[e name] code:0 userInfo:[dict copy]];
+		result = err;		
+	}	
+	
+	if(isCanceled) return;
+	
+	[self invocationCompletedWithResult:result];
+	
+	id handler = delegate ? delegate : observer;
+	if([result isKindOfClass:[NSError class]]) {
+		[handler performSelector:onError onThread:clientThread withObject:result waitUntilDone:YES];
+	} else {
+		[handler performSelector:onSuccess onThread:clientThread withObject:result waitUntilDone:YES];
+	}
+}
+
+
+#pragma mark properties
+
+-(AsyncContext*)context{
+	if(!contextName) return nil;
+	return [AsyncContext contextNamed: contextName];
+}
+
+#pragma mark NSObject
+
+
+- (id)initWithTarget:(id)_target {
+    if (![super init]) return nil;
+    target = [_target retain];
+	return self;
+}
+
+
+- (id)copyWithZone:(NSZone*)zone {
+	AsyncObject *copy = [[self.class allocWithZone:zone] initWithTarget:self.target];
+	copy.delegate = self.delegate;
+	copy.observer = self.observer;
+	copy.onSuccess = self.onSuccess;
+	copy.onError = self.onError;
+	return copy;
+}
+
+- (void)dealloc {
+	[target release];
+	[observer release];
+	[super dealloc];
+}
+
+#pragma mark public
 
 + (AsyncObject*)asyncObjectForTarget:(id)target delegate:(id)delegate onSuccess:(SEL)onSuccess onError:(SEL)onError {
 	AsyncObject *async = [[[AsyncObject alloc] initWithTarget:target] autorelease];
@@ -94,29 +152,13 @@ static const int MAX_CONCURRENT_OPERATION_COUNT = 10;
 }
 
 
-- (id)initWithTarget:(id)_target {
-    if (![super init]) return nil;
-    target = [_target retain];
-	return self;
+-(void)cancel{
+	isCanceled = YES;
 }
 
-
-- (id)copyWithZone:(NSZone*)zone {
-	AsyncObject *copy = [[self.class allocWithZone:zone] initWithTarget:self.target];
-	copy.delegate = self.delegate;
-	copy.observer = self.observer;
-	copy.onSuccess = self.onSuccess;
-	copy.onError = self.onError;
-	return copy;
+-(void)setContextNamed: (NSString*)name{
+	self.contextName = name;
 }
-
--(id) onSuccess: (SEL)_onSuccess onError: (SEL)_onError{
-	AsyncObject* copy = [self copy];
-	copy.onSuccess = _onSuccess;
-	copy.onError = _onError;
-	return [copy asyncProxy];
-}
-
 
 - (id)asyncProxy {
 	return [[self createAsyncProxy] autorelease];
@@ -127,44 +169,13 @@ static const int MAX_CONCURRENT_OPERATION_COUNT = 10;
 	return [[AsyncProxy alloc] initWithAsyncObject:self];
 }
 
-
-- (void)invocationCompletedWithResult:(id)result {}
-
-
-- (void)invokeInvocation:(NSInvocation*)invocation fromThread:(NSThread*)clientThread {
-	[invocation setTarget:target];
-
-	id result = nil;
-	@try {
-		[invocation invoke];
-		[invocation getReturnValue:&result];
-	}
-	@catch (NSError * e) {
-		result = e;
-	}
-	@catch (NSException * e) {
-		NSMutableDictionary* dict = [NSMutableDictionary dictionaryWithDictionary:[e userInfo]];
-		[dict setObject:[e reason] forKey:NSLocalizedFailureReasonErrorKey];
-		NSError* err = [NSError errorWithDomain:[e name] code:0 userInfo:[dict copy]];
-		result = err;		
-	}	
-	
-	[self invocationCompletedWithResult:result];
-	
-	id handler = delegate ? delegate : observer;
-	if([result isKindOfClass:[NSError class]]) {
-		[handler performSelector:onError onThread:clientThread withObject:result waitUntilDone:YES];
-	} else {
-		[handler performSelector:onSuccess onThread:clientThread withObject:result waitUntilDone:YES];
-	}
+-(id) onSuccess: (SEL)_onSuccess onError: (SEL)_onError{
+	AsyncObject* copy = [self copy];
+	copy.onSuccess = _onSuccess;
+	copy.onError = _onError;
+	return [copy asyncProxy];
 }
 
-
-- (void)dealloc {
-	[target release];
-	[observer release];
-	[super dealloc];
-}
 
 @end
 
@@ -172,42 +183,11 @@ static const int MAX_CONCURRENT_OPERATION_COUNT = 10;
 //========================
 @implementation AsyncProxy
 
-@synthesize lastOperation;
-
--(id<AsyncInvocation>)lastInvocation{
-	return (id<AsyncInvocation>)lastOperation;	
-}
-
--(NSOperationQueue*)defaultQueue{
-	static NSOperationQueue* defaultQueue;
-	if(!defaultQueue){
-		defaultQueue = [NSOperationQueue new];
-		[defaultQueue setMaxConcurrentOperationCount: MAX_CONCURRENT_OPERATION_COUNT];
-	}
-	return defaultQueue;
-}
-
--(NSMutableDictionary*) operationQueues{
-	static NSMutableDictionary* queues;
-	if(!queues){
-		queues = [NSMutableDictionary new];
-	}
-	
-	return queues;
-}
-
 -(NSOperationQueue*)myOperationQueue{
 	if(!async.context)
-		return self.defaultQueue;
-	
-	NSOperationQueue* myQueue = [self.operationQueues objectForKey: async.context];
-	if(!myQueue){
-		myQueue = [[NSOperationQueue new] autorelease];
-		[myQueue setMaxConcurrentOperationCount:10];
-		[self.operationQueues setObject: myQueue forKey:async.context];
-	}
-	
-	return myQueue;
+		return [AsyncContext defaultContext].queue;
+
+	return async.context.queue;
 }
 
 - (id)initWithAsyncObject:(AsyncObject*)_async {
@@ -216,19 +196,9 @@ static const int MAX_CONCURRENT_OPERATION_COUNT = 10;
     return self;
 }
 
--(void)checkThread{
-	NSUInteger currentThreadHash = [[NSThread currentThread] hash];	
-	if(myThreadHash != 0){
-		NSAssert(myThreadHash == currentThreadHash, @"AsyncProxy should not be used from several threads");
-	}else {
-		myThreadHash = currentThreadHash;
-	}	
-}
-
 
 - (void)forwardInvocation:(NSInvocation*)invocation {
-	[self checkThread];	
-	
+
 	if(![invocation argumentsRetained]) {
 		[invocation retainArguments];
 	}
@@ -237,11 +207,10 @@ static const int MAX_CONCURRENT_OPERATION_COUNT = 10;
 	AsyncOperation* op = [[[AsyncOperation alloc] initWithAsyncObject:async 
 														   invocation:[invocation copy]
 														 clientThread:[NSThread currentThread]] autorelease];
-	[opQ addOperation: op];
-	
-	[invocation setReturnValue: &op];
+	[opQ addOperation: op];	
+	AsyncInvocationImpl* invocationInterface = [AsyncInvocationImpl asyncInvocationWithOperation:op async:async];
+	[invocation setReturnValue: &invocationInterface];
 }
-
 
 - (NSMethodSignature*)methodSignatureForSelector:(SEL)selector {
 	NSMethodSignature* sig = [async.target methodSignatureForSelector:selector];
@@ -249,7 +218,6 @@ static const int MAX_CONCURRENT_OPERATION_COUNT = 10;
 }
 
 - (void)dealloc {
-	[lastOperation release];
 	[async release];
 	[super dealloc];
 }
@@ -284,3 +252,86 @@ static const int MAX_CONCURRENT_OPERATION_COUNT = 10;
 }
 
 @end
+
+
+//============================
+@implementation AsyncContext
+@synthesize queue;
+
++(AsyncContext*) asyncContext{
+	return [[self new] autorelease];
+}
+
++(AsyncContext*) defaultContext{
+	static AsyncContext* defaultContext;
+	if(!defaultContext){
+		defaultContext = [AsyncContext new];
+	}
+	
+	return defaultContext;
+}
+
++(AsyncContext*) contextNamed: (NSString*)name{
+	if(!name) return nil;
+
+	static NSMutableDictionary* contexts;
+	if(!contexts){
+		contexts = [NSMutableDictionary new];
+	}
+	
+	AsyncContext* context = [contexts objectForKey: name];	
+	if(!context){
+		context = [self asyncContext];		
+		[contexts setObject: context forKey:name];
+	}
+	
+	return context;	
+}
+
+- (id) init{
+	self = [super init];
+	if (self != nil) {
+		queue = [NSOperationQueue new];
+		[queue setMaxConcurrentOperationCount: 10];
+	}
+	return self;
+}
+
+
+- (void) dealloc{
+	[queue release];
+	[super dealloc];
+}
+
+@end
+
+//============================
+
+@implementation AsyncInvocationImpl
+- (id) initWithOperation: (NSOperation*)_op async: (AsyncObject*)_async{
+	 self = [super init];
+	 if (self != nil) {
+	    op = [_op retain];
+		async = [_async retain];
+	 }
+	 return self;
+}
+
++(AsyncInvocationImpl*)asyncInvocationWithOperation: (NSOperation*)op async: (AsyncObject*)async{
+	return [[[AsyncInvocationImpl alloc] initWithOperation: op async: async] autorelease];
+}
+
+- (void) dealloc{
+	[op release];
+	[async release];
+	[super dealloc];
+}
+
+-(void)cancel{
+	[op cancel];
+	[async cancel];
+}
+
+
+@end
+
