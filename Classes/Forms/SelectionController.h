@@ -7,6 +7,8 @@
 	NSArray *collection;
 	NSInteger selected;
     BOOL singleClickSelection;
+    
+    UITableView *tableView;
 }
 @property (assign) id dataSource;
 @property (assign) NSString *keyPath;

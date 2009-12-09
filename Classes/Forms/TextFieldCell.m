@@ -1,9 +1,14 @@
 #import "TextFieldCell.h"
 #import "NSString+Utils.h"
 
+@interface TextFieldCell ()
+@property (retain) NSInvocation *returnKeyAction;
+@end
+
 @implementation TextFieldCell
 
 @synthesize value;
+@synthesize returnKeyAction;
 
 - (UILabel*)createTitleLabel {
     return [[ForwardingLabel alloc] initWithFrame:CGRectZero];
@@ -58,6 +63,11 @@
 
     NSNumber *clearButtonModeNumber = [self.fieldDescriptor.options objectForKey:@"value.clearButtonMode"];
     self.value.clearButtonMode = clearButtonModeNumber ? [clearButtonModeNumber integerValue] : UITextFieldViewModeNever;
+    
+    NSNumber *returnKeyTypeNumber = [self.fieldDescriptor.options objectForKey:@"value.returnKeyType"];
+    self.value.returnKeyType = returnKeyTypeNumber ? [returnKeyTypeNumber integerValue] : UIReturnKeyDefault;
+
+    self.returnKeyAction = [self.fieldDescriptor.options objectForKey:@"value.returnKeyAction"];
 }
 
 
@@ -69,6 +79,7 @@
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
 	self.fieldDescriptor.value = value.text;
 	[value resignFirstResponder];
+    [returnKeyAction invoke];
     return YES;
 }
 
@@ -82,6 +93,8 @@
 - (void)dealloc {
 	value.delegate = nil;
 	[value autorelease];
+    [returnKeyAction release];
+    
     [super dealloc];
 }
 

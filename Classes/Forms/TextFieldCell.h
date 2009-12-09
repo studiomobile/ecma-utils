@@ -3,6 +3,7 @@
 
 @interface TextFieldCell : TitledFormCell<UITextFieldDelegate> {
 	UITextField *value;
+    NSInvocation *returnKeyAction;
 }
 @property (readonly) UITextField *value;
 

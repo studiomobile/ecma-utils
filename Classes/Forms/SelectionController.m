@@ -19,10 +19,10 @@
 
 
 - (void)loadView {
-	UITableView *table = [[[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped] autorelease];
-	table.delegate = self;
-	table.dataSource = self;
-	self.view = table;
+	tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
+	tableView.delegate = self;
+	tableView.dataSource = self;
+	self.view = tableView;
 }
 
 
@@ -37,9 +37,9 @@
 }
 
 
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+- (UITableViewCell *)tableView:(UITableView *)tView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
 	static NSString *cellId = @"SelectionCellIdentifier";
-	UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellId];
+	UITableViewCell *cell = [tView dequeueReusableCellWithIdentifier:cellId];
 	if (cell == nil) {
 		cell = [[[UITableViewCell alloc] initWithFrame:CGRectZero reuseIdentifier:cellId] autorelease];
 	}
@@ -52,14 +52,14 @@
 }
 
 
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+- (void)tableView:(UITableView *)tView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     selected = indexPath.row;
 	id selectedObject = [collection objectAtIndex:selected];
 	[dataSource setValue:selectedObject forKeyPath:keyPath];
     if (singleClickSelection) {
         [self.navigationController popViewControllerAnimated:YES];
     } else {
-        [tableView reloadData];
+        [tView reloadData];
     }
 }
 
@@ -68,6 +68,9 @@
 	[title release];
 	[keyPath release];
 	[collection release];
+    
+    [tableView release];
+    
 	[super dealloc];
 }
 
