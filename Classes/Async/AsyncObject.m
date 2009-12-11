@@ -4,10 +4,9 @@
 //===================
 @interface AsyncInvocationImpl : NSObject<AsyncInvocation>{
 	NSOperation* op;
-	AsyncObject* async;
 }
 
-+(AsyncInvocationImpl*)asyncInvocationWithOperation: (NSOperation*)op async: (AsyncObject*)async;
++(AsyncInvocationImpl*)asyncInvocationWithOperation: (NSOperation*)op;
 
 @end
 
@@ -60,8 +59,7 @@
 - (void)invokeInvocation:(NSInvocation*)invocation fromThread:(NSThread*)clientThread {
 	if(isCanceled) return;
 		
-	[invocation setTarget:target];
-	
+	[invocation setTarget:target];	
 	id result = nil;
 	@try {
 		[invocation invoke];
@@ -75,20 +73,26 @@
 		[dict setObject:[e reason] forKey:NSLocalizedFailureReasonErrorKey];
 		NSError* err = [NSError errorWithDomain:[e name] code:0 userInfo:[dict copy]];
 		result = err;		
-	}	
-	
-	if(isCanceled) return;
+	}
 	
 	[self invocationCompletedWithResult:result];
 	
-	id handler = delegate ? delegate : observer;
-	if([result isKindOfClass:[NSError class]]) {
-		[handler performSelector:onError onThread:clientThread withObject:result waitUntilDone:YES];
-	} else {
-		[handler performSelector:onSuccess onThread:clientThread withObject:result waitUntilDone:YES];
-	}
+	if(isCanceled) return;	
+	
+	[self performSelector:@selector(asyncInvocationCompleted:) onThread:clientThread withObject:result waitUntilDone:NO];
 }
 
+
+- (void)asyncInvocationCompleted:(id)result {
+	if (!isCanceled) {
+		id handler = delegate ? delegate : observer;
+		if([result isKindOfClass:[NSError class]]) {
+			[handler performSelector:onError withObject:result];
+		} else {
+			[handler performSelector:onSuccess withObject:result];
+		}		
+	}
+}
 
 #pragma mark properties
 
@@ -208,7 +212,7 @@
 														   invocation:[invocation copy]
 														 clientThread:[NSThread currentThread]] autorelease];
 	[opQ addOperation: op];	
-	AsyncInvocationImpl* invocationInterface = [AsyncInvocationImpl asyncInvocationWithOperation:op async:async];
+	AsyncInvocationImpl* invocationInterface = [AsyncInvocationImpl asyncInvocationWithOperation:op];
 	[invocation setReturnValue: &invocationInterface];
 }
 
@@ -236,6 +240,11 @@
 	return self;
 }
 
+-(void)cancel{
+	[super cancel];
+	[async cancel];	
+}
+
 
 - (void)main {
     if (![self isCancelled]) {
@@ -250,6 +259,7 @@
     [clientThread release];
 	[super dealloc];
 }
+
 
 @end
 
@@ -308,28 +318,25 @@
 //============================
 
 @implementation AsyncInvocationImpl
-- (id) initWithOperation: (NSOperation*)_op async: (AsyncObject*)_async{
+- (id) initWithOperation: (NSOperation*)_op{
 	 self = [super init];
 	 if (self != nil) {
 	    op = [_op retain];
-		async = [_async retain];
 	 }
 	 return self;
 }
 
-+(AsyncInvocationImpl*)asyncInvocationWithOperation: (NSOperation*)op async: (AsyncObject*)async{
-	return [[[AsyncInvocationImpl alloc] initWithOperation: op async: async] autorelease];
++(AsyncInvocationImpl*)asyncInvocationWithOperation: (NSOperation*)op {
+	return [[[AsyncInvocationImpl alloc] initWithOperation: op] autorelease];
 }
 
 - (void) dealloc{
 	[op release];
-	[async release];
 	[super dealloc];
 }
 
--(void)cancel{
+-(void)cancel{	
 	[op cancel];
-	[async cancel];
 }
 
 

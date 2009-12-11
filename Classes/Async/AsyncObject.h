@@ -20,7 +20,7 @@
 	SEL onSuccess;
 	SEL onError;
 	NSString *contextName;
-	BOOL isCanceled;
+	volatile BOOL isCanceled;
 }
 @property (readonly) id target;
 @property (assign) id delegate;
