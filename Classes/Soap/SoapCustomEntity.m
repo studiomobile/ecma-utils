@@ -556,16 +556,20 @@ typedef enum eTypeCode_tag{
 	NSString* pathSoFar = self.name;
 	
 	SoapCustomEntity* last = self;
-	for(NSString* key in path){
+	CustomFieldDescriptor* lastDescriptor = nil;
+	SoapCustomEntityType* lastType = self.type;
+	for(NSString* key in path){		
 		pathSoFar = [NSString stringWithFormat: @"%@ -> %@", pathSoFar, key];
-		if(![last.type hasField: key]){
-			@throw [NSError errorWithDomain:@"RuntimeError" code:3 description:[NSString stringWithFormat:@"No object found for path %@", pathSoFar]];
+		lastDescriptor = [lastType fieldForKey: key];
+		lastType = lastDescriptor.type;
+		if(!lastDescriptor){
+			@throw [NSError errorWithDomain:@"RuntimeError" code:3 description:[NSString stringWithFormat:@"Wrong path specified: %@", pathSoFar]];
 		}
-		last = [last objectForKey:key];
-		if(!last){			
-			return nil;
-		}		
+		if(!last) continue;
+		last = [last objectForKey:key];		
 	}
+	
+	if(!last && lastDescriptor.isMany) last = [NSArray array];
 	
 	return last;
 }
