@@ -2,15 +2,6 @@
 #import "NSInvocation+Utils.h"
 
 //===================
-@interface AsyncInvocationImpl : NSObject<AsyncInvocation>{
-	NSOperation* op;
-}
-
-+(AsyncInvocationImpl*)asyncInvocationWithOperation: (NSOperation*)op;
-
-@end
-
-//===================
 @interface AsyncProxy : NSObject {
 	AsyncObject *async;
 }
@@ -291,7 +282,7 @@
 	
 	AsyncContext* context = [contexts objectForKey: name];	
 	if(!context){
-		context = [self asyncContext];		
+		context = [self asyncContext];
 		[contexts setObject: context forKey:name];
 	}
 	
@@ -314,31 +305,3 @@
 }
 
 @end
-
-//============================
-
-@implementation AsyncInvocationImpl
-- (id) initWithOperation: (NSOperation*)_op{
-	 self = [super init];
-	 if (self != nil) {
-	    op = [_op retain];
-	 }
-	 return self;
-}
-
-+(AsyncInvocationImpl*)asyncInvocationWithOperation: (NSOperation*)op {
-	return [[[AsyncInvocationImpl alloc] initWithOperation: op] autorelease];
-}
-
-- (void) dealloc{
-	[op release];
-	[super dealloc];
-}
-
--(void)cancel{	
-	[op cancel];
-}
-
-
-@end
-

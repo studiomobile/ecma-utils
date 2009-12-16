@@ -10,5 +10,6 @@
 
 - (UIImage*)flipHorizontal;
 - (UIImage*)rotateToOrientation:(UIImageOrientation)orient;
+- (UIImage*)withFixedOrientation;
 
 @end

@@ -1,8 +1,6 @@
 #import <UIKit/UIKit.h>
 
-@protocol AsyncInvocation
-	-(void)cancel;
-@end
+#import "AsyncInvocation.h"
 
 @interface AsyncContext : NSObject{
 	NSOperationQueue* queue;

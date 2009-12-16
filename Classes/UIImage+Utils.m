@@ -163,5 +163,8 @@ static CGRect swapWidthAndHeight(CGRect rect) {
     return EndBitmapContext();
 }
 
+- (UIImage*)withFixedOrientation{
+	return [self rotateToOrientation: self.imageOrientation];
+}
 
 @end
