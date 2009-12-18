@@ -1,4 +1,4 @@
-@protocol SoapEntityProto
+@protocol SoapEntityProto<NSObject>
 
 +(NSString*) soapNamespace;
 +(NSString*) soapName;

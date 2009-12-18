@@ -16,15 +16,18 @@
 	return [[Reachability sharedReachability] remoteHostStatus] != NotReachable;
 }
 
++(NSError*)defaultReachabilityError{
+	return [NSError errorWithDomain:@"defaultDomain"
+							   code:0
+						description:@"Network is not reachable."];	
+}
+
 +(id)	reachabilityError{
-	if([self isNetworkReachable]) {
-		return nil;
-	} else {
-		return [NSError errorWithDomain:@"defaultDomain"
-								   code:0
-							description:@"Network is not reachable."];
-	}
-	
+	return [self isNetworkReachable] ? nil : [self defaultReachabilityError];	
+}
+
++(id)	hostReachabilityError: (NSString*)hostName{
+	return [[Reachability sharedReachability] isHostReachable: hostName] ? nil : [self defaultReachabilityError];
 }
 
 

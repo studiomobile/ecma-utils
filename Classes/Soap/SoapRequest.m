@@ -27,7 +27,7 @@
 	[url release];
 	[action release];
 	[header release];
-	[(NSObject*)body release];
+	[body release];
 	[responseType release];
 	[pathToResult release];
 	[result release]; 
@@ -56,10 +56,8 @@
 	self.error = nil;
 	self.result = nil;
 	
-	NSURL* _url = [[[NSURL alloc] initWithString: url] autorelease];
-	[Reachability setHostName:	_url.host];
-	
-	if(self.error = [Reachability reachabilityError]){
+	NSURL* _url = [[[NSURL alloc] initWithString: url] autorelease];	
+	if(self.error = [Reachability hostReachabilityError: _url.host]){
 		return NO;
 	}
 	

@@ -18,7 +18,7 @@
 @property(retain) NSString* url;
 @property(retain) NSString* action;
 @property(retain) SoapCustomEntity* header;
-@property(retain) id<SoapEntityProto> body;
+@property(retain) id<SoapEntityProto, NSObject> body;
 @property(retain) id responseType;
 @property(assign) BOOL responseIsMany;
 @property(retain) NSArray* pathToResult;

@@ -95,6 +95,8 @@ typedef enum {
 // Is the device able to communicate with hosts on the local WiFi network? (Typically these are Bonjour hosts).
 - (NetworkStatus)localWiFiConnectionStatus;
 
+- (BOOL)isHostReachable:(NSString *)host;
+
 /*
  When reachability change notifications are posted, the callback method 'ReachabilityCallback' is called
  and posts a notification that the client application can observe to learn about changes.

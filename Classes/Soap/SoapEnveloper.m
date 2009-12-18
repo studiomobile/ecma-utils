@@ -9,6 +9,9 @@ typedef enum eSAS_tag {
 } eSAS;
 
 ///////////////////////////////////////////////////////////////////////////
+
+
+
 @interface NSObject (SOAP)
 
 -(id)safeGetSoapClass;
