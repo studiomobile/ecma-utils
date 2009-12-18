@@ -24,6 +24,15 @@
 
 #pragma mark NSObject
 
++(BlockingAsyncCallback*) callbackWithDelegate: delegate 
+									  onSuccess: (SEL)onSuccess 
+										onError: (SEL)onError
+										blocker: (id<UIBlockingView>) blocker{
+	BlockingAsyncCallback* inst = [[BlockingAsyncCallback alloc] initWithHandler:delegate retained:NO onSuccess:onSuccess onError:onError];
+	inst.blocker = blocker;
+	return inst;
+}
+
 - (void)dealloc {
 	[indicatorTimer invalidate];
 	[blocker release];	

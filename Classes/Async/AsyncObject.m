@@ -139,10 +139,16 @@
 	return [AsyncObject asyncObjectForTarget:target observer:observer onSuccess:nil onError:nil];
 }
 
++ (AsyncObject*)asyncObjectForTarget:(id)target {
+	return [AsyncObject asyncObjectForTarget:target delegate:nil onSuccess:nil onError:nil];
+}
+
 
 -(void)setContextNamed: (NSString*)name{
 	self.contextName = name;
 }
+
+#pragma mark proxy creation
 
 - (id)createAsyncProxy {
 	return [[AsyncProxy alloc] initWithTarget:target callback: [self makeCallback] context: self.context];
@@ -152,9 +158,13 @@
 	return [[self createAsyncProxy] autorelease];
 }
 
--(id) onSuccess: (SEL)_onSuccess onError: (SEL)_onError{	
-	id<AsyncCallbackProtocol> callback = [self makeCallbackWithSuccess:_onSuccess error: _onError];	
+- (id)proxyWithCallback: (id<AsyncCallbackProtocol>)callback{
 	return [[[AsyncProxy alloc] initWithTarget:target callback: callback context: self.context] autorelease];
+}
+
+-(id) onSuccess: (SEL)_onSuccess onError: (SEL)_onError{		
+	id<AsyncCallbackProtocol> callback = [self makeCallbackWithSuccess:_onSuccess error: _onError];	
+	return [self proxyWithCallback: callback];
 }
 
 @end

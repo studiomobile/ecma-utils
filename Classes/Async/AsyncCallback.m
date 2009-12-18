@@ -45,18 +45,18 @@
     return self;
 }
 
-+(AsyncCallback*) asyncCallbackWithHandler: handler retained: (BOOL)isHandlerRetained onSuccess: (SEL)onSuccess onError: (SEL)onError{
++(AsyncCallback*) callbackWithHandler: handler retained: (BOOL)isHandlerRetained onSuccess: (SEL)onSuccess onError: (SEL)onError{
 	return [[[[self class] alloc] initWithHandler: handler 
 										 retained:isHandlerRetained 
 										onSuccess:onSuccess 
 										  onError:onError] autorelease];
 }
 
-+(AsyncCallback*) asyncCallbackWithDelegate: delegate onSuccess: (SEL)onSuccess onError: (SEL)onError{
++(AsyncCallback*) callbackWithDelegate: delegate onSuccess: (SEL)onSuccess onError: (SEL)onError{
 	return [[[[self class] alloc] initWithHandler: delegate retained:NO onSuccess:onSuccess onError:onError] autorelease];
 }
 
-+(AsyncCallback*) asyncCallbackWithObserver: observer onSuccess: (SEL)onSuccess onError: (SEL)onError{
++(AsyncCallback*) callbackWithObserver: observer onSuccess: (SEL)onSuccess onError: (SEL)onError{
 	return [[[[self class] alloc] initWithHandler: observer retained:YES onSuccess:onSuccess onError:onError] autorelease];
 }
 
@@ -72,11 +72,11 @@
 -(void)asyncOperationCanceled {}
 
 -(void)asyncOperationFinishedWithResult:	(id)result{
-	[handler performSelector:onSuccess withObject: result];
+	if(onSuccess)	[handler performSelector:onSuccess withObject: result];
 }
 
 -(void)asyncOperationFinishedWithError:		(NSError*)error{
-	[handler performSelector:onError withObject: error];
+	if(onError)	[handler performSelector:onError withObject: error];
 }
 
 

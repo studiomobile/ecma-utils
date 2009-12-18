@@ -1,5 +1,3 @@
-#import <UIKit/UIKit.h>
-
 #import "AsyncInvocation.h"
 #import "AsyncCallbackProtocol.h"
 
@@ -12,6 +10,7 @@
 	+(AsyncContext*) contextNamed: (NSString*)name;
 @end
 
+// Factory for AsyncProxy
 @interface AsyncObject : NSObject {
 	id target;
 	id delegate;
@@ -27,6 +26,8 @@
 @property (assign) SEL onSuccess;
 @property (assign) SEL onError;
 
++ (AsyncObject*)asyncObjectForTarget:(id)target;
+
 + (AsyncObject*)asyncObjectForTarget:(id)target delegate:(id)delegate;
 + (AsyncObject*)asyncObjectForTarget:(id)target observer:(id)observer;
 
@@ -37,7 +38,9 @@
 
 -(void)setContextNamed: (NSString*)name;
 
+// proxy constructors
 - (id)asyncProxy;
+- (id)proxyWithCallback: (id<AsyncCallbackProtocol>)callback;
 - (id)createAsyncProxy;
 - (id)onSuccess: (SEL)_onSuccess onError: (SEL)_onError;
 

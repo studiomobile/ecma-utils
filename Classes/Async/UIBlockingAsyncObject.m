@@ -17,9 +17,7 @@
 #pragma mark private
 
 -(void)performWithEachBlocker: (SEL)selector{
-	for(id<UIBlockingView> blocker in blockers){
-		[blocker performSelector: selector];
-	}
+	[blockers makeObjectsPerformSelector: selector];
 }
 
 #pragma mark NSObject

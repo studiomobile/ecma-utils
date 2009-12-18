@@ -2,6 +2,7 @@
 #import "AsyncObject.h"
 #import "UIBlocker.h"
 
+// This class is needed no more. Use BlockingAsyncCallback
 @interface UIBlockingAsyncObject : AsyncObject {
 	id<UIBlockingView> blocker;
 	NSTimeInterval indicatorDelay;
