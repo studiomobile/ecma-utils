@@ -15,8 +15,11 @@
 
 @interface NSArray (Utils)
 
-typedef BOOL (*FNFilter)(id);
--(id)detect: (FNFilter)fnFitler;
+
+-(id)detect: (NSPredicate*)predicate;
+-(NSArray*)select: (NSPredicate*)predicate;
+-(NSArray*)reject: (NSPredicate*)predicate;
+-(NSArray*)collect: (NSString*)keyPath;
 
 @end
 

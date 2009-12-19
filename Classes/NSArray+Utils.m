@@ -39,15 +39,27 @@
 
 @implementation NSArray (Utils)
 
--(id)detect: (FNFilter)fnFitler{
-	for (id each in self){
-		if(fnFitler(each)){
-			return each;
-		}
-	}
-			
-	return nil;
+-(id)detect: (NSPredicate*)predicate{
+	for (id each in self) if([predicate evaluateWithObject:each]) return each;	
+	return nil;	
 }
+
+-(NSArray*)select: (NSPredicate*)predicate{
+	NSMutableArray* result = [NSMutableArray array];
+	for(id each in self) if([predicate evaluateWithObject:each]) [result addObject:each];
+	return [result copy];
+}
+
+-(NSArray*)reject: (NSPredicate*)predicate{
+	NSArray* toReject = [self select:predicate];
+	return [self filteredArrayUsingPredicate: [NSPredicate predicateWithFormat:@"not self in %@", toReject]];
+}
+
+-(NSArray*)collect: (NSString*)keyPath{
+	NSString* path = [@"@unionOfObjects." stringByAppendingString: keyPath];
+	return [self valueForKeyPath: path];
+}
+
 
 @end
 
