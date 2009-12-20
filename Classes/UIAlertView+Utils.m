@@ -84,13 +84,13 @@
 -(void)showAndCall: (SEL)selector of: (id)obj{
 	UIAlertViewCallback* cb = [UIAlertViewCallback alertViewCallbackWithDelegate:obj selector:selector];
 	self.delegate = [cb retain];
-	[self show];
+	[self showOnMainThread];
 }
 
 -(void)showAndCall: (SEL)selector of: (id)obj withArgument: (id)arg{
 	UIAlertViewCallback* cb = [UIAlertViewCallback alertViewCallbackWithDelegate:obj selector:selector argument: arg];
 	self.delegate = [cb retain];
-	[self show];	
+	[self showOnMainThread];	
 }
 
 @end
