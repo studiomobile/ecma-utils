@@ -1,5 +1,11 @@
 #import "BlockingAsyncCallback.h"
 #import "UIBlockingView.h"
+#import "NSError+Utils.h"
+
+@interface NSObject (AsyncCallback)
+-(void)__blockingAsyncCallbackDefaultErrorHandler: (NSError*)error;
+@end
+
 
 @implementation BlockingAsyncCallback
 
@@ -24,19 +30,25 @@
 
 #pragma mark NSObject
 
+- (void)dealloc {
+	[indicatorTimer invalidate];
+	[blocker release];	
+	[super dealloc];
+}
+
+#pragma mark public
+
 +(BlockingAsyncCallback*) callbackWithDelegate: delegate 
-									  onSuccess: (SEL)onSuccess 
-										onError: (SEL)onError
-										blocker: (id<UIBlockingView>) blocker{
+									 onSuccess: (SEL)onSuccess 
+									   onError: (SEL)onError
+									   blocker: (id<UIBlockingView>) blocker{
 	BlockingAsyncCallback* inst = [[BlockingAsyncCallback alloc] initWithHandler:delegate retained:NO onSuccess:onSuccess onError:onError];
 	inst.blocker = blocker;
 	return inst;
 }
 
-- (void)dealloc {
-	[indicatorTimer invalidate];
-	[blocker release];	
-	[super dealloc];
++(SEL)defaultErrorHandler{
+	return @selector(__blockingAsyncCallbackDefaultErrorHandler:);
 }
 
 #pragma mark AsyncCallbackProtocol
@@ -70,4 +82,10 @@
 	[super asyncOperationFinishedWithError:error];
 }
 
+@end
+
+@implementation NSObject (AsyncCallback)
+-(void)__blockingAsyncCallbackDefaultErrorHandler: (NSError*)error{
+	[error display];
+}
 @end

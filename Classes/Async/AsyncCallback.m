@@ -4,6 +4,8 @@
 @synthesize onSuccess;
 @synthesize onError;
 
+#pragma mark properties
+
 - (void) setDelegate:(id)delegate{
 	if(isHandlerRetained) [handler release];
     handler = delegate;
@@ -26,8 +28,6 @@
 	return isHandlerRetained ? nil : handler;
 }
 
-
-
 #pragma mark NSObject
 
 -(id) initWithHandler: (id)_handler 
@@ -45,6 +45,14 @@
     return self;
 }
 
+
+- (void) dealloc{
+	if(isHandlerRetained) [handler release];
+	[super dealloc];
+}
+
+#pragma mark public
+
 +(AsyncCallback*) callbackWithHandler: handler retained: (BOOL)isHandlerRetained onSuccess: (SEL)onSuccess onError: (SEL)onError{
 	return [[[[self class] alloc] initWithHandler: handler 
 										 retained:isHandlerRetained 
@@ -59,12 +67,6 @@
 +(AsyncCallback*) callbackWithObserver: observer onSuccess: (SEL)onSuccess onError: (SEL)onError{
 	return [[[[self class] alloc] initWithHandler: observer retained:YES onSuccess:onSuccess onError:onError] autorelease];
 }
-
-- (void) dealloc{
-	if(isHandlerRetained) [handler release];
-	[super dealloc];
-}
-
 
 #pragma mark AsyncConnectionProtocol
 
@@ -81,4 +83,3 @@
 
 
 @end
-

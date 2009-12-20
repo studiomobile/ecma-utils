@@ -2,58 +2,7 @@
 #import "UIBlockingView.h"
 #import "NSObject+Utils.h"
 #import "BlockingAsyncCallback.h"
-
-// this class is for backward compatibiliy
-@interface CompositeBlockingView : NSObject<UIBlockingView>{
-	NSArray* blockers;
-}
-
-+(CompositeBlockingView*) compositeBlockingViewWithBlockers: (NSArray*)blockers;
-
-@end
-
-@implementation CompositeBlockingView
-
-#pragma mark private
-
--(void)performWithEachBlocker: (SEL)selector{
-	[blockers makeObjectsPerformSelector: selector];
-}
-
-#pragma mark NSObject
-
-- (id) initWithBlockers: (NSArray*)_blockers {
-	self = [super init];
-	if (self != nil) {
-		blockers = [_blockers retain];
-	}
-	return self;
-}
-
-+(CompositeBlockingView*) compositeBlockingViewWithBlockers: (NSArray*)blockers{
-	return [[[CompositeBlockingView alloc] initWithBlockers: blockers] autorelease];	 
-}
-
-- (void) dealloc{
-	[blockers release];
-	[super dealloc];
-}
-#pragma mark UIBlockingView
-
-- (void)blockUI{
-	[self performWithEachBlocker: @selector(blockUI)];
-}
-
-- (void)unblockUI{
-	[self performWithEachBlocker: @selector(unblockUI)];
-}
-
-- (void)showIndicator{
-	[self performWithEachBlocker: @selector(showIndicator)];
-}
-@end
-
-// ================================================
+#import "CompositeBlockingView.h"
 
 @implementation UIBlockingAsyncObject
 
@@ -69,6 +18,7 @@
 -(id<AsyncCallbackProtocol>)makeCallback{
 	BlockingAsyncCallback* cb = (BlockingAsyncCallback*)[super makeCallback];
 	cb.blocker = blocker;
+	cb.indicatorDelay = indicatorDelay;
 	return cb;
 }
 

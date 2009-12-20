@@ -33,7 +33,7 @@
         errorMessage = [self localizedDescription];
     }
     NSLog(errorMessage);
-	[UIAlertView showAlertViewWithTitle:@"Error" message: errorMessage];
+	[UIAlertView showAlertViewErrorMessage: errorMessage];
 }
 
 @end

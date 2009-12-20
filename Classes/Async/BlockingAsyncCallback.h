@@ -14,4 +14,6 @@
 										onError: (SEL)onError
 										blocker: (id<UIBlockingView>) blocker;
 
++(SEL)defaultErrorHandler;
+
 @end
