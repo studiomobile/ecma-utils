@@ -46,6 +46,6 @@
 
 // internals
 -(Class)defaultAsyncCallbackClass;
--(id<AsyncCallbackProtocol>) makeCallback;
+-(id<AsyncCallbackProtocol>) makeCallbackWithSuccess: (SEL) _onSuccess error: (SEL)_onError;
 
 @end

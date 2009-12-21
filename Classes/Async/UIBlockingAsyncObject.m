@@ -15,8 +15,8 @@
 	return [BlockingAsyncCallback class];
 }
 
--(id<AsyncCallbackProtocol>)makeCallback{
-	BlockingAsyncCallback* cb = (BlockingAsyncCallback*)[super makeCallback];
+-(id<AsyncCallbackProtocol>) makeCallbackWithSuccess: (SEL) _onSuccess error: (SEL)_onError{
+	BlockingAsyncCallback* cb = (BlockingAsyncCallback*)[super makeCallbackWithSuccess:_onSuccess error:_onError];
 	cb.blocker = blocker;
 	cb.indicatorDelay = indicatorDelay;
 	return cb;

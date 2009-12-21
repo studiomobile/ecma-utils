@@ -62,6 +62,16 @@
 
 #pragma mark private
 
+-(id<AsyncCallbackProtocol>) makeCallback{
+	return [self makeCallbackWithSuccess:onSuccess error:onError];	 
+}
+
+#pragma mark proctected
+
+-(Class)defaultAsyncCallbackClass{
+	return [AsyncCallback class];
+}
+
 -(id<AsyncCallbackProtocol>) makeCallbackWithSuccess: (SEL) _onSuccess error: (SEL)_onError{
 	id handler;
 	BOOL isHandlerRetained;
@@ -79,15 +89,6 @@
 															  onError: _onError] autorelease];
 }
 
-#pragma mark proctected
-
--(Class)defaultAsyncCallbackClass{
-	return [AsyncCallback class];
-}
-
--(id<AsyncCallbackProtocol>) makeCallback{
-	return [self makeCallbackWithSuccess:onSuccess error:onError];	 
-}
 
 #pragma mark NSObject
 

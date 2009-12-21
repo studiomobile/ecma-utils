@@ -18,9 +18,9 @@
 	[(NSObject*)blocker performSelectorOnMainThread:selector withObject:nil waitUntilDone:YES];
 }
 
--(void)onTimer{
+-(void)onTimer: (NSTimer*)timer{
 	indicatorTimer = nil;
-	[self performForBlocker: @selector(showIndicator)];
+	[blocker showIndicator];
 }
 
 -(void)stopTimer{
@@ -53,9 +53,17 @@
 
 #pragma mark AsyncCallbackProtocol
 
+-(void)scheduleTimer{
+	indicatorTimer = [NSTimer scheduledTimerWithTimeInterval:indicatorDelay
+													  target:self 
+													selector:@selector(onTimer:) 
+													userInfo:nil 
+													 repeats:NO];
+}
+
 -(void)asyncOperationStarted{
 	if (indicatorDelay > 0) {
-		indicatorTimer = [NSTimer scheduledTimerWithTimeInterval:indicatorDelay target:self selector:@selector(onTimer) userInfo:nil repeats:NO];
+		[self performSelectorOnMainThread:@selector(scheduleTimer) withObject:nil waitUntilDone:NO];
 	} else {
 		[self performForBlocker: @selector(showIndicator)];
 	}
