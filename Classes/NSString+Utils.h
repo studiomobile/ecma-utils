@@ -12,6 +12,11 @@
 - (BOOL)caseInsensitiveEndsWith:(NSString*)suffix;
 - (BOOL)endsWith:(NSString*)suffix;
 
+- (BOOL)isBefore:(NSString*)other;
+- (BOOL)isAfter:(NSString*)other;
+- (BOOL)isCaseInsensitiveBefore:(NSString*)other;
+- (BOOL)isCaseInsensitiveAfter:(NSString*)other;
+    
 + (NSString*)formattedInt:(int)value;
 
 @end

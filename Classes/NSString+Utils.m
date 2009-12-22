@@ -56,6 +56,26 @@
 }
 
 
+- (BOOL)isBefore:(NSString*)other {
+    return [self compare:other] < 0;
+}
+
+
+- (BOOL)isAfter:(NSString*)other {
+    return [self compare:other] > 0;
+}
+
+
+- (BOOL)isCaseInsensitiveBefore:(NSString*)other {
+    return [self caseInsensitiveCompare:other] < 0;
+}
+
+
+- (BOOL)isCaseInsensitiveAfter:(NSString*)other {
+    return [self caseInsensitiveCompare:other] > 0;
+}
+
+
 + (NSString *)formattedInt:(int)value {
     NSMutableString *formatted = [NSMutableString stringWithFormat:@"%d", value];
     int pos = 3;
