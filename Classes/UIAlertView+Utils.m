@@ -48,8 +48,17 @@
 	return [self alertViewWithTitle:title message:nil];
 }
 
-/////////
++ (UIAlertView *)showOneButtonAlertViewWithTitle:(NSString *)title message:(NSString *)message delegate:(id)delegate {
+	UIAlertView *alert = [[[UIAlertView alloc] initWithTitle:title
+													 message:message
+													delegate:delegate
+										   cancelButtonTitle:@"OK"
+										   otherButtonTitles:nil] autorelease];
+	[alert show];
+	return alert;	
+}
 
+/////////
 
 + (void)showAlertViewErrorMessage:(NSString*)message {
 	UIAlertView* alert = [self alertViewWithErrorMessage: message];
@@ -105,7 +114,6 @@
 	}
 	return self;
 }
-
 
 +(UIAlertViewCallback*)alertViewCallbackWithDelegate: (id)delegate selector: (SEL)selector{
 	UIAlertViewCallback* inst = [[[self alloc] initWithDelegate:delegate selector:selector] autorelease];
