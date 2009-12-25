@@ -3,6 +3,9 @@
 #import "NSString+Web.h"
 #import "NSData+Base64.h"
 
+#import "UIAlertView+Utils.h"
+
+NSString* const WebServiceErrorDomain = @"WebServerError";
 NSString *const WebServiceErrorKey = @"__WebServiceError__";
 NSString *const RequestStatusCode = @"__RequestStatusCode__";
 
@@ -83,7 +86,7 @@ NSString *const RequestStatusCode = @"__RequestStatusCode__";
 										   result, WebServiceErrorKey, 
 										   [NSNumber numberWithInt:statusCode], RequestStatusCode, 
 										   nil];
-				*error = [NSError errorWithDomain:@"WebServerError" code:1 userInfo:errorInfo];
+				*error = [NSError errorWithDomain:WebServiceErrorDomain code:1 userInfo:errorInfo];
                 NSLog(@"Result: %@", [[NSString alloc] initWithData:result encoding:NSUTF8StringEncoding]);
 			} else {
 				NSLog(@"Failed to map server error to provided erro class");
@@ -91,7 +94,7 @@ NSString *const RequestStatusCode = @"__RequestStatusCode__";
 										   NSLocalizedDescriptionKey, @"Unexpected server error", 
 										   [NSNumber numberWithInt:statusCode], RequestStatusCode,
 										   nil];
-				*error = [NSError errorWithDomain:@"WebServerError" code:1 userInfo:errorInfo];
+				*error = [NSError errorWithDomain:WebServiceErrorDomain code:1 userInfo:errorInfo];
 			}
 		}
 	} else {

@@ -1,8 +1,10 @@
 #import <Foundation/Foundation.h>
 #import "WebParams.h"
 
+extern NSString *const WebServiceErrorDomain;
 extern NSString *const WebServiceErrorKey;
 extern NSString *const RequestStatusCode;
+
 
 @protocol RESTServiceDataMapper
 
