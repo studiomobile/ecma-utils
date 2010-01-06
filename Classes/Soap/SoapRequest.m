@@ -4,6 +4,8 @@
 
 #import "Reachability+Utils.h"
 
+#import "SoapDebugLogEnveloper.h"
+
 @interface SoapRequest ()
 @property (retain, readwrite) id result; 
 @property (retain, readwrite) NSError* error; 
@@ -65,13 +67,17 @@
 	service.enableCookies = enableCookies;
 	
 	SoapEnveloper *enveloper = [SoapEnveloper soapEnveloper];
+	SoapEnveloper* debugEnveloper = [SoapDebugLogEnveloper soapEnveloper];
 	if (header) {
 		[enveloper encodeHeaderObject:header];
+		[debugEnveloper encodeHeaderObject:header];
 	}
 	[enveloper encodeBodyObject:body];
+	[debugEnveloper encodeBodyObject:body];
 	
 	NSString *xmlString = enveloper.message;
-	NSLog(@"SOAP REQUEST:\n%@", xmlString);
+	NSString* debugXmlString = debugEnveloper.message;
+	NSLog(@"SOAP REQUEST:\n%@", debugXmlString);
 	NSData *requestData = [xmlString dataUsingEncoding: NSUTF8StringEncoding];
 	
 	NSError* err = nil;

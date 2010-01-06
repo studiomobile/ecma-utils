@@ -16,9 +16,12 @@
 		[copy retainArguments];
 	}
 	
-	char resultBuffer[[[self methodSignature] methodReturnLength]];	
-	[self getReturnValue:resultBuffer];
-	[copy setReturnValue:resultBuffer];	
+	int returnLength = [[self methodSignature] methodReturnLength];
+	if(returnLength > 0){
+		char resultBuffer[returnLength];	
+		[self getReturnValue:resultBuffer];
+		[copy setReturnValue:resultBuffer];		
+	}
 	
 	return copy;
 }

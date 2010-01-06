@@ -200,7 +200,9 @@
 	[invocation setTarget:target];			
 	@try {
 		[invocation invoke];
-		[invocation getReturnValue:&result];
+		if([[invocation methodSignature] methodReturnLength] > 0){			
+			[invocation getReturnValue:&result];
+		}		
 	}
 	@catch (NSError * e) {
 		result = e;
@@ -241,9 +243,13 @@
 	AsyncOperation* op = [[[AsyncOperation alloc] initWithAsyncProxy:self 
 														  invocation:[invocation copy]
 														clientThread:[NSThread currentThread]] autorelease];
-	[opQ addOperation: op];	
-	AsyncInvocationImpl* invocationInterface = [AsyncInvocationImpl asyncInvocationWithOperation:op];
-	[invocation setReturnValue: &invocationInterface];
+	[opQ addOperation: op];		
+	
+	// todo: need somehow inform client about absence of return value
+	if([[invocation methodSignature] methodReturnLength] > 0){		
+		AsyncInvocationImpl* invocationInterface = [AsyncInvocationImpl asyncInvocationWithOperation:op];
+		[invocation setReturnValue: &invocationInterface];
+	}	
 }
 
 

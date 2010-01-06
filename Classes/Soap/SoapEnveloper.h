@@ -22,4 +22,8 @@
 -(void)encodeBodyObject: (id<SoapEntityProto>)objv;
 -(void)encodeBodyObject: (id<SoapEntityProto>)objv forKey: (NSString*)key;
 
+// protected
+
+- (void)encodeString:(NSString*)str forKey:(NSString *)key attributes: (NSDictionary*)attrs;
+
 @end
