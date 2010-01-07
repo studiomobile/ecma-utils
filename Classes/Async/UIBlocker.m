@@ -1,5 +1,5 @@
 #import "UIBlocker.h"
-
+#import "CGGeometry+Utils.h"
 
 @implementation UIBlocker
 
@@ -72,10 +72,12 @@
         if (!myIndicator) {
             myIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle: UIActivityIndicatorViewStyleWhiteLarge];
             myIndicator.hidesWhenStopped = YES;
-        }
+        }		
+					 
         UIWindow *window = [UIApplication sharedApplication].keyWindow;
-        [window addSubview:myIndicator];
-        myIndicator.center = window.center;
+		UIView* v = (views && views.count == 1) ? [views objectAtIndex:0] : window;
+        [v addSubview:myIndicator];
+        myIndicator.center = CGRectCenter(v.bounds);
         activeIndicator = myIndicator;
     }
 	activeIndicator.hidden = NO;
