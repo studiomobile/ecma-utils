@@ -953,9 +953,15 @@ static NSString *RKLStringFromClassAndMethod(id object, SEL selector, NSString *
   return([self RKL_METHOD_PREPEND(stringByMatching):regex options:RKLNoOptions inRange:NSMaxiumRange capture:0L      error:NULL]);
 }
 
+
 - (NSString *)RKL_METHOD_PREPEND(stringByMatching):(NSString *)regex capture:(NSInteger)capture
 {
   return([self RKL_METHOD_PREPEND(stringByMatching):regex options:RKLNoOptions inRange:NSMaxiumRange capture:capture error:NULL]);
+}
+
+- (NSString *)RKL_METHOD_PREPEND(stringByMatching):(NSString *)regex options:(RKLRegexOptions)options capture:(NSInteger)capture
+{
+    return([self RKL_METHOD_PREPEND(stringByMatching):regex options:options inRange:NSMaxiumRange capture:capture error:NULL]);
 }
 
 - (NSString *)RKL_METHOD_PREPEND(stringByMatching):(NSString *)regex inRange:(NSRange)range
