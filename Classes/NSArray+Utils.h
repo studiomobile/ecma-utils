@@ -16,10 +16,11 @@
 @interface NSArray (Utils)
 
 
--(id)detect: (NSPredicate*)predicate;
--(NSArray*)select: (NSPredicate*)predicate;
--(NSArray*)reject: (NSPredicate*)predicate;
--(NSArray*)collect: (NSString*)keyPath;
+- (id)detect: (NSPredicate*)predicate;
+- (NSArray *)select: (NSPredicate*)predicate;
+- (NSArray *)reject: (NSPredicate*)predicate;
+- (NSArray *)collect: (NSString*)keyPath;
+- (NSArray *)take:(NSUInteger)count;
 
 @end
 

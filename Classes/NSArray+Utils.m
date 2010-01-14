@@ -60,6 +60,18 @@
 	return [self valueForKeyPath: path];
 }
 
+- (NSArray *)take:(NSUInteger)count {
+	if(!count) return [NSArray array];
+	if(count >= self.count) {
+		return [[self copy] autorelease];
+	}
+	
+	NSRange range;
+	range.location = 0;
+	range.length = MAX(self.count, count);
+	return [self objectsAtIndexes:[NSIndexSet indexSetWithIndexesInRange:range]];
+}
+
 
 @end
 
