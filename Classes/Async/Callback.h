@@ -14,8 +14,12 @@
 -(void)call;
 -(void)callWith: arg;
 -(void)callWith: arg1 with: arg2;
+-(void)callWith: arg1 with: arg2 with: arg3;
 -(void)callWithArguments: (NSArray*)args;
 
+-(void)bind0: value;
+-(void)bind1: value;
+-(void)bind2: value;
 -(void)bindArgument: (int)number with: (id)value;
 
 @end

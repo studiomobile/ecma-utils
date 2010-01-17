@@ -127,10 +127,30 @@
 	[self callWithArguments: [NSArray arrayWithObjects: arg1, arg2, nil]];
 }
 
+-(void)callWith: arg1 with: arg2 with: arg3{
+	arg1 = [self convertNull:arg1];
+	arg2 = [self convertNull:arg2];
+	arg2 = [self convertNull:arg3];
+	[self callWithArguments: [NSArray arrayWithObjects: arg1, arg2, arg3, nil]];
+}
+
 -(void)bindArgument: (int)number with: (id)value{
 	value = [self convertNull: value];
 	[boundArguments setObject: value forKey: [NSNumber numberWithInt: number]];
 }
+
+-(void)bind0: value{
+	[self bindArgument:0 with:value];
+}
+
+-(void)bind1: value{
+	[self bindArgument:1 with:value];
+}
+
+-(void)bind2: value{
+	[self bindArgument:2 with:value];
+}
+
 
 
 @end
