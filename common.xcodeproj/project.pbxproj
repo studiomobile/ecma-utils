@@ -36,6 +36,17 @@
 		0956F17B0F4455F60096310E /* TextEditController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0956F1690F4455F60096310E /* TextEditController.m */; };
 		0992D1D70F55989D00EA42BF /* UIView+Utils.h in Headers */ = {isa = PBXBuildFile; fileRef = 0992D1D50F55989D00EA42BF /* UIView+Utils.h */; };
 		0992D1D80F55989D00EA42BF /* UIView+Utils.m in Sources */ = {isa = PBXBuildFile; fileRef = 0992D1D60F55989D00EA42BF /* UIView+Utils.m */; };
+		3AAD90001102498200E68CBF /* Async.h in Headers */ = {isa = PBXBuildFile; fileRef = 3AAD8FF51102498200E68CBF /* Async.h */; };
+		3AAD90011102498200E68CBF /* AsyncCallback.h in Headers */ = {isa = PBXBuildFile; fileRef = 3AAD8FF61102498200E68CBF /* AsyncCallback.h */; };
+		3AAD90021102498200E68CBF /* AsyncCallback.m in Sources */ = {isa = PBXBuildFile; fileRef = 3AAD8FF71102498200E68CBF /* AsyncCallback.m */; };
+		3AAD90031102498200E68CBF /* AsyncCallbackProtocol.h in Headers */ = {isa = PBXBuildFile; fileRef = 3AAD8FF81102498200E68CBF /* AsyncCallbackProtocol.h */; };
+		3AAD90041102498200E68CBF /* AsyncInvocation.h in Headers */ = {isa = PBXBuildFile; fileRef = 3AAD8FF91102498200E68CBF /* AsyncInvocation.h */; };
+		3AAD90051102498200E68CBF /* BlockingAsyncCallback.h in Headers */ = {isa = PBXBuildFile; fileRef = 3AAD8FFA1102498200E68CBF /* BlockingAsyncCallback.h */; };
+		3AAD90061102498200E68CBF /* BlockingAsyncCallback.m in Sources */ = {isa = PBXBuildFile; fileRef = 3AAD8FFB1102498200E68CBF /* BlockingAsyncCallback.m */; };
+		3AAD90071102498200E68CBF /* CompositeBlockingView.h in Headers */ = {isa = PBXBuildFile; fileRef = 3AAD8FFC1102498200E68CBF /* CompositeBlockingView.h */; };
+		3AAD90081102498200E68CBF /* CompositeBlockingView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3AAD8FFD1102498200E68CBF /* CompositeBlockingView.m */; };
+		3AAD90091102498200E68CBF /* UIBlocker.h in Headers */ = {isa = PBXBuildFile; fileRef = 3AAD8FFE1102498200E68CBF /* UIBlocker.h */; };
+		3AAD900A1102498200E68CBF /* UIBlocker.m in Sources */ = {isa = PBXBuildFile; fileRef = 3AAD8FFF1102498200E68CBF /* UIBlocker.m */; };
 		791FBA8C0EA406660068A8FE /* NSData+Utils.h in Headers */ = {isa = PBXBuildFile; fileRef = 791FBA8A0EA406660068A8FE /* NSData+Utils.h */; };
 		791FBA8D0EA406660068A8FE /* NSData+Utils.m in Sources */ = {isa = PBXBuildFile; fileRef = 791FBA8B0EA406660068A8FE /* NSData+Utils.m */; };
 		79427DE20E9A13E600E8F7F9 /* NSString+Utils.h in Headers */ = {isa = PBXBuildFile; fileRef = 79427DDA0E9A13E600E8F7F9 /* NSString+Utils.h */; };
@@ -137,6 +148,17 @@
 		1DF5F4DF0D08C38300B7A737 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		288765FC0DF74451002DB57D /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		28AD733E0D9D9553002E5188 /* MainWindow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MainWindow.xib; sourceTree = "<group>"; };
+		3AAD8FF51102498200E68CBF /* Async.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Async.h; sourceTree = "<group>"; };
+		3AAD8FF61102498200E68CBF /* AsyncCallback.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AsyncCallback.h; sourceTree = "<group>"; };
+		3AAD8FF71102498200E68CBF /* AsyncCallback.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AsyncCallback.m; sourceTree = "<group>"; };
+		3AAD8FF81102498200E68CBF /* AsyncCallbackProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AsyncCallbackProtocol.h; sourceTree = "<group>"; };
+		3AAD8FF91102498200E68CBF /* AsyncInvocation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AsyncInvocation.h; sourceTree = "<group>"; };
+		3AAD8FFA1102498200E68CBF /* BlockingAsyncCallback.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlockingAsyncCallback.h; sourceTree = "<group>"; };
+		3AAD8FFB1102498200E68CBF /* BlockingAsyncCallback.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlockingAsyncCallback.m; sourceTree = "<group>"; };
+		3AAD8FFC1102498200E68CBF /* CompositeBlockingView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CompositeBlockingView.h; sourceTree = "<group>"; };
+		3AAD8FFD1102498200E68CBF /* CompositeBlockingView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CompositeBlockingView.m; sourceTree = "<group>"; };
+		3AAD8FFE1102498200E68CBF /* UIBlocker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UIBlocker.h; sourceTree = "<group>"; };
+		3AAD8FFF1102498200E68CBF /* UIBlocker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UIBlocker.m; sourceTree = "<group>"; };
 		79096D480E97CB5D0081A012 /* libcommon.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libcommon.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		791FBA8A0EA406660068A8FE /* NSData+Utils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+Utils.h"; sourceTree = "<group>"; };
 		791FBA8B0EA406660068A8FE /* NSData+Utils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+Utils.m"; sourceTree = "<group>"; };
@@ -403,6 +425,17 @@
 		B4D5B2AA0F73AFAA008021D6 /* Async */ = {
 			isa = PBXGroup;
 			children = (
+				3AAD8FF51102498200E68CBF /* Async.h */,
+				3AAD8FF61102498200E68CBF /* AsyncCallback.h */,
+				3AAD8FF71102498200E68CBF /* AsyncCallback.m */,
+				3AAD8FF81102498200E68CBF /* AsyncCallbackProtocol.h */,
+				3AAD8FF91102498200E68CBF /* AsyncInvocation.h */,
+				3AAD8FFA1102498200E68CBF /* BlockingAsyncCallback.h */,
+				3AAD8FFB1102498200E68CBF /* BlockingAsyncCallback.m */,
+				3AAD8FFC1102498200E68CBF /* CompositeBlockingView.h */,
+				3AAD8FFD1102498200E68CBF /* CompositeBlockingView.m */,
+				3AAD8FFE1102498200E68CBF /* UIBlocker.h */,
+				3AAD8FFF1102498200E68CBF /* UIBlocker.m */,
 				B4D5B2AB0F73AFAA008021D6 /* AsyncObject.h */,
 				B4D5B2AC0F73AFAA008021D6 /* AsyncObject.m */,
 				B4D5B2AD0F73AFAA008021D6 /* UIBlockingAsyncObject.h */,
@@ -468,6 +501,13 @@
 				B4130A6D101740FF006EFD10 /* NSObject+Invocation.h in Headers */,
 				B42A6205102058D2002C0329 /* NSData+MD5.h in Headers */,
 				B42CD2F510B5B3F0003E57F0 /* PagerController.h in Headers */,
+				3AAD90001102498200E68CBF /* Async.h in Headers */,
+				3AAD90011102498200E68CBF /* AsyncCallback.h in Headers */,
+				3AAD90031102498200E68CBF /* AsyncCallbackProtocol.h in Headers */,
+				3AAD90041102498200E68CBF /* AsyncInvocation.h in Headers */,
+				3AAD90051102498200E68CBF /* BlockingAsyncCallback.h in Headers */,
+				3AAD90071102498200E68CBF /* CompositeBlockingView.h in Headers */,
+				3AAD90091102498200E68CBF /* UIBlocker.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -558,6 +598,10 @@
 				B4130A6E101740FF006EFD10 /* NSObject+Invocation.m in Sources */,
 				B42A6206102058D2002C0329 /* NSData+MD5.m in Sources */,
 				B42CD2F610B5B3F0003E57F0 /* PagerController.m in Sources */,
+				3AAD90021102498200E68CBF /* AsyncCallback.m in Sources */,
+				3AAD90061102498200E68CBF /* BlockingAsyncCallback.m in Sources */,
+				3AAD90081102498200E68CBF /* CompositeBlockingView.m in Sources */,
+				3AAD900A1102498200E68CBF /* UIBlocker.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
