@@ -8,6 +8,7 @@
 @property(retain) id observer;
 @property(assign) SEL selector;
 
+-(id) initWithHandler: (id)_handler retained: (BOOL)_isHandlerRetained selector: (SEL)_selector;
 +(Callback*) callbackWithDelegate: delegate selector: (SEL)selector;
 +(Callback*) callbackWithObserver: observer selector: (SEL)selector;
 

@@ -71,6 +71,7 @@
 			selector: (SEL)_selector {
 	self = [super init];
 	if (self != nil) {
+		isHandlerRetained = _isHandlerRetained;
 		boundArguments = [[NSMutableDictionary dictionary] retain];
 		
 		if(isHandlerRetained) self.observer = _handler;

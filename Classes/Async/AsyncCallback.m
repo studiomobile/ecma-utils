@@ -36,6 +36,7 @@
 			   onError: (SEL)_onError{
 	self = [super init];
 	if (self != nil) {
+		isHandlerRetained = _isHandlerRetained;
 		if(isHandlerRetained) self.observer = _handler;
 		else self.delegate = _handler;
 		self.onSuccess = _onSuccess;
