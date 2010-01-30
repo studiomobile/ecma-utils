@@ -47,7 +47,7 @@
 -(NSArray*)select: (NSPredicate*)predicate{
 	NSMutableArray* result = [NSMutableArray array];
 	for(id each in self) if([predicate evaluateWithObject:each]) [result addObject:each];
-	return [result copy];
+	return [[result copy] autorelease];
 }
 
 -(NSArray*)reject: (NSPredicate*)predicate{

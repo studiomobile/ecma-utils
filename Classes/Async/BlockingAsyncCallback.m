@@ -42,7 +42,7 @@
 									 onSuccess: (SEL)onSuccess 
 									   onError: (SEL)onError
 									   blocker: (id<UIBlockingView>) blocker{
-	BlockingAsyncCallback* inst = [[BlockingAsyncCallback alloc] initWithHandler:delegate retained:NO onSuccess:onSuccess onError:onError];
+	BlockingAsyncCallback* inst = [[[BlockingAsyncCallback alloc] initWithHandler:delegate retained:NO onSuccess:onSuccess onError:onError] autorelease];
 	inst.blocker = blocker;
 	return inst;
 }

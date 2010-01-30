@@ -3,7 +3,7 @@
 @implementation NSInvocation(Utils)
 
 -(NSInvocation*)copy{
-	NSInvocation *copy = [[self target] invocationForMethod:[self selector] ];
+	NSInvocation *copy = [[[self target] invocationForMethod:[self selector] ] retain];
 	
 	NSUInteger argsCount = [[self methodSignature] numberOfArguments];
 	char argumentsBuffer[[[self methodSignature] frameLength]];	

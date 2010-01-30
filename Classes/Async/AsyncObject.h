@@ -41,7 +41,7 @@
 // proxy constructors
 - (id)asyncProxy;
 - (id)proxyWithCallback: (id<AsyncCallbackProtocol>)callback;
-- (id)createAsyncProxy;
+- (id)newAsyncProxy;
 - (id)onSuccess: (SEL)_onSuccess onError: (SEL)_onError;
 
 // internals

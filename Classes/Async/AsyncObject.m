@@ -151,12 +151,12 @@
 
 #pragma mark proxy creation
 
-- (id)createAsyncProxy {
+- (id)newAsyncProxy {
 	return [[AsyncProxy alloc] initWithTarget:target callback: [self makeCallback] context: self.context];
 }
 
 - (id)asyncProxy {
-	return [[self createAsyncProxy] autorelease];
+	return [[self newAsyncProxy] autorelease];
 }
 
 - (id)proxyWithCallback: (id<AsyncCallbackProtocol>)callback{
@@ -239,10 +239,12 @@
 		[invocation retainArguments];
 	}
 	
-	NSOperationQueue* opQ = self.myOperationQueue;	
+	NSOperationQueue* opQ = self.myOperationQueue;
+	NSInvocation* copy = [invocation copy];
 	AsyncOperation* op = [[[AsyncOperation alloc] initWithAsyncProxy:self 
-														  invocation:[invocation copy]
+														  invocation:copy
 														clientThread:[NSThread currentThread]] autorelease];
+	[copy release];
 	[opQ addOperation: op];		
 	
 	// todo: need somehow inform client about absence of return value
