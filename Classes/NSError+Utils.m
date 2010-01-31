@@ -32,7 +32,7 @@
     } else {
         errorMessage = [self localizedDescription];
     }
-    NSLog(errorMessage);
+    NSLog(@"%@", errorMessage);
 	[UIAlertView showAlertViewErrorMessage: errorMessage];
 }
 

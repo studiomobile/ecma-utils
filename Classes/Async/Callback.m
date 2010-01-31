@@ -131,7 +131,7 @@
 -(void)callWith: arg1 with: arg2 with: arg3{
 	arg1 = [self convertNull:arg1];
 	arg2 = [self convertNull:arg2];
-	arg2 = [self convertNull:arg3];
+	arg3 = [self convertNull:arg3];
 	[self callWithArguments: [NSArray arrayWithObjects: arg1, arg2, arg3, nil]];
 }
 
