@@ -253,10 +253,9 @@
 -(id)decodeSoapEntityFromNode: (CXMLNode*)node type: (id)type{
 	SoapDeenveloperContext* newContext = [SoapDeenveloperContext contextWithNode:node type:type];
 	[self pushContext: newContext];
-	id obj = [type alloc];
-	[obj initWithCoder: self];
+	id obj = [[[type alloc] initWithCoder: self] autorelease];
 	[self popContext];
-	return [obj autorelease];
+	return obj;
 }
 
 -(id)decodePrimitiveTypeFromNode: (CXMLNode*)node type: (id)type{
@@ -292,7 +291,7 @@
 	}
 	
 	if([self.nodeContext isManyForKey: key]){
-		return [objects copy];
+		return [[objects copy] autorelease];
 	}else{
 		return objects.count ? [objects objectAtIndex:0] : nil;
 	}	
