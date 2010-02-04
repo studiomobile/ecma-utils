@@ -5,14 +5,14 @@
 @synthesize title;
 @synthesize titleWidth;
 
-- (UILabel*)createTitleLabel {
+- (UILabel*)newTitleLabel {
     return [[UILabel alloc] initWithFrame:CGRectZero];
 }
 
 
 - (id)initWithFrame:(CGRect)frame reuseIdentifier:(NSString *)reuseIdentifier {
     if (self = [super initWithFrame:frame reuseIdentifier:reuseIdentifier]) {
-		title = [self createTitleLabel];
+		title = [self newTitleLabel];
         title.font = [UIFont boldSystemFontOfSize:16];
         title.backgroundColor = [UIColor clearColor];
 		[self.contentView addSubview:title];

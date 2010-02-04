@@ -540,7 +540,7 @@ static void rkl_find(RKLCacheSlot *cacheSlot, NSInteger capture, NSRange searchR
   if(capture == 0) { captureRange = cacheSlot->lastMatchRange; } else { RKLGetRangeForCapture(cacheSlot->icu_regex, status, capture, captureRange); }
 
  exitNow:
-  *resultRange = captureRange;
+  if(resultRange)*resultRange = captureRange;
 }
 
 //  IMPORTANT!   This code is critical path code.  Because of this, it has been written for speed, not clarity.

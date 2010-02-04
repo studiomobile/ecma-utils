@@ -21,9 +21,8 @@ static char *skip(char *str, int n) {
 		NSInteger cpropTypeStrLen = strlen(cpropTypeStr);
 		if(cpropTypeStr && cpropTypeStrLen < 512) {
 			char propTypeStr[512];
-			char *head = propTypeStr;
 			strcpy(propTypeStr, cpropTypeStr);
-			head = skip(propTypeStr, 1);
+			char* head = skip(propTypeStr, 1);
 			switch(head[0]) {
 				case 'c': 
 				case 'i': 

@@ -66,18 +66,20 @@ NSString *const RequestStatusCode = @"__RequestStatusCode__";
 }
 
 
-- (id)request:(NSURLRequest*)request error:(NSError**)error {
+- (id)request:(NSURLRequest*)request error:(NSError**)perror {
 	NSHTTPURLResponse *response = nil;
 #ifdef DEBUG_LOG
 	NSLog(@"Requesting %@", [request URL]);
 #endif
-	NSData *data = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:error];
+	NSError* error = nil;
+	NSData *data = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
+	if(perror) *perror = error;
 	if(data) {
 		NSUInteger statusCode = [response statusCode];
 #ifdef DEBUG_LOG
 		NSLog(@"Status code: %d", statusCode);
 #endif
-		id result = data ? [self mapData:data error:error] : nil;
+		id result = data ? [self mapData:data error:perror] : nil;
 		if(statusCode < 400) {
 			return result;
 		} else {
@@ -86,19 +88,19 @@ NSString *const RequestStatusCode = @"__RequestStatusCode__";
 										   result, WebServiceErrorKey, 
 										   [NSNumber numberWithInt:statusCode], RequestStatusCode, 
 										   nil];
-				*error = [NSError errorWithDomain:WebServiceErrorDomain code:1 userInfo:errorInfo];
-                NSLog(@"Result: %@", [[NSString alloc] initWithData:result encoding:NSUTF8StringEncoding]);
+				if(perror) *perror = [NSError errorWithDomain:WebServiceErrorDomain code:1 userInfo:errorInfo];
+                NSLog(@"Result: %@", [[[NSString alloc] initWithData:result encoding:NSUTF8StringEncoding] autorelease]);
 			} else {
 				NSLog(@"Failed to map server error to provided erro class");
 				NSDictionary *errorInfo = [NSDictionary dictionaryWithObjectsAndKeys:
 										   NSLocalizedDescriptionKey, @"Unexpected server error", 
 										   [NSNumber numberWithInt:statusCode], RequestStatusCode,
 										   nil];
-				*error = [NSError errorWithDomain:WebServiceErrorDomain code:1 userInfo:errorInfo];
+				if(perror) *perror = [NSError errorWithDomain:WebServiceErrorDomain code:1 userInfo:errorInfo];
 			}
 		}
 	} else {
-		NSLog(@"Request failed with error:%@", [*error localizedDescription]);
+		NSLog(@"Request failed with error:%@", [error localizedDescription]);
 	}
 	return nil;
 }

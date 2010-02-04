@@ -10,7 +10,7 @@
 @synthesize value;
 @synthesize returnKeyAction;
 
-- (UILabel*)createTitleLabel {
+- (UILabel*)newTitleLabel {
     return [[ForwardingLabel alloc] initWithFrame:CGRectZero];
 }
 
