@@ -8,32 +8,35 @@
 
 // construct bound arguments array
 // fill the gaps with passed args
--(NSArray*)finalArgumentsWith: (NSArray*)args{	
-	NSMutableArray* result = [NSMutableArray array];
-	NSMutableArray* callArgsReversed = [[[args reverseObjectEnumerator] allObjects] mutableCopy];
+-(NSArray*)newFinalArgumentsWith: (NSArray*)args{	
+	NSMutableArray* result = [NSMutableArray new];
+	NSMutableArray* argumentsLeft = [args mutableCopy];
 	NSArray* boundNumbers = [boundArguments allKeys];
-	int max = [[boundNumbers valueForKeyPath: @"@max.intValue"] intValue];
-	for(int i = 0; i <= max; i++){
-		NSNumber* key = [NSNumber numberWithInt: i];
-		id val = [boundArguments objectForKey: key];
-		if(val){
-			[result addObject: val];			
-		}else if(callArgsReversed.count){			
-			[result addObject: [callArgsReversed lastObject]];
-			[callArgsReversed removeLastObject];
-		}else {
-			[result addObject: [NSNull null]];
-		}
+	
+	if(boundNumbers.count > 0){
+		int max = [[boundNumbers valueForKeyPath: @"@max.intValue"] intValue];
+		for(int i = 0; i <= max; i++){
+			NSNumber* key = [NSNumber numberWithInt: i];
+			id val = [boundArguments objectForKey: key];
+			if(val){
+				[result addObject: val];			
+			}else if(argumentsLeft.count){			
+				[result addObject: [argumentsLeft objectAtIndex:0]];
+				[argumentsLeft removeObjectAtIndex:0];
+			}else {
+				[result addObject: [NSNull null]];
+			}
+		}		
 	}
 
-	while (callArgsReversed.count) {
-		[result addObject: [callArgsReversed lastObject]];
-		[callArgsReversed removeLastObject];
+	while (argumentsLeft.count) {
+		[result addObject: [argumentsLeft objectAtIndex:0]];
+		[argumentsLeft removeObjectAtIndex:0];
 	}
 	
-	[callArgsReversed release];
+	[argumentsLeft release];
 	
-	return [[result copy] autorelease];
+	return result;
 }
 
 -(id) convertNull: arg{
@@ -100,15 +103,17 @@
 }
 
 -(void)callWithArguments: (NSArray*)args{
-	args = [self finalArgumentsWith: args];
+	NSArray* newArgs = [self newFinalArgumentsWith: args];
 	
 	NSInvocation* inv = [handler invocationForMethod: selector];
 	for(int i = 2; i < inv.methodSignature.numberOfArguments; i++){
 		int argN = i - 2;
-		id arg = argN < args.count ? [args objectAtIndex: argN] : nil;
+		id arg = argN < newArgs.count ? [newArgs objectAtIndex: argN] : nil;
 		if(arg == [NSNull null]) arg = nil;
 		[inv setArgument: &arg atIndex:i];
 	}
+	
+	[newArgs release];
 
 	[inv invoke];
 }
@@ -118,21 +123,30 @@
 }
 
 -(void)callWith: arg{	
-	arg = [self convertNull:arg];	
+	arg = [self convertNull:arg];
+	
+	NSArray* args = [[NSArray alloc] initWithObjects: arg, nil];
 	[self callWithArguments: [NSArray arrayWithObject: arg]];
+	[args release];
 }
 
 -(void)callWith: arg1 with: arg2{
 	arg1 = [self convertNull:arg1];
 	arg2 = [self convertNull:arg2];
-	[self callWithArguments: [NSArray arrayWithObjects: arg1, arg2, nil]];
+	
+	NSArray* args = [[NSArray alloc] initWithObjects: arg1, arg2, nil];
+	[self callWithArguments: args];
+	[args release];
 }
 
 -(void)callWith: arg1 with: arg2 with: arg3{
 	arg1 = [self convertNull:arg1];
 	arg2 = [self convertNull:arg2];
 	arg3 = [self convertNull:arg3];
-	[self callWithArguments: [NSArray arrayWithObjects: arg1, arg2, arg3, nil]];
+	
+	NSArray* args = [[NSArray alloc] initWithObjects: arg1, arg2, arg3, nil];
+	[self callWithArguments: args];
+	[args release];
 }
 
 -(void)bindArgument: (int)number with: (id)value{
