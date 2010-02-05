@@ -47,6 +47,16 @@
 	return inst;
 }
 
++(BlockingAsyncCallback*) callbackWithObserver: observer 
+									 onSuccess: (SEL)onSuccess 
+									   onError: (SEL)onError
+									   blocker: (id<UIBlockingView>) blocker{
+	BlockingAsyncCallback* inst = [[[BlockingAsyncCallback alloc] initWithHandler:observer retained:YES onSuccess:onSuccess onError:onError] autorelease];
+	inst.blocker = blocker;
+	return inst;
+}
+
+
 +(SEL)defaultErrorHandler{
 	return @selector(__blockingAsyncCallbackDefaultErrorHandler:);
 }

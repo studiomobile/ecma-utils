@@ -14,6 +14,13 @@
 										onError: (SEL)onError
 										blocker: (id<UIBlockingView>) blocker;
 
++(BlockingAsyncCallback*) callbackWithObserver: observer 
+									 onSuccess: (SEL)onSuccess 
+									   onError: (SEL)onError
+									   blocker: (id<UIBlockingView>) blocker;
+
+
+
 +(SEL)defaultErrorHandler;
 
 @end
