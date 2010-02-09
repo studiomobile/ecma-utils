@@ -39,19 +39,21 @@
 #pragma mark NSObject
 
 + (UIBlockingAsyncObject*)uiBlockingAsyncObjectForTarget:(id)target delegate:(id)delegate blocker: (id<UIBlockingView>)blocker{
+	NSArray *blockers = blocker ? [NSArray arrayWithObject:blocker] : nil;
 	return [self uiBlockingAsyncObjectForTarget:target 
 									   delegate:delegate 
 									  onSuccess:nil
 										onError:nil
-									 blockViews:[NSArray arrayWithObject: blocker]];
+									 blockViews:blockers];
 }
 
 + (UIBlockingAsyncObject*)uiBlockingAsyncObjectForTarget:(id)target observer:(id)observer blocker: (id<UIBlockingView>)blocker{
+	NSArray *blockers = blocker ? [NSArray arrayWithObject:blocker] : nil;
 	return [self uiBlockingAsyncObjectForTarget:target 
 									   observer:observer 
 									  onSuccess:nil
 										onError:nil
-									 blockViews:[NSArray arrayWithObject: blocker]];	
+									 blockViews:blockers];	
 }
 
 // for backward compatibility

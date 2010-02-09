@@ -72,6 +72,10 @@
 -(id) initWithHandler: (id)_handler 
 			 retained: (BOOL)_isHandlerRetained 
 			selector: (SEL)_selector {
+	if(!_selector){
+		[self release];
+		return nil;	
+	}
 	self = [super init];
 	if (self != nil) {
 		isHandlerRetained = _isHandlerRetained;
@@ -119,7 +123,9 @@
 }
 
 -(void)call{
-	[self callWithArguments: [NSArray array]];
+	NSArray* args = [NSArray new];
+	[self callWithArguments: args];
+	[args release];
 }
 
 -(void)callWith: arg{	

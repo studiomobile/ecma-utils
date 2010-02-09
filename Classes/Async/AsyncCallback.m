@@ -1,8 +1,7 @@
 #import "AsyncCallback.h"
+#import "Callback.h"
 
 @implementation AsyncCallback
-@synthesize onSuccess;
-@synthesize onError;
 
 #pragma mark properties
 
@@ -39,8 +38,8 @@
 		isHandlerRetained = _isHandlerRetained;
 		if(isHandlerRetained) self.observer = _handler;
 		else self.delegate = _handler;
-		self.onSuccess = _onSuccess;
-		self.onError = _onError;		
+		onSuccessCb = [[Callback alloc] initWithHandler:_handler retained:_isHandlerRetained selector:_onSuccess];
+		onErrorCb = [[Callback alloc] initWithHandler:_handler retained:_isHandlerRetained selector:_onError];
 	}	
     
     return self;
@@ -48,6 +47,8 @@
 
 
 - (void) dealloc{
+	[onSuccessCb release];
+	[onErrorCb release];
 	if(isHandlerRetained) [handler release];
 	[super dealloc];
 }
@@ -55,7 +56,7 @@
 #pragma mark public
 
 +(AsyncCallback*) callbackWithHandler: handler retained: (BOOL)isHandlerRetained onSuccess: (SEL)onSuccess onError: (SEL)onError{
-	return [[[[self class] alloc] initWithHandler: handler 
+	return [[[[self class] alloc] initWithHandler:handler 
 										 retained:isHandlerRetained 
 										onSuccess:onSuccess 
 										  onError:onError] autorelease];
@@ -75,12 +76,76 @@
 -(void)asyncOperationCanceled {}
 
 -(void)asyncOperationFinishedWithResult:	(id)result{
-	if(onSuccess)	[handler performSelector:onSuccess withObject: result];
+	[onSuccessCb callWith:result with:self];
 }
 
 -(void)asyncOperationFinishedWithError:		(NSError*)error{
-	if(onError)	[handler performSelector:onError withObject: error];
+	[onErrorCb callWith:error with:self];
 }
 
+
+@end
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+@implementation AsyncCallbackChain
+
+#pragma mark AsyncCallback
+
+-(id) initWithChain:(AsyncCallback*)_chain handler:(id)_handler retained:(BOOL)_isHandlerRetained onSuccess:(SEL)_onSuccess onError:(SEL)_onError{
+	self = [super initWithHandler:_handler retained:_isHandlerRetained onSuccess:_onSuccess onError:_onError];
+	if (self != nil) {
+		chain = [_chain retain];
+	}
+	return self;	
+}
+
++(AsyncCallback*) callbackWithChain: (AsyncCallback*)chain handler: handler retained: (BOOL)isHandlerRetained onSuccess: (SEL)onSuccess onError: (SEL)onError{
+	return [[[[self class] alloc] initWithChain:chain handler:handler retained:isHandlerRetained onSuccess:onSuccess onError:onError] autorelease];
+}
+
+- (void) dealloc{
+	[chain release];
+	[super dealloc];
+}
+
+
+#pragma mark public
+
+- (void)passResult:(id)result{
+	[chain asyncOperationFinishedWithResult:result];
+	passed = YES;
+}
+
+- (void)passError:(NSError*)error{
+	[chain asyncOperationFinishedWithError:error];
+	passed = YES;
+}
+
+#pragma mark AsyncCallbackProtocol
+
+-(void)asyncOperationStarted{
+	[super asyncOperationStarted];
+	[chain asyncOperationStarted];
+}
+
+-(void)asyncOperationCanceled{
+	[super asyncOperationCanceled];
+	[chain asyncOperationCanceled];
+}
+
+-(void)asyncOperationFinishedWithResult:	(id)result{
+	passed = NO;
+	[super asyncOperationFinishedWithResult:result];
+	if(!passed) [chain asyncOperationFinishedWithResult:result];
+	passed = NO;
+}
+
+-(void)asyncOperationFinishedWithError:		(NSError*)error{
+	passed = NO;
+	[super asyncOperationFinishedWithError:error];
+	if(!passed) [chain asyncOperationFinishedWithError:error];
+	passed = NO;
+}
 
 @end

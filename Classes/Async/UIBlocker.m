@@ -14,8 +14,8 @@
 
 
 + (UIBlocker*)blockerForView:(UIView*)view {
-	UIBlocker *blocker = [self blocker];
-	blocker.views = [NSArray arrayWithObject:view];
+	UIBlocker *blocker = [self blocker];	
+	blocker.views = view ? [NSArray arrayWithObject:view] : nil;
 	return blocker;
 }
 
@@ -31,6 +31,18 @@
 	[viewStates release];
 	[super dealloc];
 }
+
+#pragma mark properties
+
+- (void) setIndicator:(UIActivityIndicatorView*)_indicator{
+    [_indicator retain];
+    [indicator release];
+    indicator = _indicator;
+	
+	dontShowIndicator = (_indicator == nil);
+}
+ 
+            
 
 #pragma mark UIBlockingView
 
