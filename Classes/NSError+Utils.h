@@ -23,6 +23,8 @@
 @interface NSError(DetailedDescription)
 - (NSString*)detailedDescription;
 - (void)displayDetailedDescription;
+
+// Will show localizedDescription on device and detailedDescription on simulator or if DEBUG_DETAILED_ERROR_DESCRIPTION defined
 - (NSString*)platformDependentDescription;
 - (void)displayPlatformDependentDescription;
 @end

@@ -70,7 +70,7 @@
 
 - (NSString *)platformDependentDescription {
 	NSString *description = nil;
-#if TARGET_IPHONE_SIMULATOR
+#if defined(TARGET_IPHONE_SIMULATOR) || defined(DEBUG_DETAILED_ERROR_DESCRIPTION)
 	description = [self detailedDescription];
 	NSLog(@"%@", description);
 #else
