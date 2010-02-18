@@ -1,3 +1,5 @@
+#import <Foundation/Foundation.h>
+
 @interface Callback : NSObject {
     id handler;
 	BOOL isHandlerRetained;

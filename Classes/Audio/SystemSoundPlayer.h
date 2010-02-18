@@ -1,3 +1,5 @@
+#import <Foundation/Foundation.h>
+
 @interface SystemSoundPlayer : NSObject {
     NSMutableDictionary *soundIds;
 }

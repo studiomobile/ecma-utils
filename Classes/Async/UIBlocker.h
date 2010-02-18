@@ -1,4 +1,5 @@
 #import "UIBlockingView.h"
+#import <UIKit/UIKit.h>
 
 @interface UIBlocker : NSObject<UIBlockingView>{
 	UIActivityIndicatorView* indicator;

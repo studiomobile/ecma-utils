@@ -36,7 +36,7 @@
 
 - (id)initWithTarget:(id)target;
 
--(void)setContextNamed: (NSString*)name;
+- (void)setContextNamed: (NSString*)name;
 
 // proxy constructors
 - (id)asyncProxy;
@@ -46,6 +46,6 @@
 
 // internals
 -(Class)defaultAsyncCallbackClass;
--(id<AsyncCallbackProtocol>) makeCallbackWithSuccess: (SEL) _onSuccess error: (SEL)_onError;
+-(id<AsyncCallbackProtocol>) makeCallbackWithSuccess:(SEL)_onSuccess error:(SEL)_onError;
 
 @end

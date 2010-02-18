@@ -19,3 +19,10 @@
 
 
 @end
+
+@interface NSError(DetailedDescription)
+- (NSString*)detailedDescription;
+- (void)displayDetailedDescription;
+- (NSString*)platformDependentDescription;
+- (void)displayPlatformDependentDescription;
+@end
