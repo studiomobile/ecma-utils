@@ -3,12 +3,13 @@
 
 extern NSString *const WebServiceErrorDomain;
 extern NSString *const WebServiceErrorKey;
+extern NSString *const RequestResultKey;
 extern NSString *const RequestStatusCode;
 
 
 @protocol RESTServiceDataMapper
 
-- (id)map:(NSData*)data;
+- (NSObject*)map:(NSData*)data;
 
 @end
 

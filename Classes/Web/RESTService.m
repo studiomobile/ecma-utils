@@ -7,6 +7,7 @@
 
 NSString* const WebServiceErrorDomain = @"WebServerError";
 NSString *const WebServiceErrorKey = @"__WebServiceError__";
+NSString *const RequestResultKey = @"__RequestResultCode__";
 NSString *const RequestStatusCode = @"__RequestStatusCode__";
 
 @implementation RESTService
@@ -60,7 +61,7 @@ NSString *const RequestStatusCode = @"__RequestStatusCode__";
 }
 
 
-- (id)mapData:(NSData*)data error:(NSError**)error{
+- (NSObject*)mapData:(NSData*)data error:(NSError**)error{
     if(!mapper) return data;
     return [mapper map:data];
 }
@@ -79,7 +80,7 @@ NSString *const RequestStatusCode = @"__RequestStatusCode__";
 #ifdef DEBUG_LOG
 		NSLog(@"Status code: %d", statusCode);
 #endif
-		id result = data ? [self mapData:data error:perror] : nil;
+		NSObject *result = data ? [self mapData:data error:perror] : nil;
 		if(statusCode < 400) {
 			return result;
 		} else {
@@ -87,11 +88,16 @@ NSString *const RequestStatusCode = @"__RequestStatusCode__";
 				NSDictionary *errorInfo = [NSDictionary dictionaryWithObjectsAndKeys:
 										   result, WebServiceErrorKey, 
 										   [NSNumber numberWithInt:statusCode], RequestStatusCode, 
+                                           result, RequestResultKey, 
 										   nil];
 				if(perror) *perror = [NSError errorWithDomain:WebServiceErrorDomain code:1 userInfo:errorInfo];
-                NSLog(@"Result: %@", [[[NSString alloc] initWithData:result encoding:NSUTF8StringEncoding] autorelease]);
+                if ([result isKindOfClass:[NSData class]]) {
+                    NSLog(@"Result: %@", [[[NSString alloc] initWithData:(NSData*)result encoding:NSUTF8StringEncoding] autorelease]);
+                } else {
+                    NSLog(@"Result: %@", result);
+                }
 			} else {
-				NSLog(@"Failed to map server error to provided erro class");
+				NSLog(@"Failed to map server error to provided error class");
 				NSDictionary *errorInfo = [NSDictionary dictionaryWithObjectsAndKeys:
 										   NSLocalizedDescriptionKey, @"Unexpected server error", 
 										   [NSNumber numberWithInt:statusCode], RequestStatusCode,
