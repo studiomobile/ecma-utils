@@ -7,8 +7,8 @@ fi
 
 dst="$1"
 src=`pwd`
-pushd .
+pushd . > /dev/null
 cd "$dst"
-rm -r libcommon
+rm -rf libcommon
 ln -s "$src/Classes" libcommon
-popd
+popd  > /dev/null
