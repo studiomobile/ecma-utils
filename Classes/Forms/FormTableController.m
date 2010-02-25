@@ -513,8 +513,8 @@
 
 
 - (void)viewWillAppear:(BOOL)animated {
-	[self reloadForm];
 	[super viewWillAppear:animated];
+	[self reloadForm];
 }
 
 @end
