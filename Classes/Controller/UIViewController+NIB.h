@@ -1,7 +1,6 @@
 #import <UIKit/UIKit.h>
 
-
 @interface UIViewController(NIB)
-- (void)replaceViewFromOwnNib;
-- (void)replaceViewFromNibNamed:(NSString*)name;
+- (void)replacePlaceholderViewFromOwnNib: (UIView*)v;
+- (void)replacePlaceholderView:(UIView*)v fromNibNamed:(NSString*)name;
 @end

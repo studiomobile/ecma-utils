@@ -4,19 +4,21 @@
 
 @implementation UIViewController(NIB)
 
-- (void)replaceViewFromNibNamed:(NSString*)name {
-	UIView *v = self.view;
+- (void)replacePlaceholderView:(UIView*)v fromNibNamed:(NSString*)name {
+
+	NSAssert(![self isViewLoaded], @"Receiver's view must not yet be loaded");
+
 	UIView *sv = [v superview];
 	CGRect frame = v.frame;
-	self.view = nil;
 	[v removeFromSuperview];
 	[[NSBundle mainBundle] loadNibNamed:name owner:self options:nil];
 	self.view.frame = frame;
-	[sv addSubview:self.view];	
+	[sv addSubview:self.view];
+	[self viewDidLoad];
 }	
 
-- (void)replaceViewFromOwnNib {
-	[self replaceViewFromNibNamed:[[self class] description]];
+- (void)replacePlaceholderViewFromOwnNib: (UIView*)v {
+	[self replacePlaceholderView:v fromNibNamed:[[self class] description]];
 }
 
 @end
