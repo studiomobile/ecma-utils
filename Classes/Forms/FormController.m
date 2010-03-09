@@ -2,8 +2,6 @@
 #import "NSObject+Utils.h"
 #import "UIApplication+Utils.h"
 
-#define CONTROLS_MARGIN 10
-
 @interface FormController (Private)
 
 @property (retain) UITextField *focusedTextField;
@@ -101,7 +99,7 @@
 
 
 - (void)adjustTableRelativeToFrame:(CGRect)frame frameView:(UIView*)view {
-    frame = CGRectMake(frame.origin.x, frame.origin.y - CONTROLS_MARGIN, frame.size.width, frame.size.height + CONTROLS_MARGIN);
+    frame = CGRectMake(frame.origin.x, frame.origin.y - FORM_CONTROLLER_CONTROLS_TOP_MARGIN, frame.size.width, frame.size.height + FORM_CONTROLLER_CONTROLS_TOP_MARGIN);
 
 	CGRect tableFrameInView = [self.table convertRect:self.table.bounds toView:view];
 	CGRect intersection = CGRectIntersection(frame, tableFrameInView);

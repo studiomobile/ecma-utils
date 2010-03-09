@@ -1,5 +1,6 @@
 #import <UIKit/UIKit.h>
 
+#define FORM_CONTROLLER_CONTROLS_TOP_MARGIN 10
 
 @interface FormController : UIViewController<UITextFieldDelegate> {
 	UITextField *focusedTextField;
