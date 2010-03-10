@@ -42,8 +42,7 @@
 @implementation NSError (DetailedDescription)
 
 - (NSString*)detailedDescription {	
-	NSString *message = [self localizedDescription];
-	
+	NSString *message = [NSString stringWithFormat:@"domain:%@ code:%d message:%@", self.domain, self.code, [self localizedDescription]];
 	NSMutableArray *messages = [NSMutableArray array];	
 	
 	NSString *sub = nil;

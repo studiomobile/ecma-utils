@@ -32,7 +32,7 @@
 
 - (void)dealloc {
 	[indicatorTimer invalidate];
-	[blocker release];	
+	if(blocker)[self performForBlocker:@selector(release)];
 	[super dealloc];
 }
 
@@ -85,6 +85,8 @@
 -(void)asyncOperationCanceled{
 	[self stopTimer];
 	[self performForBlocker: @selector(unblockUI)];
+	[self performForBlocker: @selector(release)];
+	blocker = nil;
 	[super asyncOperationCanceled];	
 }
 
