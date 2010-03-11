@@ -92,14 +92,15 @@
 
 -(void)asyncOperationFinishedWithResult:	(id)result{
 	[self stopTimer];
-	[self performForBlocker: @selector(unblockUI)];	
-	[super asyncOperationFinishedWithResult:result];	
+	[super asyncOperationFinishedWithResult:result]; //		call callback first because in case of concurrent blockers 
+													 //		we set finished flag in callback and then check it in custom blocker
+	[self performForBlocker: @selector(unblockUI)];
 }
 
 -(void)asyncOperationFinishedWithError:		(NSError*)error{
 	[self stopTimer];
-	[self performForBlocker: @selector(unblockUI)];	
 	[super asyncOperationFinishedWithError:error];
+	[self performForBlocker: @selector(unblockUI)];	
 }
 
 @end
