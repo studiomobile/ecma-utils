@@ -5,7 +5,6 @@
 	UIActivityIndicatorView* indicator;
 	UIActivityIndicatorView* myIndicator;
 	NSArray* views;
-	NSMutableDictionary* viewStates;
     BOOL dontShowIndicator;
     BOOL blockInteraction;
 }
