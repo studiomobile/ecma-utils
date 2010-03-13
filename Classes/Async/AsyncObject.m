@@ -92,16 +92,23 @@
 
 #pragma mark NSObject
 
-
-- (id)initWithTarget:(id)_target {
+// designated initializer
+- (id)initWithTarget:(id)_target retainTarget:(BOOL)retainTarget{
     if (![super init]) return nil;
-    target = [_target retain];
+    target = _target;
+	if(retainTarget) [target retain];
+	isTargetRetained = retainTarget;
 	return self;
 }
 
+- (id)initWithTarget:(id)_target{
+	return [self initWithTarget:_target retainTarget:YES];
+}
+
+
 - (void)dealloc {
 	[contextName release];
-	[target release];
+	if(isTargetRetained) [target release];
 	[observer release];
 	[super dealloc];
 }
@@ -116,7 +123,7 @@
 #pragma mark public
 
 + (AsyncObject*)asyncObjectForTarget:(id)target delegate:(id)delegate onSuccess:(SEL)onSuccess onError:(SEL)onError {
-	AsyncObject *async = [[[AsyncObject alloc] initWithTarget:target] autorelease];
+	AsyncObject *async = [[[AsyncObject alloc] initWithTarget:target retainTarget:YES] autorelease];
 	async.delegate = delegate;
 	async.onSuccess = onSuccess;
 	async.onError = onError;
@@ -124,7 +131,7 @@
 }
 
 + (AsyncObject*)asyncObjectForTarget:(id)target observer:(id)observer onSuccess:(SEL)onSuccess onError:(SEL)onError {
-	AsyncObject *async = [[[AsyncObject alloc] initWithTarget:target] autorelease];
+	AsyncObject *async = [[[AsyncObject alloc] initWithTarget:target retainTarget:YES] autorelease];
 	async.observer = observer;
 	async.onSuccess = onSuccess;
 	async.onError = onError;
@@ -142,6 +149,11 @@
 
 + (AsyncObject*)asyncObjectForTarget:(id)target {
 	return [AsyncObject asyncObjectForTarget:target delegate:nil onSuccess:nil onError:nil];
+}
+
+- (void)dontRetainTarget {
+	if(isTargetRetained) [target release];
+	isTargetRetained = NO;
 }
 
 

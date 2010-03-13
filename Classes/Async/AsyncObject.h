@@ -17,7 +17,8 @@
 	id observer;
 	SEL onSuccess;
 	SEL onError;  
-	NSString *contextName;	
+	NSString *contextName;
+	BOOL isTargetRetained;
 }
 
 @property (readonly) id target;
@@ -25,6 +26,8 @@
 @property (retain) id observer;
 @property (assign) SEL onSuccess;
 @property (assign) SEL onError;
+
+#pragma mark public
 
 + (AsyncObject*)asyncObjectForTarget:(id)target;
 
@@ -34,17 +37,21 @@
 + (AsyncObject*)asyncObjectForTarget:(id)target delegate:(id)delegate onSuccess:(SEL)onSuccess onError:(SEL)onError;
 + (AsyncObject*)asyncObjectForTarget:(id)target observer:(id)observer onSuccess:(SEL)onSuccess onError:(SEL)onError;
 
-- (id)initWithTarget:(id)target;
+// designated initializer
+- (id)initWithTarget:(id)target retainTarget:(BOOL)retainTarget;
+- (id)initWithTarget:(id)target; // retain = YES
+
+- (void)dontRetainTarget;
 
 - (void)setContextNamed: (NSString*)name;
 
-// proxy constructors
+// proxy construction
 - (id)asyncProxy;
 - (id)proxyWithCallback: (id<AsyncCallbackProtocol>)callback;
 - (id)newAsyncProxy;
 - (id)onSuccess: (SEL)_onSuccess onError: (SEL)_onError;
 
-// internals
+#pragma mark protected
 -(Class)defaultAsyncCallbackClass;
 -(id<AsyncCallbackProtocol>) makeCallbackWithSuccess:(SEL)_onSuccess error:(SEL)_onError;
 

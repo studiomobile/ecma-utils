@@ -58,7 +58,7 @@
 
 // for backward compatibility
 + (UIBlockingAsyncObject*)uiBlockingAsyncObjectForTarget:(id)target delegate:(id)delegate onSuccess:(SEL)onSuccess onError:(SEL)onError blockViews:(NSArray*)blockViews {
-	UIBlockingAsyncObject *async = [[[UIBlockingAsyncObject alloc] initWithTarget:target] autorelease];
+	UIBlockingAsyncObject *async = [[[UIBlockingAsyncObject alloc] initWithTarget:target retainTarget:YES] autorelease];
 	async.delegate = delegate;
 	async.onSuccess = onSuccess;
 	async.onError = onError;
@@ -68,7 +68,7 @@
 
 // for backward compatibility
 + (UIBlockingAsyncObject*)uiBlockingAsyncObjectForTarget:(id)target observer:(id)observer onSuccess:(SEL)onSuccess onError:(SEL)onError blockViews:(NSArray*)blockViews {
-	UIBlockingAsyncObject *async = [[[UIBlockingAsyncObject alloc] initWithTarget:target] autorelease];
+	UIBlockingAsyncObject *async = [[[UIBlockingAsyncObject alloc] initWithTarget:target retainTarget:YES] autorelease];
 	async.observer = observer;
 	async.onSuccess = onSuccess;
 	async.onError = onError;
