@@ -77,13 +77,13 @@
 	
 	NSString *xmlString = enveloper.message;
 	NSString* debugXmlString = debugEnveloper.message;
-	NSLog(@"SOAP REQUEST:\n%@", debugXmlString);
+	NSLog(@"SOAP REQUEST at %@:\n%@", url, debugXmlString);
 	NSData *requestData = [xmlString dataUsingEncoding: NSUTF8StringEncoding];
 	
 	NSError* err = nil;
 	NSString* actionString = action ? [NSString stringWithFormat: @"; action=\"%@\"", action] : @"";
 	NSString* contentTypeString = [NSString stringWithFormat:@"application/soap+xml; charset=utf-8%@", actionString];
-	NSData* responseData = [service post:requestData contentType: contentTypeString to:@"" error: &err];
+	NSData* responseData = [service post:requestData contentType:contentTypeString to:@"" error: &err];
 	if(err){
 		self.error = err;
 		return NO;
