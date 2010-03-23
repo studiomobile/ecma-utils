@@ -171,7 +171,7 @@
 
 
 - (void)updateCurrentPage {
-    CGFloat pageWidth = self.view.bounds.size.width;
+    CGFloat pageWidth = scroll.bounds.size.width;
     NSUInteger page = scroll.contentOffset.x / pageWidth;
     if (scroll.contentOffset.x - (page * pageWidth) > pageWidth / 2) {
         page++;
