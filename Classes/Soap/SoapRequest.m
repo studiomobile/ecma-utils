@@ -5,6 +5,10 @@
 #import "Reachability+Utils.h"
 
 #import "SoapDebugLogEnveloper.h"
+#import "ESLogger.h"
+
+
+NSString * const kSoapLogTag = @"SOAP";
 
 @interface SoapRequest ()
 @property (retain, readwrite) id result; 
@@ -39,7 +43,7 @@
 
 - (id)getResultFrom:(NSData*)data {
 	NSString* responseString = [[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding] autorelease];
-	NSLog(@"SOAP RESPONSE:\n%@", responseString);	
+	ESLog(kSoapLogTag, @"SOAP RESPONSE:\n%@", responseString);	
 	SoapDeenveloper* deenveloper = [SoapDeenveloper soapDeenveloperWithXmlString:responseString];			
 	
 	if (responseIsMany) {
@@ -67,17 +71,27 @@
 	service.enableCookies = enableCookies;
 	
 	SoapEnveloper *enveloper = [SoapEnveloper soapEnveloper];
-	SoapEnveloper* debugEnveloper = [SoapDebugLogEnveloper soapEnveloper];
+	
 	if (header) {
 		[enveloper encodeHeaderObject:header];
-		[debugEnveloper encodeHeaderObject:header];
 	}
 	[enveloper encodeBodyObject:body];
-	[debugEnveloper encodeBodyObject:body];
 	
 	NSString *xmlString = enveloper.message;
-	NSString* debugXmlString = debugEnveloper.message;
-	NSLog(@"SOAP REQUEST at %@:\n%@", url, debugXmlString);
+	
+	NSString *logMessage = nil;
+	if([ESLogger isVerboseLogging:kSoapLogTag]) {
+		logMessage = xmlString;
+	} else {
+		SoapEnveloper* debugEnveloper = [SoapDebugLogEnveloper soapEnveloper];
+		if (header) {
+			[debugEnveloper encodeHeaderObject:header];
+		}
+		[debugEnveloper encodeBodyObject:body];
+		logMessage = debugEnveloper.message;
+	}
+	ESLog(kSoapLogTag, @"SOAP REQUEST at %@:\n%@", url, logMessage);	
+	
 	NSData *requestData = [xmlString dataUsingEncoding: NSUTF8StringEncoding];
 	
 	NSError* err = nil;
