@@ -53,7 +53,7 @@
 
     NSNumber *allowsClearNumber = [desc.options objectForKey:@"allowsClear"];
     if([allowsClearNumber boolValue]) {
-        UIBarButtonItem *clearButton = [[[UIBarButtonItem alloc] initWithTitle:@"Clear" 
+        UIBarButtonItem *clearButton = [[[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Clear", @"date picker button") 
                                                                          style:buttonsStyle 
                                                                         target:self 
                                                                         action:@selector(datePickerClear)] autorelease];
@@ -76,7 +76,7 @@
     
     [items addObject:[self toolbarSpace]];
     
-    UIBarButtonItem *doneButton = [[[UIBarButtonItem alloc] initWithTitle:@"Done" 
+    UIBarButtonItem *doneButton = [[[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Done", @"date picker button") 
                                                                     style:buttonsStyle 
                                                                    target:self 
                                                                    action:@selector(datePickerDone)] autorelease];
