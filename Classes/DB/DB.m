@@ -49,7 +49,6 @@ static NSMutableDictionary *databases = nil;
     }
     NSString *dbPath = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:dbName];
     [fileManager copyItemAtPath:dbPath toPath:databasePath error:error];
-    [fileManager release];
     return databasePath;
 }
 
