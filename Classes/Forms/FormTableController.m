@@ -342,7 +342,7 @@
 
 
 - (UIViewController*)selectionControllerForIndexPath:(NSIndexPath*)indexPath title:(NSString*)title descriptor:(FormFieldDescriptor*)desc collection:(NSArray*)collection {
-    SelectionController *selection = [[[SelectionController alloc] initWithTitle:title] autorelease];
+    SelectionController *selection = [[[SelectionController alloc] initWithDelegate:self title:title] autorelease];
     selection.dataSource = desc.dataSource;
     selection.keyPath = desc.keyPath;
     selection.collection = collection;	
@@ -447,6 +447,10 @@
     [self.navigationController pushViewController:controller animated:[self pushControllersAnimated]];    
 }
 
+- (void)popViewController {
+    [self.navigationController popViewControllerAnimated:[self pushControllersAnimated]];
+}
+
 
 - (NSArray*)getCollectionForDescriptor:(FormFieldDescriptor *)desc atIndexPath:(NSIndexPath *)indexPath{
 	NSArray *collection = [desc getCollection];
@@ -515,6 +519,12 @@
 - (void)viewWillAppear:(BOOL)animated {
 	[super viewWillAppear:animated];
 	[self reloadForm];
+}
+
+#pragma mark SelectionControllerDelegate
+
+- (void)selectionControllerWishToPop:(SelectionController*)ctrl {
+	[self popViewController];
 }
 
 @end

@@ -10,8 +10,9 @@
 #import "SwitchCell.h"
 #import "AgreementCell.h"
 #import "DateTimeCell.h"
+#import "SelectionController.h"
 
-@interface FormTableController : FormController<UITableViewDataSource, FormDatePickerViewDelegate> {
+@interface FormTableController : FormController<UITableViewDataSource, FormDatePickerViewDelegate, SelectionControllerDelegate> {
     NSIndexPath *currentIndexPath;
     
     FormDatePickerView *datePickerView;
