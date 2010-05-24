@@ -21,6 +21,7 @@
 - (NSArray *)reject: (NSPredicate*)predicate;
 - (NSArray *)collect: (NSString*)keyPath;
 - (NSArray *)take:(NSUInteger)count;
+- (NSArray *)splitUsingSelector:(SEL)selector;
 
 @end
 

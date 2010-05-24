@@ -72,6 +72,27 @@
 	return [self objectsAtIndexes:[NSIndexSet indexSetWithIndexesInRange:range]];
 }
 
+- (NSArray *)splitUsingSelector:(SEL)selector {
+	NSMutableArray *result = [NSMutableArray arrayWithCapacity:self.count];
+	id lastTestObject = nil;
+	NSMutableArray *curSlice = nil;
+	for (id curElement  in self) {
+		id curTestObject = [curElement performSelector:selector];
+		if(![lastTestObject isEqual:curTestObject]) {
+			curSlice = [NSMutableArray array];
+			[result addObject:curSlice];
+		}
+		lastTestObject = curTestObject;
+		[curSlice addObject:curElement];
+	}
+
+	for (int i = 0; i < result.count; i++) {
+		NSArray *slice = [result objectAtIndex:i];
+		[result replaceObjectAtIndex:i withObject:[[slice copy] autorelease]];
+	}
+	
+	return [[result copy] autorelease];
+}
 
 @end
 
