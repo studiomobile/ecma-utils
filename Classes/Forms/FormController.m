@@ -114,7 +114,7 @@
 
 
 - (void)restoreTableFrame:(BOOL)animated {
-	if(tableViewResized) {
+	if (tableViewResized) {
 		tableViewResized = NO;        
 		self.table.frame = oldTblViewFrame;        
 	}
@@ -163,16 +163,28 @@
 }
 
 
+- (void)hideKeyboardIfRequired {
+    if (shouldHideKeyboard) {
+        [self hideKeyboard];
+    }
+}
+
+
 - (void)editingStarted:(NSNotification*)notification {
+    shouldHideKeyboard = NO;
+    
 	self.focusedTextField = (UITextField*)[notification object];
-    [self scrollToFocusedTextField:YES];
+
+    [self performSelectorOnMainThread:@selector(scrollToFocusedTextField:) withObject:[NSNumber numberWithBool:YES] waitUntilDone:NO];
 
     [self textFieldSelected];
 }
 
 
 - (void)editingFinished:(NSNotification*)notification {
-    [self hideKeyboard];
+    shouldHideKeyboard = YES;
+    
+    [self performSelectorOnMainThread:@selector(hideKeyboardIfRequired) withObject:nil waitUntilDone:NO];
 }
 
 
@@ -194,7 +206,7 @@
 
 
 - (void)scrollToFocusedTextField:(BOOL)animated  {
-	if(self.focusedTextField) {
+	if (self.focusedTextField) {
 		[self scrollToField:[self indexPathOfSelectedTextField] animated:animated];		
 	}
 }

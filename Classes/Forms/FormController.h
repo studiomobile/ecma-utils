@@ -8,6 +8,7 @@
 	CGRect oldTblViewFrame;
 	BOOL tableViewResized;
     UIColor *superviewBackground;
+    BOOL shouldHideKeyboard;
 }
 @property (nonatomic, retain) UITableView *table;
 @property (readonly) BOOL keyboardShown;
