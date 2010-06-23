@@ -2,8 +2,8 @@
 
 @implementation DateTimeCell
 
-- (id)initWithFrame:(CGRect)frame reuseIdentifier:(NSString *)reuseIdentifier {
-    if (self = [super initWithFrame:frame reuseIdentifier:reuseIdentifier]) {
+- (id)initWithReuseIdentifier:(NSString *)reuseIdentifier {
+    if (self = [super initWithReuseIdentifier:reuseIdentifier]) {
 		formatter = [[NSDateFormatter alloc] init];
         self.value.enabled = NO;
     }

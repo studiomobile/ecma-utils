@@ -10,8 +10,8 @@
 }
 
 
-- (id)initWithFrame:(CGRect)frame reuseIdentifier:(NSString *)reuseIdentifier {
-    if (self = [super initWithFrame:frame reuseIdentifier:reuseIdentifier]) {
+- (id)initWithReuseIdentifier:(NSString *)reuseIdentifier {
+    if (self = [super initWithReuseIdentifier:reuseIdentifier]) {
 		title = [self newTitleLabel];
         title.font = [UIFont boldSystemFontOfSize:16];
         title.backgroundColor = [UIColor clearColor];

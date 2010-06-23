@@ -8,7 +8,12 @@
 
 
 - (id)initWithFrame:(CGRect)frame reuseIdentifier:(NSString *)reuseIdentifier {
-    if(self = [super initWithFrame:frame reuseIdentifier:reuseIdentifier]) {
+    return [self initWithReuseIdentifier:reuseIdentifier];
+}
+
+
+- (id)initWithReuseIdentifier:(NSString *)reuseIdentifier {
+    if(self = [super initWithStyle:UITableViewCellStyleDefault reuseIdentifier:reuseIdentifier]) {
         restoreData = [[NSMutableDictionary alloc] init];
     }
     

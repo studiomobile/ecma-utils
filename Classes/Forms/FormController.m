@@ -122,21 +122,16 @@
 
 
 - (void)kbdWillShow:(NSNotification*)notification {
-	if(tableViewResized) { //if you want to understand why this if statement see comments in kbdWillHide
+	if (tableViewResized) { //if you want to understand why this if statement see comments in kbdWillHide
 		return;
 	}
     
 	NSDictionary *userInfo = notification.userInfo;
-	NSValue *kbdBoundsValue = [userInfo objectForKey:UIKeyboardBoundsUserInfoKey];
-	CGRect kbdBounds;
-	[kbdBoundsValue getValue:&kbdBounds];
-	NSValue *kbdEndCenterValue = [userInfo objectForKey:UIKeyboardCenterEndUserInfoKey];
-	CGPoint kbdCenter;
-	[kbdEndCenterValue getValue:&kbdCenter];
-    
-	CGRect kbdAppFrame = CGRectOffset(kbdBounds, kbdCenter.x - kbdBounds.size.width/2, kbdCenter.y - kbdBounds.size.height/2);
+	NSValue *kbdFrameValue = [userInfo objectForKey:UIKeyboardFrameEndUserInfoKey];
+	CGRect kbdFrame;
+	[kbdFrameValue getValue:&kbdFrame];
 
-    [self adjustTableRelativeToFrame:kbdAppFrame frameView:[UIApplication mainView]];
+    [self adjustTableRelativeToFrame:kbdFrame frameView:[UIApplication mainView]];
     return;
 }
 

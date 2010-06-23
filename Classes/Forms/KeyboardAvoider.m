@@ -12,6 +12,7 @@
 	[notifications addObserver:self selector:@selector(editingFinished:) name:UITextFieldTextDidEndEditingNotification object:nil];		
 }
 
+
 -(void)awakeFromNib{
 	[super awakeFromNib];
 	[self privateInit];
@@ -24,6 +25,7 @@
     }
     return self;
 }
+
 
 - (void)dealloc {
 	NSNotificationCenter *notifications = [NSNotificationCenter defaultCenter];
@@ -39,6 +41,7 @@
 - (void)resetScroll {
 	[self setContentOffset:CGPointZero animated: YES];
 }
+
 
 -(void)scrollToField: (UIView*)textField{
 	if(![textField isDescendantOfView:self])
@@ -65,18 +68,14 @@
 	[self setContentOffset: CGPointMake(0, offset) animated:YES];
 }
 
+
 -(CGRect)extractKeyboardFrameFromNotification: (NSNotification*)notification{
 	NSDictionary *userInfo = notification.userInfo;
-	NSValue *kbdBoundsValue = [userInfo objectForKey:UIKeyboardBoundsUserInfoKey];
-	CGRect kbdBounds;
-	[kbdBoundsValue getValue:&kbdBounds];
-	NSValue *kbdEndCenterValue = [userInfo objectForKey:UIKeyboardCenterEndUserInfoKey];
-	CGPoint kbdCenter;
-	[kbdEndCenterValue getValue:&kbdCenter];
-	
-	CGRect kbdAppFrame = CGRectOffset(kbdBounds, kbdCenter.x - kbdBounds.size.width/2, kbdCenter.y - kbdBounds.size.height/2);
+	NSValue *kbdFrameValue = [userInfo objectForKey:UIKeyboardFrameEndUserInfoKey];
+	CGRect kbdFrame;
+	[kbdFrameValue getValue:&kbdFrame];
 		
-	return kbdAppFrame;
+	return kbdFrame;
 }
 
 #pragma mark keyboard & text fields notification handlers
@@ -85,18 +84,22 @@
     keyboardFrame = [self extractKeyboardFrameFromNotification:notification]; 	
 }
 
+
 - (void)kbdWillHide:(NSNotification*)notification {	
 }
+
 
 - (void)editingStarted:(NSNotification*)notification {
 	focusedTextField = (UIView*)[notification object];
 	[self scrollToField: focusedTextField];
 }
 
+
 - (void)editingFinished:(NSNotification*)notification {
 	focusedTextField = nil;
 	[NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(checkResetScroll) userInfo:nil repeats:NO];
 }
+
 
 - (void)checkResetScroll {
 	if (!focusedTextField) {

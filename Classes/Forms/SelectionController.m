@@ -46,7 +46,8 @@
 	static NSString *cellId = @"SelectionCellIdentifier";
 	UITableViewCell *cell = [tView dequeueReusableCellWithIdentifier:cellId];
 	if (cell == nil) {
-		cell = [[[UITableViewCell alloc] initWithFrame:CGRectZero reuseIdentifier:cellId] autorelease];
+		cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
+                                       reuseIdentifier:cellId] autorelease];
 	}
 	
 	cell.text = [[collection objectAtIndex:indexPath.row] description];

@@ -8,7 +8,7 @@
 @synthesize pk;
 
 + (NSString*)tableName {
-	return [NSString stringWithCString:class_getName([self class])];
+	return NSStringFromClass([self class]);
 }
 
 

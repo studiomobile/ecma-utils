@@ -5,8 +5,8 @@
 
 @synthesize value;
 
-- (id)initWithFrame:(CGRect)frame reuseIdentifier:(NSString *)reuseIdentifier {
-    if (self = [super initWithFrame:frame reuseIdentifier:reuseIdentifier]) {
+- (id)initWithReuseIdentifier:(NSString *)reuseIdentifier {
+    if (self = [super initWithReuseIdentifier:reuseIdentifier]) {
 		value = [[UILabel alloc] initWithFrame:CGRectZero];
         value.backgroundColor = [UIColor clearColor];
 		[self.contentView addSubview:value];

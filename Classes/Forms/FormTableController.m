@@ -205,8 +205,8 @@
 
 - (FormCell*)formCellWithClass:(Class)klass reuseIdentifier:(NSString*)reuseIdentifier descriptor:(FormFieldDescriptor*)desc {
 	FormCell *result = (FormCell*)[self.table dequeueReusableCellWithIdentifier:reuseIdentifier];
-    if(!result) {
-        result = [[[klass alloc] initWithFrame:CGRectZero reuseIdentifier:reuseIdentifier] autorelease];
+    if (!result) {
+        result = [[[klass alloc] initWithReuseIdentifier:reuseIdentifier] autorelease];
     }
     
     result.fieldDescriptor = desc;
@@ -278,7 +278,8 @@
     static NSString *CellIdentifier = @"ButtonCell";
     UITableViewCell *cell = [self.table dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
-        cell = [[[UITableViewCell alloc] initWithFrame:CGRectZero reuseIdentifier:CellIdentifier] autorelease];
+        cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault 
+                                       reuseIdentifier:CellIdentifier] autorelease];
         cell.textAlignment = UITextAlignmentCenter;
         cell.selectionStyle = UITableViewCellSelectionStyleGray;
     }

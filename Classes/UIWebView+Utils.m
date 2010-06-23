@@ -15,7 +15,7 @@
 	NSBundle *mainBundle = [NSBundle mainBundle];
 	NSString *path = [mainBundle pathForResource:name ofType:@"html"];
 	NSURL *baseURL = [NSURL fileURLWithPath:[mainBundle bundlePath]];
-	[self loadHTMLString:[NSString stringWithContentsOfFile:path] baseURL:baseURL];
+	[self loadHTMLString:[NSString stringWithContentsOfFile:path encoding:NSUTF8StringEncoding error:nil] baseURL:baseURL];
 }
 
 
@@ -23,7 +23,7 @@
 	NSBundle *mainBundle = [NSBundle mainBundle];
 	NSString *path = [mainBundle pathForResource:name ofType:@"html" inDirectory:directory];
 	NSURL *baseURL = [NSURL fileURLWithPath:[mainBundle bundlePath]];
-	[self loadHTMLString:[NSString stringWithContentsOfFile:path] baseURL:baseURL];
+	[self loadHTMLString:[NSString stringWithContentsOfFile:path encoding:NSUTF8StringEncoding error:nil] baseURL:baseURL];
 }
 
 @end

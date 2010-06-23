@@ -2,24 +2,24 @@
 
 void checkNotNil(id value, NSString *message) {
 	if(value == nil) {
-		[NSException raise:@"ArgumentNullException" format:message];
+		[NSException raise:@"ArgumentNullException" format:@"%@", message];
 	}
 }
 
 void checkNotNull(void *value, NSString *message) {
 	if(value == NULL) {
-		[NSException raise:@"ArgumentNullException" format:message];
+		[NSException raise:@"ArgumentNullException" format:@"%@", message];
 	}}
 
 void checkState(BOOL result, NSString *message) {
 	if(!result) {
-		[NSException raise:@"InvalidStateException" format:message];
+		[NSException raise:@"InvalidStateException" format:@"%@", message];
 	}
 }
 
 void checkArgument(BOOL result, NSString *message) {
 	if(!result) {
-		[NSException raise:@"ArgumentException" format:message];
+		[NSException raise:@"ArgumentException" format:@"%@", message];
 	}
 }
 

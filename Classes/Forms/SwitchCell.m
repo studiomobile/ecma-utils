@@ -4,8 +4,8 @@
 
 @synthesize switcher;
 
-- (id)initWithFrame:(CGRect)frame reuseIdentifier:(NSString *)reuseIdentifier {
-    if (self = [super initWithFrame:frame reuseIdentifier:reuseIdentifier]) {
+- (id)initWithReuseIdentifier:(NSString *)reuseIdentifier {
+    if (self = [super initWithReuseIdentifier:reuseIdentifier]) {
 		switcher = [[UISwitch alloc] initWithFrame:CGRectZero];
         [switcher addTarget:self action:@selector(switched) forControlEvents:UIControlEventValueChanged];
 		[self.contentView addSubview:switcher];

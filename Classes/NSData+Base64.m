@@ -22,7 +22,7 @@ static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
     if (!decodingTable) {
         decodingTable = malloc(256);
         if (!decodingTable) {
-            [NSException raise:NSMallocException format:nil];
+            [NSException raise:NSMallocException format:@""];
         }
         memset(decodingTable, CHAR_MAX, 256);
         for (NSUInteger i = 0; i < sizeof(encodingTable)/sizeof(encodingTable[0]); i++) {
@@ -32,7 +32,7 @@ static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
     
     char *bytes = malloc(((string.length + 3) / 4) * 3);
     if (!bytes) {
-        [NSException raise:NSMallocException format:nil];
+        [NSException raise:NSMallocException format:@""];
     }
     
     NSUInteger length = 0;

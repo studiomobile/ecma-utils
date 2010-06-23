@@ -15,8 +15,8 @@
 }
 
 
-- (id)initWithFrame:(CGRect)frame reuseIdentifier:(NSString *)reuseIdentifier {
-    if (self = [super initWithFrame:frame reuseIdentifier:reuseIdentifier]) {
+- (id)initWithReuseIdentifier:(NSString *)reuseIdentifier {
+    if (self = [super initWithReuseIdentifier:reuseIdentifier]) {
 		value = [[UITextField alloc] initWithFrame:CGRectZero];
         value.autocorrectionType = UITextAutocorrectionTypeNo;
         value.autocapitalizationType = UITextAutocapitalizationTypeNone;
