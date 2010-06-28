@@ -126,10 +126,17 @@
 		return;
 	}
     
-	NSDictionary *userInfo = notification.userInfo;
-	NSValue *kbdFrameValue = [userInfo objectForKey:UIKeyboardFrameEndUserInfoKey];
-	CGRect kbdFrame;
-	[kbdFrameValue getValue:&kbdFrame];
+    NSDictionary *userInfo = notification.userInfo;
+	NSValue *kbdBoundsValue = [userInfo objectForKey:UIKeyboardBoundsUserInfoKey];
+	CGRect kbdBounds;
+	[kbdBoundsValue getValue:&kbdBounds];
+	NSValue *kbdEndCenterValue = [userInfo objectForKey:UIKeyboardCenterEndUserInfoKey];
+	CGPoint kbdCenter;
+	[kbdEndCenterValue getValue:&kbdCenter];
+	
+	CGRect kbdFrame = CGRectOffset(kbdBounds, 
+                                   round(kbdCenter.x - kbdBounds.size.width/2), 
+                                   round(kbdCenter.y - kbdBounds.size.height/2));
 
     [self adjustTableRelativeToFrame:kbdFrame frameView:[UIApplication mainView]];
     return;

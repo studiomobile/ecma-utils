@@ -71,11 +71,16 @@
 
 -(CGRect)extractKeyboardFrameFromNotification: (NSNotification*)notification{
 	NSDictionary *userInfo = notification.userInfo;
-	NSValue *kbdFrameValue = [userInfo objectForKey:UIKeyboardFrameEndUserInfoKey];
-	CGRect kbdFrame;
-	[kbdFrameValue getValue:&kbdFrame];
+	NSValue *kbdBoundsValue = [userInfo objectForKey:UIKeyboardBoundsUserInfoKey];
+	CGRect kbdBounds;
+	[kbdBoundsValue getValue:&kbdBounds];
+	NSValue *kbdEndCenterValue = [userInfo objectForKey:UIKeyboardCenterEndUserInfoKey];
+	CGPoint kbdCenter;
+	[kbdEndCenterValue getValue:&kbdCenter];
+	
+	CGRect kbdAppFrame = CGRectOffset(kbdBounds, kbdCenter.x - kbdBounds.size.width/2, kbdCenter.y - kbdBounds.size.height/2);
 		
-	return kbdFrame;
+	return kbdAppFrame;
 }
 
 #pragma mark keyboard & text fields notification handlers
