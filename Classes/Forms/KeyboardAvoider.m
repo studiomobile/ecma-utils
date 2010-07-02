@@ -86,7 +86,12 @@
 #pragma mark keyboard & text fields notification handlers
 
 - (void)kbdWillShow:(NSNotification*)notification {
-    keyboardFrame = [self extractKeyboardFrameFromNotification:notification]; 	
+    keyboardFrame = [self extractKeyboardFrameFromNotification:notification];
+	//works for iOS 4.0. kbdWillShow and editingStarted are called in different orders in iOS 4.0 and 3.1.3 devices
+	//(averbin)
+	if (focusedTextField) {
+		[self scrollToField: focusedTextField];
+	}
 }
 
 
@@ -96,12 +101,17 @@
 
 - (void)editingStarted:(NSNotification*)notification {
 	focusedTextField = (UIView*)[notification object];
-	[self scrollToField: focusedTextField];
+	//This works for pre iOS 4.0 devices. kbdWillShow and editingStarted are called in different orders in iOS 4.0 and 3.1.3 devices
+	//(averbin)
+	if (!CGRectEqualToRect(CGRectZero, keyboardFrame)) {
+		[self scrollToField:focusedTextField];
+	}
 }
 
 
 - (void)editingFinished:(NSNotification*)notification {
 	focusedTextField = nil;
+	keyboardFrame = CGRectZero;
 	[NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(checkResetScroll) userInfo:nil repeats:NO];
 }
 
