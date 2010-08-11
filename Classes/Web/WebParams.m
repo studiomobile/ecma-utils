@@ -26,11 +26,41 @@
 }
 
 
-- (void)addParam:(id)param forKey:(id)key {
-	if (param) {
-		multipart |= [self isFileUpload:param];
-		[params setObject:param forKey:key];
+- (void)addParam:(id)_param forKey:(id)key {
+	if (_param) {
+		multipart |= [self isFileUpload:_param];
+		id value = [params objectForKey:key];
+		if (value) {
+			if (![value isKindOfClass:[NSMutableArray class]]) {
+				if ([value isKindOfClass:[NSArray class]]) {
+					value = [NSMutableArray arrayWithArray:value];
+				} else {
+					value = [NSMutableArray arrayWithObject:value];
+				}
+				[params setObject:value forKey:key];
+			}
+			if ([_param isKindOfClass:[NSArray class]]) {
+				[(NSMutableArray*)value addObjectsFromArray:_param];
+			} else {
+				[(NSMutableArray*)value addObject:_param];
+			}
+		} else {
+			[params setObject:_param forKey:key];
+		}
 	}
+}
+
+
+- (NSString*)encodeQueryValue:(id)value {
+	return [[value description] urlEncode:@"\"%;/?:@&=+$,[]#!'()*"];
+}
+
+
+- (void)appendToQueryString:(NSMutableString*)queryString key:(NSString*)key value:(id)value {
+	[queryString appendString:@"&"];
+	[queryString appendString:[self encodeQueryValue:key]];
+	[queryString appendString:@"="];
+	[queryString appendString:[self encodeQueryValue:value]];
 }
 
 
@@ -39,15 +69,18 @@
 	for (NSString *key in params) {
 		NSObject *value = [params objectForKey:key];
 		if ([self isFileUpload:value]) continue;
-		[queryString appendString:@"&"];
-		[queryString appendString:[[key description] urlEncode:@"\"%;/?:@&=+$,[]#!'()*"]];
-		[queryString appendString:@"="];
-		[queryString appendString:[[value description] urlEncode:@"\"%;/?:@&=+$,[]#!'()*"]];
+		if ([value conformsToProtocol:@protocol(NSFastEnumeration)]) {
+			for (id v in value) {
+				[self appendToQueryString:queryString key:key value:v];
+			}
+		} else {
+			[self appendToQueryString:queryString key:key value:value];
+		}
 	}
 	if (queryString.length) {
 		[queryString replaceCharactersInRange:NSMakeRange(0, 1) withString:@"?"];
 	}
-	return [[queryString copy] autorelease];
+	return queryString;
 }
 
 
@@ -71,12 +104,20 @@
 		NSObject *value = [params objectForKey:key];
 		if ([self isFileUpload:value]) {
             NSString *filename = [value respondsToSelector:@selector(filename)] ? [(id)value fileName] : key;
+			NSString *contentType = [value respondsToSelector:@selector(contentType)] ? [(id)value contentType] : @"application/octet-stream";
             NSData *data = [value respondsToSelector:@selector(data)] ? [(id)value data] : (NSData*)value;
-			[postData appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"%@\"; filename=\"%@\"\r\nContent-Type: image/jpeg\r\nContent-Transfer-Encoding: binary\r\n\r\n", key, filename] dataUsingEncoding:NSUTF8StringEncoding]];
+			[postData appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"%@\"; filename=\"%@\"\r\nContent-Type: %@\r\nContent-Transfer-Encoding: binary\r\n\r\n", key, contentType, filename] dataUsingEncoding:NSUTF8StringEncoding]];
 			[postData appendData:data];
 		} else {
-			[postData appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"%@\"\r\n\r\n", key] dataUsingEncoding:NSUTF8StringEncoding]];
-			[postData appendData:[[value description] dataUsingEncoding:NSUTF8StringEncoding]];
+			if ([value conformsToProtocol:@protocol(NSFastEnumeration)]) {
+				for (id v in value) {
+					[postData appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"%@\"\r\n\r\n", key] dataUsingEncoding:NSUTF8StringEncoding]];
+					[postData appendData:[[v description] dataUsingEncoding:NSUTF8StringEncoding]];
+				}
+			} else {
+				[postData appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"%@\"\r\n\r\n", key] dataUsingEncoding:NSUTF8StringEncoding]];
+				[postData appendData:[[value description] dataUsingEncoding:NSUTF8StringEncoding]];
+			}
 		}
 		if (i == keys.count - 1) {
 			[postData appendData:[[NSString stringWithFormat:@"\r\n--%@--", self.boundary] dataUsingEncoding:NSUTF8StringEncoding]];
@@ -90,11 +131,9 @@
 
 
 - (NSData*)postData {
-	if (multipart) {
-		return self.multipartPostData;
-	}
-	NSMutableString *queryString = [NSMutableString stringWithString:self.queryString];
-	[queryString replaceCharactersInRange:NSMakeRange(0, 1) withString:@""];
+	if (multipart) return [self multipartPostData];
+	NSMutableString *queryString = (NSMutableString*)self.queryString;
+	[queryString deleteCharactersInRange:NSMakeRange(0, 1)];
 	return [queryString dataUsingEncoding:NSUTF8StringEncoding];
 }
 
