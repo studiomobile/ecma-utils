@@ -5,7 +5,9 @@
 @synthesize delegate;
 @synthesize dataSource;
 @synthesize loadMargin;
+@synthesize pager;
 
+@synthesize buttonLeft, buttonRight;
 
 - (void)loadView {
     [super loadView];
@@ -125,6 +127,9 @@
 
 - (void)setActivePage:(NSUInteger)page {
     if (page >= pages.count) return;
+    if ([delegate respondsToSelector:@selector(pagerController:willSwitchToPage:)]) {
+        [delegate pagerController:self willSwitchToPage:page];        
+    }
 
     NSUInteger min = page > loadMargin ? page - loadMargin : 0;
     NSUInteger max = MIN(page + loadMargin + 1, pages.count);
