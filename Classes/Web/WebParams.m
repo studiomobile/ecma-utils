@@ -26,27 +26,33 @@
 }
 
 
+- (void)setParam:(id)_param forKey:(id)key {
+	if (!_param) return;
+	multipart |= [self isFileUpload:_param];
+	[params setObject:_param forKey:key];
+}
+
+
 - (void)addParam:(id)_param forKey:(id)key {
-	if (_param) {
-		multipart |= [self isFileUpload:_param];
-		id value = [params objectForKey:key];
-		if (value) {
-			if (![value isKindOfClass:[NSMutableArray class]]) {
-				if ([value isKindOfClass:[NSArray class]]) {
-					value = [NSMutableArray arrayWithArray:value];
-				} else {
-					value = [NSMutableArray arrayWithObject:value];
-				}
-				[params setObject:value forKey:key];
-			}
-			if ([_param isKindOfClass:[NSArray class]]) {
-				[(NSMutableArray*)value addObjectsFromArray:_param];
+	if (!_param) return;
+	multipart |= [self isFileUpload:_param];
+	id value = [params objectForKey:key];
+	if (value) {
+		if (![value isKindOfClass:[NSMutableArray class]]) {
+			if ([value isKindOfClass:[NSArray class]]) {
+				value = [NSMutableArray arrayWithArray:value];
 			} else {
-				[(NSMutableArray*)value addObject:_param];
+				value = [NSMutableArray arrayWithObject:value];
 			}
-		} else {
-			[params setObject:_param forKey:key];
+			[params setObject:value forKey:key];
 		}
+		if ([_param isKindOfClass:[NSArray class]]) {
+			[(NSMutableArray*)value addObjectsFromArray:_param];
+		} else {
+			[(NSMutableArray*)value addObject:_param];
+		}
+	} else {
+		[params setObject:_param forKey:key];
 	}
 }
 
