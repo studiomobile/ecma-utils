@@ -12,6 +12,7 @@
 
 - (id)initWithDictionary:(NSDictionary*)dictionary;
 
-- (void)addParam:(id)param forKey:(id)key;
+- (void)setParam:(id)_param forKey:(id)key;
+- (void)addParam:(id)_param forKey:(id)key;
 
 @end

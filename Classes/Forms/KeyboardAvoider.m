@@ -43,7 +43,12 @@
 }
 
 
--(void)scrollToField: (UIView*)textField{
+- (void)scrollToField:(UIView*)textField {
+	[self scrollToField:textField keyboardHeight:CGRectGetMinY(keyboardFrame)];
+}
+
+
+- (void)scrollToField:(UIView*)textField keyboardHeight:(CGFloat)freeAreaBottom {
 	if(![textField isDescendantOfView:self])
 		return;
 	
@@ -51,11 +56,10 @@
 	
 	CGRect scrollRectAbsolute = [self.superview convertRect:self.frame toView:main];
 	float freeAreaTop = CGRectGetMinY(scrollRectAbsolute);
-	float freeAreaBottom = CGRectGetMinY(keyboardFrame);
-	CGRect fieldRectAbsolute = [[UIApplication mainView] convertRect: textField.bounds fromView: textField];
+	CGRect fieldRectAbsolute = [[UIApplication mainView] convertRect:textField.bounds fromView:textField];
 	
 	float pointToScrollTo;	
-	if(placeFocusedControlOverKeyboard){
+	if (placeFocusedControlOverKeyboard) {
 		float fieldHeight = CGRectGetHeight(fieldRectAbsolute);
 		pointToScrollTo = freeAreaBottom - 5 - fieldHeight/2;
 	} else {
@@ -69,7 +73,7 @@
 }
 
 
--(CGRect)extractKeyboardFrameFromNotification: (NSNotification*)notification{
+- (CGRect)extractKeyboardFrameFromNotification:(NSNotification*)notification {
 	NSDictionary *userInfo = notification.userInfo;
 	NSValue *kbdBoundsValue = [userInfo objectForKey:UIKeyboardBoundsUserInfoKey];
 	CGRect kbdBounds;

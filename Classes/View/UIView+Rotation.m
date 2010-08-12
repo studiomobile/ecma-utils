@@ -7,6 +7,9 @@
 	CGRect bounds = self.bounds;
 	CGAffineTransform transform = CGAffineTransformIdentity;
 	switch (orientation) {
+		case UIInterfaceOrientationPortrait:
+			transform = CGAffineTransformIdentity;
+			break;
 		case UIInterfaceOrientationPortraitUpsideDown: 
 			transform = CGAffineTransformMakeRotation(M_PI);
 			break;
