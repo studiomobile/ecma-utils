@@ -144,6 +144,15 @@
 }
 
 
+- (NSURL*)appendToURL:(NSURL*)url {
+	if (params.count == 0) return url;
+	BOOL haveParams = [[url absoluteString] rangeOfString:@"?"].length > 0;
+	NSMutableString *queryString = (NSMutableString*)self.queryString;
+	[queryString replaceCharactersInRange:NSMakeRange(0, 1) withString:haveParams ? @"&" : @"?"];
+	return [NSURL URLWithString:queryString relativeToURL:url];
+}
+
+
 - (void)dealloc {
 	[params release];
 	[super dealloc];

@@ -15,4 +15,6 @@
 - (void)setParam:(id)_param forKey:(id)key;
 - (void)addParam:(id)_param forKey:(id)key;
 
+- (NSURL*)appendToURL:(NSURL*)url;
+
 @end
