@@ -9,6 +9,7 @@
     if (self = [super initWithReuseIdentifier:reuseIdentifier]) {
 		value = [[UILabel alloc] initWithFrame:CGRectZero];
         value.backgroundColor = [UIColor clearColor];
+        value.adjustsFontSizeToFitWidth = YES;
 		[self.contentView addSubview:value];
     }
 
