@@ -13,12 +13,13 @@
 
 @implementation UIAlertView (Utils)
 
--(void)showOnMainThread{
+-(UIAlertView*)showOnMainThread{
 	[self performSelectorOnMainThread:@selector(show) withObject:nil waitUntilDone:NO];
+    return self;
 }
 
 + (UIAlertView*)yesNoAlertViewWithTitle:(NSString*)title message:(NSString*)message {
-    UIAlertView* alert = [[[UIAlertView alloc] initWithTitle:title
+    UIAlertView* alert = [[[self alloc] initWithTitle:title
                                  message:message
                                 delegate:nil
                        cancelButtonTitle:NSLocalizedString(@"No", nil)
@@ -27,7 +28,7 @@
 }
 
 + (UIAlertView*)alertViewWithTitle:(NSString*)title message:(NSString*)message {
-    UIAlertView *alert = [[[UIAlertView alloc] initWithTitle:title
+    UIAlertView *alert = [[[self alloc] initWithTitle:title
                                                      message:message
                                                     delegate:nil
                                            cancelButtonTitle:NSLocalizedString(@"OK", nil)
@@ -49,7 +50,7 @@
 }
 
 + (UIAlertView *)showOneButtonAlertViewWithTitle:(NSString *)title message:(NSString *)message delegate:(id)delegate {
-	UIAlertView *alert = [[[UIAlertView alloc] initWithTitle:title
+	UIAlertView *alert = [[[self alloc] initWithTitle:title
 													 message:message
 													delegate:delegate
 										   cancelButtonTitle:@"OK"
@@ -60,46 +61,46 @@
 
 /////////
 
-+ (void)showAlertViewErrorMessage:(NSString*)message {
++ (UIAlertView*)showAlertViewErrorMessage:(NSString*)message {
 	UIAlertView* alert = [self alertViewWithErrorMessage: message];
-    [alert showOnMainThread];
+    return [alert showOnMainThread];
 }
 
 
-+ (void)showAlertViewWithTitle:(NSString*)title message:(NSString*)message {
++ (UIAlertView*)showAlertViewWithTitle:(NSString*)title message:(NSString*)message {
     UIAlertView *alert = [self alertViewWithTitle:title message:message];    
-	[alert showOnMainThread];
+	return [alert showOnMainThread];
 }
 
 
-+ (void)showAlertViewWithMessage:(NSString*)message {
++ (UIAlertView*)showAlertViewWithMessage:(NSString*)message {
 	UIAlertView *alert = [self alertViewWithMessage: message];
-	[alert showOnMainThread];
+	return [alert showOnMainThread];
 }
 
 
-+ (void)showAlertViewWithTitle:(NSString*)title {
++ (UIAlertView*)showAlertViewWithTitle:(NSString*)title {
 	UIAlertView *alert = [self alertViewWithTitle: title];
-	[alert showOnMainThread];
+	return [alert showOnMainThread];
 }
 
 
-+ (void)showYesNoAlertViewWithTitle:(NSString*)title message:(NSString*)message delegate:(id)delegate {
++ (UIAlertView*)showYesNoAlertViewWithTitle:(NSString*)title message:(NSString*)message delegate:(id)delegate {
 	UIAlertView* alert = [self yesNoAlertViewWithTitle:title message:message];
 	alert.delegate = delegate;
-	[alert showOnMainThread];
+	return [alert showOnMainThread];
 }
 
--(void)showAndCall: (SEL)selector of: (id)obj{
+-(UIAlertView*)showAndCall: (SEL)selector of: (id)obj{
 	UIAlertViewCallback* cb = [UIAlertViewCallback alertViewCallbackWithDelegate:obj selector:selector];
 	self.delegate = [cb retain];
-	[self showOnMainThread];
+	return [self showOnMainThread];
 }
 
--(void)showAndCall: (SEL)selector of: (id)obj withArgument: (id)arg{
+-(UIAlertView*)showAndCall: (SEL)selector of: (id)obj withArgument: (id)arg{
 	UIAlertViewCallback* cb = [UIAlertViewCallback alertViewCallbackWithDelegate:obj selector:selector argument: arg];
 	self.delegate = [cb retain];
-	[self showOnMainThread];	
+	return [self showOnMainThread];	
 }
 
 @end

@@ -9,14 +9,14 @@
 + (UIAlertView*)yesNoAlertViewWithTitle:(NSString*)title message:(NSString*)message;
 + (UIAlertView*)showOneButtonAlertViewWithTitle:(NSString *)title message:(NSString *)message delegate:(id)delegate;
 
-+ (void)showAlertViewErrorMessage:(NSString*)message;
-+ (void)showAlertViewWithMessage:(NSString*)message;
-+ (void)showAlertViewWithTitle:(NSString*)title message:(NSString*)message;
-+ (void)showAlertViewWithTitle:(NSString*)title;
-+ (void)showYesNoAlertViewWithTitle:(NSString*)title message:(NSString*)message delegate:(id)delegate;
++ (UIAlertView*)showAlertViewErrorMessage:(NSString*)message;
++ (UIAlertView*)showAlertViewWithMessage:(NSString*)message;
++ (UIAlertView*)showAlertViewWithTitle:(NSString*)title message:(NSString*)message;
++ (UIAlertView*)showAlertViewWithTitle:(NSString*)title;
++ (UIAlertView*)showYesNoAlertViewWithTitle:(NSString*)title message:(NSString*)message delegate:(id)delegate;
 
 
--(void)showAndCall: (SEL)selector of: (id)obj;
--(void)showAndCall: (SEL)selector of: (id)obj withArgument: (id)arg;
+-(UIAlertView*)showAndCall: (SEL)selector of: (id)obj;
+-(UIAlertView*)showAndCall: (SEL)selector of: (id)obj withArgument: (id)arg;
 
 @end
