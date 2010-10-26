@@ -233,10 +233,12 @@
     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     
     UIColor *valueColor = [desc.options objectForKey:@"value.color"];
-    if (valueColor) cell.value.textColor = valueColor;
+    valueColor = valueColor ? valueColor : [UIColor blackColor];
+    cell.value.textColor = valueColor;
     
     UIColor *titleColor = [desc.options objectForKey:@"title.color"];
-    if (titleColor) cell.title.textColor = titleColor;
+    titleColor = titleColor ? titleColor : [UIColor blackColor];
+    cell.title.textColor = titleColor;
 
 	return cell;
 }
