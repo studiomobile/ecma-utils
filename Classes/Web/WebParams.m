@@ -76,7 +76,7 @@
 		NSObject *value = [params objectForKey:key];
 		if ([self isFileUpload:value]) continue;
 		if ([value conformsToProtocol:@protocol(NSFastEnumeration)]) {
-			for (id v in value) {
+			for (id v in (NSObject<NSFastEnumeration>*)value) {
 				[self appendToQueryString:queryString key:key value:v];
 			}
 		} else {
@@ -116,7 +116,7 @@
 			[postData appendData:data];
 		} else {
 			if ([value conformsToProtocol:@protocol(NSFastEnumeration)]) {
-				for (id v in value) {
+				for (id v in (NSObject<NSFastEnumeration>*)value) {
 					[postData appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"%@\"\r\n\r\n", key] dataUsingEncoding:NSUTF8StringEncoding]];
 					[postData appendData:[[v description] dataUsingEncoding:NSUTF8StringEncoding]];
 				}

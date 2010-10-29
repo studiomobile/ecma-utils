@@ -18,10 +18,12 @@
 	return self;
 }
 
+
 // for backward compatibility
 - (id)initWithTitle:(NSString*)aTitle {
 	return [self initWithDelegate:nil title:aTitle];
 }
+
 
 - (void)loadView {
 	tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
@@ -63,8 +65,11 @@
 	id selectedObject = [collection objectAtIndex:selected];
 	[dataSource setValue:selectedObject forKeyPath:keyPath];
     if (singleClickSelection) {
-		if(delegate) [delegate selectionControllerWishToPop:self];
-		else	[self.navigationController popViewControllerAnimated:YES];
+		if (delegate) {
+            [delegate selectionControllerWishToPop:self];  
+        } else {
+            [self.navigationController popViewControllerAnimated:YES];
+        }	
     } else {
         [tView reloadData];
     }
