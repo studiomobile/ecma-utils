@@ -231,15 +231,6 @@
 - (StaticFormCell*)disclosingCellWithDescriptor:(FormFieldDescriptor*)desc {
 	StaticFormCell *cell = (StaticFormCell*)[self formCellWithClass:[StaticFormCell class] reuseIdentifier:@"DisclosingCell" descriptor:desc]; 
     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-    
-    UIColor *valueColor = [desc.options objectForKey:@"value.color"];
-    valueColor = valueColor ? valueColor : [UIColor blackColor];
-    cell.value.textColor = valueColor;
-    
-    UIColor *titleColor = [desc.options objectForKey:@"title.color"];
-    titleColor = titleColor ? titleColor : [UIColor blackColor];
-    cell.title.textColor = titleColor;
-
 	return cell;
 }
 

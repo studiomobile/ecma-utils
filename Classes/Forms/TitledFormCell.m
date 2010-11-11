@@ -28,6 +28,9 @@
     NSNumber *titleWidthNumber = [self.fieldDescriptor.options objectForKey:@"title.width"];
     titleWidth = titleWidthNumber ? [titleWidthNumber floatValue] : 100.0;
     
+    NSNumber *titleAlignmentNumber = [self.fieldDescriptor.options objectForKey:@"title.textAlignment"];
+    self.title.textAlignment = titleAlignmentNumber ? [titleAlignmentNumber floatValue] : UITextAlignmentLeft;
+    
     UIColor *titleColor = [self.fieldDescriptor.options objectForKey:@"title.textColor"];
     self.title.textColor = titleColor ? titleColor : [UIColor blackColor];
     
