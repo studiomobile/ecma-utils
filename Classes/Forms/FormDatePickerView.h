@@ -18,6 +18,8 @@
     NSDateFormatter *labelDateFormatter;
     
     NSDate *date;
+    
+    BOOL onlyNotifyChangeOnDone;
 }
 @property (assign) id<FormDatePickerViewDelegate> delegate;
 @property (readonly) NSDate *date;

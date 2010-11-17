@@ -41,6 +41,9 @@
 	NSNumber *buttonsStyleNumber = [desc.options objectForKey:@"datePicker.buttonsStyle"];
     UIBarButtonItemStyle buttonsStyle = buttonsStyleNumber ? [buttonsStyleNumber integerValue] : UIBarButtonItemStyleBordered;
 
+    NSNumber *notifyOnDoneNumber = [desc.options objectForKey:@"datePicker.onlyNotifyChangeOnDone"];
+    onlyNotifyChangeOnDone = notifyOnDoneNumber ? [notifyOnDoneNumber boolValue] : NO;
+
     NSDate *descDate = desc.value;
     [self setDate:(descDate ? descDate : [NSDate date])];
     [datePicker setDate:date animated:NO];
@@ -86,6 +89,7 @@
     [toolbar setItems:items];
 }
 
+
 - (void)changeDate:(NSDate*)d {
     [self setDate:d];
     [self updateLabel];
@@ -94,11 +98,17 @@
 
 
 - (void)datePickerValueChanged {
-    [self changeDate:datePicker.date];
+    if (!onlyNotifyChangeOnDone) {
+        [self changeDate:datePicker.date];
+    }
 }
 
 
 - (void)datePickerDone {
+    if (onlyNotifyChangeOnDone) {
+        [self changeDate:datePicker.date];
+    }
+    
     [delegate formDatePickerViewDone:self];
 }
 
