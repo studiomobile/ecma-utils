@@ -19,7 +19,7 @@ struct POXElement {
 };
 
 
-@interface POXMapping : NSObject {
+@interface POXMapping : NSObject<NSXMLParserDelegate> {
 	SelfDescribing *result;
 	struct POXElement *top;
 }

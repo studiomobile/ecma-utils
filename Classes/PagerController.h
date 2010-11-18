@@ -17,7 +17,6 @@
 
 @interface PagerController : UIViewController<UIScrollViewDelegate> {
     IBOutlet UIScrollView *scroll;
-    id<PagerControllerDelegate> delegate;
     id<PagerControllerDataSource> dataSource;
     NSMutableArray *pages;
     NSUInteger loadMargin;
@@ -30,7 +29,7 @@
 @property (nonatomic, retain) IBOutlet id buttonRight;
 
 @property (nonatomic, retain) IBOutlet UIPageControl *pager;
-@property (nonatomic, assign) id<PagerControllerDelegate> delegate;
+@property (nonatomic, assign) id<PagerControllerDelegate, NSObject> delegate;
 @property (nonatomic, assign) id<PagerControllerDataSource> dataSource;
 @property (nonatomic, readonly) NSUInteger currentPage;
 @property (nonatomic, assign) NSUInteger loadMargin;
