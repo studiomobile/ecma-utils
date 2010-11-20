@@ -67,6 +67,9 @@
     NSNumber *returnKeyTypeNumber = [self.fieldDescriptor.options objectForKey:@"value.returnKeyType"];
     self.value.returnKeyType = returnKeyTypeNumber ? [returnKeyTypeNumber integerValue] : UIReturnKeyDefault;
 
+    NSNumber *clearsNum = [self.fieldDescriptor.options objectForKey:@"value.clearsOnBeginEditing"];
+    self.value.clearsOnBeginEditing = clearsNum ? [clearsNum boolValue] : NO;
+    
     self.returnKeyAction = [self.fieldDescriptor.options objectForKey:@"value.returnKeyAction"];
 }
 
