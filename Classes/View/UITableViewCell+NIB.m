@@ -24,15 +24,29 @@
 
 + (NSString*)nibName { return [self description]; }
 
-+ (id)dequeOrCreateInTable:(UITableView*)tableView ofType: (Class)tp fromNib: (NSString*)nibName withId: (NSString*)reuseId {
+
++ (id)dequeOrCreateInTable:(UITableView*)tableView 
+                    ofType:(Class)tp 
+                   fromNib:(NSString*)nibName 
+                    withId:(NSString*)reuseId {
+    
     UITableViewCell* cell = [tableView dequeueReusableCellWithIdentifier:reuseId];
 	return cell ? cell : [self loadCellOfType:tp fromNib:nibName withId:reuseId];
 }
 
 
 + (id)dequeOrCreateInTable:(UITableView*)tableView {
-	return [self dequeOrCreateInTable:tableView ofType:self fromNib:[self nibName] withId: [self cellID]];
+	return [self dequeOrCreateInTable:tableView withId:[self cellID]];
 }
+
+
++ (id)dequeOrCreateInTable:(UITableView*)tableView withId:(NSString*)cellId {
+	return [self dequeOrCreateInTable:tableView 
+                               ofType:self 
+                              fromNib:[self nibName] 
+                               withId:cellId];
+}
+
 
 + (id)loadFromNib{
 	return [self loadCellOfType:self fromNib:[self nibName] withId:[self cellID]];
