@@ -74,6 +74,9 @@
     self.value.clearsOnBeginEditing = clearsNum ? [clearsNum boolValue] : NO;
     
     self.returnKeyAction = [self.fieldDescriptor.options objectForKey:@"value.returnKeyAction"];
+	
+	NSNumber *isEnabledNum = [self.fieldDescriptor.options objectForKey:@"value.enabled"];
+	self.value.enabled = isEnabledNum ? [isEnabledNum boolValue] : self.value.enabled;
 }
 
 
