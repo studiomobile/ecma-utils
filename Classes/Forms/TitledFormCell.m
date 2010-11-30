@@ -33,6 +33,16 @@
     
     UIColor *titleColor = [self.fieldDescriptor.options objectForKey:@"title.textColor"];
     self.title.textColor = titleColor ? titleColor : [UIColor blackColor];
+
+    UIFont *titleFont = [self.fieldDescriptor.options objectForKey:@"title.font"];
+    if (titleFont) {
+        self.title.font = titleFont;
+    }
+
+    NSNumber *titleLines = [self.fieldDescriptor.options objectForKey:@"title.numberOfLines"];
+    if (titleLines) {
+        title.numberOfLines = [titleLines integerValue];
+    }
     
 	self.title.text = self.fieldDescriptor.title;
 
