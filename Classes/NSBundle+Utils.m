@@ -4,7 +4,7 @@
 
 - (id)loadPlist:(NSString*)name errorDescription:(NSString**)errorDescription {
     NSPropertyListFormat format;
-    NSString *path = [[NSBundle mainBundle] pathForResource:name ofType:@"plist"];
+    NSString *path = [self pathForResource:name ofType:@"plist"];
     NSData *data = [NSData dataWithContentsOfFile:path];
     id result = [NSPropertyListSerialization propertyListFromData:data
                                                  mutabilityOption:NSPropertyListImmutable
