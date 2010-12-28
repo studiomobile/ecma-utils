@@ -70,6 +70,11 @@
     UIColor *valueColor = [self.fieldDescriptor.options objectForKey:@"value.textColor"];
     self.value.textColor = valueColor ? valueColor : [UIColor blackColor];
 
+    UIFont *valueFont = [self.fieldDescriptor.options objectForKey:@"value.font"];
+    if (valueFont) {
+        self.value.font = valueFont;
+    }
+    
     NSNumber *clearsNum = [self.fieldDescriptor.options objectForKey:@"value.clearsOnBeginEditing"];
     self.value.clearsOnBeginEditing = clearsNum ? [clearsNum boolValue] : NO;
     
