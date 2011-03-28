@@ -38,7 +38,9 @@
 
 
 - (NSTimeInterval)daysSinceDate: (NSDate*)date{
-	return [self hoursSinceDate:date]/24;
+    NSCalendar *calendar = [NSCalendar currentCalendar];
+    NSDateComponents *comps = [calendar components:NSDayCalendarUnit fromDate:date toDate:self options:0];
+    return comps.day;
 }
 
 
