@@ -29,9 +29,11 @@
 @implementation FormController
 
 @synthesize keyboardShown;
+@synthesize shouldAutoresizeOnKeyboard;
 
 - (id)init {
 	if (self = [super init]) {
+        shouldAutoresizeOnKeyboard = YES;
 	}
 	return self;
 }
@@ -39,6 +41,7 @@
 
 - (id)initWithNibName:(NSString *)nibName bundle:(NSBundle *)nibBundle {
 	if(self = [super initWithNibName:nibName bundle:nibBundle]) {
+        shouldAutoresizeOnKeyboard = YES;
 	}
 	return self;
 }
@@ -60,6 +63,31 @@
 	[super viewWillAppear:animated];
 
 	keyboardShown = NO;
+    [self startTrackingKeyboardEvents];
+}
+
+
+- (void)viewWillDisappear:(BOOL)animated {
+	[super viewWillDisappear:animated];
+
+    [self stopTrackingKeyboardEvents];
+}
+
+
+- (void)setShouldAutoresizeOnKeyboard:(BOOL)saok {
+    if (!saok) {
+        [self stopTrackingKeyboardEvents];
+    }
+
+    shouldAutoresizeOnKeyboard = saok;
+}
+
+
+- (void)startTrackingKeyboardEvents {
+    if (!shouldAutoresizeOnKeyboard || trackingKeyboardEvents) {
+        return;
+    }
+    
 	NSNotificationCenter *notifications = [NSNotificationCenter defaultCenter];
 	[notifications addObserver:self selector:@selector(kbdWillShow:) name:UIKeyboardWillShowNotification object:nil];
 	[notifications addObserver:self selector:@selector(kbdDidShow) name:UIKeyboardDidShowNotification object:nil];
@@ -67,19 +95,24 @@
 	[notifications addObserver:self selector:@selector(kbdDidHide) name:UIKeyboardDidHideNotification object:nil];
 	[notifications addObserver:self selector:@selector(editingStarted:) name:UITextFieldTextDidBeginEditingNotification object:nil];
 	[notifications addObserver:self selector:@selector(editingFinished:) name:UITextFieldTextDidEndEditingNotification object:nil];	
+
+    trackingKeyboardEvents = YES;
 }
 
 
-- (void)viewWillDisappear:(BOOL)animated {
-	[super viewWillDisappear:animated];
-
-	NSNotificationCenter *notifications = [NSNotificationCenter defaultCenter];
+- (void)stopTrackingKeyboardEvents {
+    if (!trackingKeyboardEvents) {
+        return;
+    }
+    
+    NSNotificationCenter *notifications = [NSNotificationCenter defaultCenter];
 	[notifications removeObserver:self name:UIKeyboardWillShowNotification object:nil];
 	[notifications removeObserver:self name:UIKeyboardDidShowNotification object:nil];
 	[notifications removeObserver:self name:UIKeyboardWillHideNotification object:nil];
 	[notifications removeObserver:self name:UIKeyboardDidHideNotification object:nil];
 	[notifications removeObserver:self name:UITextFieldTextDidBeginEditingNotification object:nil];
 	[notifications removeObserver:self name:UITextFieldTextDidEndEditingNotification object:nil];
+    trackingKeyboardEvents = NO;
 }
 
 

@@ -9,9 +9,12 @@
 	BOOL tableViewResized;
     UIColor *superviewBackground;
     BOOL shouldHideKeyboard;
+    BOOL trackingKeyboardEvents;
+    BOOL shouldAutoresizeOnKeyboard;
 }
 @property (nonatomic, retain) UITableView *table;
 @property (readonly) BOOL keyboardShown;
+@property (assign) BOOL shouldAutoresizeOnKeyboard;
 
 - (void)hideKeyboard;
 - (void)changeTableFrame:(CGRect)newFrame;
@@ -32,4 +35,8 @@
 - (void)scrollToFocusedTextField:(BOOL)animated;
 
 - (NSIndexPath*)indexPathOfSelectedTextField;
+
+- (void)startTrackingKeyboardEvents;
+- (void)stopTrackingKeyboardEvents;
+
 @end
